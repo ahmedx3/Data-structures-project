@@ -17,7 +17,7 @@ a frontPtr pointer for the front of the queue and a backPtr pointer for the back
 					-------------
 General Queue case:
 
-                 frontPtr																backPtr
+				 frontPtr																backPtr
 					\											   						/		
 					 \											  					   /		
 					------------- 	  ------------- 	  ------------- 	  ------------- 	  	  
@@ -26,14 +26,14 @@ General Queue case:
 		
 Empty Case:
 
-                 frontptr	 backptr
+				 frontptr	 backptr
 						\	 /				
 						 \	/				
 					---- NULL ------
 
 
 Single Node Case:
-                 frontPtr	 backPtr
+				 frontPtr	 backPtr
 					\		/	
 					 \	   /			
 					-------- 	

@@ -5,6 +5,7 @@
 int main()
 {
 	load File("D:\\DsProject\\sample.txt");
+	File.printInfo();
 	//Restaurant* pRest = new Restaurant;
 	//pRest->RunSimulation();
 	

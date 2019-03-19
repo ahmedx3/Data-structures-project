@@ -15,6 +15,7 @@ class load
 	int m;
 public:
 	load(string path);
+	void printInfo();
 	~load();
 };
 

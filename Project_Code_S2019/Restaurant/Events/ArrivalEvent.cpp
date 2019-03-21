@@ -8,15 +8,25 @@ ArrivalEvent::ArrivalEvent(int eTime, int oID, ORD_TYPE oType, REGION reg):Event
 	OrdRegion = reg;
 }
 
+ArrivalEvent::ArrivalEvent(int eTime, int oID, ORD_TYPE oType, REGION reg, double money, int distance): Event(eTime, oID)
+{
+	OrdDistance = distance;
+	OrdType = oType;
+	OrdRegion = reg;
+	OrdMoney = money;
+}
+
 void ArrivalEvent::Execute(Restaurant* pRest)
 {
-	//This function should create and order and and fills its data 
+	//This function should create an order and fills its data 
 	// Then adds it to normal, frozen, or VIP order lists that you will create in phase1
 
-	
-	
-	///For the sake of demo, this function will just create an order and add it to DemoQueue
-	///Remove the next code lines in phase 1&2
-	Order* pOrd = new Order(OrderID,OrdType,OrdRegion);
-	pRest->AddtoDemoQueue(pOrd);
+	Order* pOrd = new Order(OrderID, OrdType, OrdRegion);
+
+	if (OrdType == TYPE_NRM)
+		pRest->addToNormalQueue(pOrd);
+	else if (OrdType == TYPE_FROZ)
+		pRest->addToFrozenQueue(pOrd);
+	else
+		pRest->addToVIPQueue(pOrd);
 }

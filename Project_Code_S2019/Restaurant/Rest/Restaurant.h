@@ -9,6 +9,7 @@
 
 
 #include "Order.h"
+#include "load.h"
 
 // it is the maestro of the project
 class Restaurant  
@@ -27,6 +28,11 @@ private:
 	// TODO: Add More Data Members As Needed
 	//
 
+	Queue<Order*> VIPOrders;	// Queue of all active VIP orders
+	Queue<Order*> frozenOrders;	// Queue of all active Frozen orders
+	Queue<Order*> normalOrders;	// Queue of all active Normal orders
+
+
 public:
 	
 	Restaurant();
@@ -35,6 +41,27 @@ public:
 	void ExecuteEvents(int TimeStep);	//executes all events at current timestep
 	void RunSimulation();
 
+	//
+	// TODO: Add More Member Functions As Needed
+	//
+
+	// Phase 1 simulation function
+	void simulationTestRun();
+
+	
+	void addToVIPQueue(Order* ord);	// Adds orders to VIP queue
+	Order* getVIPOrder();	// Returns the front VIP order
+
+	void addToFrozenQueue(Order* ord);	// Adds orders to Frozen queue
+	Order* getFrozenOrder();			// Returns the front Frozen order
+
+	void addToNormalQueue(Order* ord);	// Adds orders to Normal queue
+	Order* getNormalOrder();			// Returns the front normal order
+
+	void cancelOrder(int id);			// Cancels an order from normal orders
+	
+
+
 	/// ==> 
 	///  DEMO-related functions. Should be removed in phases 1&2
 	void Just_A_Demo();	//just to show a demo and should be removed in phase1 1 & 2
@@ -42,11 +69,12 @@ public:
 	Order* getDemoOrder();			//return the front order from demo queue
 	/// ==> 
 
-
-	//
-	// TODO: Add More Member Functions As Needed
-	//
-
+private:
+	void shiftNormalOrders();			// moves Normal Orders around in queue
+	void cancelFromNormalOrders();		// Cancels the order
+	void drawOrdersToScreen();			// Draws all active orders
+	void deleteOrdersEachTimeStep();	// deletes orders each time step as if assigning them to bikes
+	void printStatusBarInfo();	// prints all info in status bar
 };
 
 #endif

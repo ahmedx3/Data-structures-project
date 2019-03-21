@@ -26,10 +26,8 @@ void Restaurant::RunSimulation()
 	case MODE_SLNT:
 		break;
 	case MODE_DEMO:
-		Just_A_Demo();
-
+		simulationTestRun();
 	};
-
 }
 
 
@@ -59,9 +57,188 @@ void Restaurant::ExecuteEvents(int CurrentTimeStep)
 
 Restaurant::~Restaurant()
 {
-		delete pGUI;
+	delete pGUI;
 }
 
+// Main test run for phase 1
+void Restaurant::simulationTestRun() {
+
+	load File("D:/School Work/Data Structures/sample.txt", this);		// Loading the files
+	File.printInfo();
+
+	int currentTimeStep = 1;
+
+	while (!EventsQueue.isEmpty()) {
+		// Print current timeStep
+		char timeStep[10];
+		itoa(currentTimeStep, timeStep, 10);
+		pGUI->PrintMessage(timeStep);
+
+		// Execute events now
+		ExecuteEvents(currentTimeStep);
+
+
+		// Draw orders to screen
+		drawOrdersToScreen();
+
+		// Deleting an order from each type in each region
+		deleteOrdersEachTimeStep();
+
+		// Print all info in status bar
+		printStatusBarInfo();
+		
+		pGUI->waitForClick();
+		currentTimeStep++;
+	}
+
+	pGUI->PrintMessage("Simulation Over, Click anywhere to exit!");
+	pGUI->waitForClick();
+}
+
+void Restaurant::printStatusBarInfo()
+{
+}
+
+void Restaurant::deleteOrdersEachTimeStep()
+{
+	
+}
+
+void Restaurant::addToVIPQueue(Order * ord)
+{
+	VIPOrders.enqueue(ord);
+}
+
+Order * Restaurant::getVIPOrder()
+{
+	Order* pOrd;
+	VIPOrders.dequeue(pOrd);
+	return pOrd;
+}
+
+void Restaurant::addToFrozenQueue(Order * ord)
+{
+	frozenOrders.enqueue(ord);
+}
+
+Order * Restaurant::getFrozenOrder()
+{
+	Order* pOrd;
+	frozenOrders.dequeue(pOrd);
+	return pOrd;
+}
+
+void Restaurant::addToNormalQueue(Order * ord)
+{
+	normalOrders.enqueue(ord);
+}
+
+Order * Restaurant::getNormalOrder()
+{
+	Order* pOrd;
+	normalOrders.dequeue(pOrd);
+	return pOrd;
+}
+
+void Restaurant::cancelOrder(int id)
+{
+	Order* pOrd;
+	int stopPoint;
+	bool exists = normalOrders.peekFront(pOrd);
+	if (exists) {
+		stopPoint = pOrd->GetID();
+		if (stopPoint == id) {
+			cancelFromNormalOrders();
+			return;
+		}
+		else {
+			shiftNormalOrders();
+		}
+
+		normalOrders.peekFront(pOrd);
+
+		while (pOrd->GetID() != stopPoint) {
+			if (pOrd->GetID() == id) {
+				cancelFromNormalOrders();
+			}
+			else {
+				shiftNormalOrders();
+				normalOrders.peekFront(pOrd);
+			}
+		}
+	}
+}
+
+void Restaurant::drawOrdersToScreen()
+{
+	Order* pOrd;
+	bool exists = VIPOrders.peekFront(pOrd);
+	if (exists) {
+		int stopPoint = pOrd->GetID();
+		pGUI->AddOrderForDrawing(pOrd);
+		VIPOrders.dequeue(pOrd);
+		VIPOrders.enqueue(pOrd);
+		VIPOrders.peekFront(pOrd);
+
+		while (stopPoint != pOrd->GetID())
+		{
+			pGUI->AddOrderForDrawing(pOrd);
+			VIPOrders.dequeue(pOrd);
+			VIPOrders.enqueue(pOrd);
+			VIPOrders.peekFront(pOrd);
+		}
+	}
+
+	exists = normalOrders.peekFront(pOrd);
+	if (exists) {
+		int stopPoint = pOrd->GetID();
+		pGUI->AddOrderForDrawing(pOrd);
+		normalOrders.dequeue(pOrd);
+		normalOrders.enqueue(pOrd);
+		normalOrders.peekFront(pOrd);
+
+		while (stopPoint != pOrd->GetID())
+		{
+			pGUI->AddOrderForDrawing(pOrd);
+			normalOrders.dequeue(pOrd);
+			normalOrders.enqueue(pOrd);
+			normalOrders.peekFront(pOrd);
+		}
+	}
+
+	exists = frozenOrders.peekFront(pOrd);
+	if (exists) {
+		int stopPoint = pOrd->GetID();
+		pGUI->AddOrderForDrawing(pOrd);
+		frozenOrders.dequeue(pOrd);
+		frozenOrders.enqueue(pOrd);
+		frozenOrders.peekFront(pOrd);
+
+		while (stopPoint != pOrd->GetID())
+		{
+			pGUI->AddOrderForDrawing(pOrd);
+			frozenOrders.dequeue(pOrd);
+			frozenOrders.enqueue(pOrd);
+			frozenOrders.peekFront(pOrd);
+		}
+	}
+
+	pGUI->UpdateInterface();
+	pGUI->ResetDrawingList();
+}
+
+void Restaurant::cancelFromNormalOrders()
+{
+	Order* pOrd;
+	normalOrders.dequeue(pOrd);
+	delete pOrd;
+}
+
+void Restaurant::shiftNormalOrders() {
+	Order* pOrd;
+	normalOrders.dequeue(pOrd);
+	normalOrders.enqueue(pOrd);
+}
 
 
 

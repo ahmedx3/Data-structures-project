@@ -3,7 +3,7 @@
 
 #include "..\Defs.h"
 
-class Restaurant;	//Forward declation
+class Restaurant;	//Forward declaration
 
 //The base class for all possible events in the system (abstract class)
 class Event

@@ -114,10 +114,8 @@
     <ClInclude Include="Generic_DS\PriorityQueue.h">
       <Filter>Generic_DS</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="Generic_DS\EnhancedList.h">
       <Filter>Generic_DS</Filter>
-=======
     <ClInclude Include="Events\CancelationEvent.h">
       <Filter>Events</Filter>
     </ClInclude>
@@ -126,7 +124,6 @@
     </ClInclude>
     <ClInclude Include="Rest\load.h">
       <Filter>LoadingFiles</Filter>
->>>>>>> 521bbc2fc9613a9ef12f8570bb8728e2d629e64c
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

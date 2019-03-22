@@ -40,7 +40,7 @@ public:
 	void SetDistance(int d);
 	int GetDistance() const;
 
-	void setPriority(const double pr); //only for VIP orders
+	void setPriority(); //only for VIP orders
 	double getPriority() const;	 //only for VIP orders
 
 	bool operator >(const Order& o) const;	// compares the priority of two orders

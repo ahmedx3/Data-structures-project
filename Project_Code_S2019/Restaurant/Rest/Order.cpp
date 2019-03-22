@@ -5,6 +5,14 @@ Order::Order(int id, ORD_TYPE r_Type, REGION r_region)
 	ID = (id>0&&id<1000)?id:0;	//1<ID<999
 	type = r_Type;
 	Region = r_region;
+	if (r_Type = TYPE_VIP)
+	{
+		setPriority();
+	}
+	else
+	{
+		Priority = -1;		//default value for non VIP orders
+	}
 }
 Order::Order() {
 	//To avoid errors if a node is instantiated without assigning a value to its item of type Order
@@ -55,9 +63,9 @@ int Order::GetDistance() const
 	return Distance;
 }
 
-void Order::setPriority(const double pr)
+void Order::setPriority()
 {
-	Priority =(pr > 0)?pr:0;
+	Priority = (float)totalMoney*200/(ArrTime * Distance);
 }
 
 double Order::getPriority() const

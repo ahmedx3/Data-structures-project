@@ -9,6 +9,7 @@
 
 
 #include "Order.h"
+#include "load.h"
 
 // it is the maestro of the project
 class Restaurant  
@@ -16,6 +17,8 @@ class Restaurant
 private:
 	GUI *pGUI;
 	Queue<Event*> EventsQueue;	//Queue of all events that will be loaded from file
+
+	int totalWaitingOrders;
 
 	
 	/// ==> 
@@ -27,6 +30,38 @@ private:
 	// TODO: Add More Data Members As Needed
 	//
 
+	Queue<Order*> VIPOrdersRegionA;	// Queue of all active VIP orders of region A
+	Queue<Order*> VIPOrdersRegionB;	// Queue of all active VIP orders of region B
+	Queue<Order*> VIPOrdersRegionC;	// Queue of all active VIP orders of region C
+	Queue<Order*> VIPOrdersRegionD;	// Queue of all active VIP orders of region D
+
+	Queue<Order*> frozenOrdersRegionA;	// Queue of all active Frozen orders of region A
+	Queue<Order*> frozenOrdersRegionB;	// Queue of all active Frozen orders of region B
+	Queue<Order*> frozenOrdersRegionC;	// Queue of all active Frozen orders of region C
+	Queue<Order*> frozenOrdersRegionD;	// Queue of all active Frozen orders of region D
+
+	Queue<Order*> normalOrdersRegionA;	// Queue of all active Normal orders of region A
+	Queue<Order*> normalOrdersRegionB;	// Queue of all active Normal orders of region B
+	Queue<Order*> normalOrdersRegionC;	// Queue of all active Normal orders of region C
+	Queue<Order*> normalOrdersRegionD;	// Queue of all active Normal orders of region D
+
+
+	int waitingVIPA;
+	int waitingVIPB;
+	int waitingVIPC;
+	int waitingVIPD;
+
+	int waitingFrozenA;
+	int waitingFrozenB;
+	int waitingFrozenC;
+	int waitingFrozenD;
+
+	int waitingNormalA;
+	int waitingNormalB;
+	int waitingNormalC;
+	int waitingNormalD;
+
+
 public:
 	
 	Restaurant();
@@ -35,6 +70,61 @@ public:
 	void ExecuteEvents(int TimeStep);	//executes all events at current timestep
 	void RunSimulation();
 
+	//
+	// TODO: Add More Member Functions As Needed
+	//
+
+	// Phase 1 simulation function
+	void simulationTestRun();
+
+	// All VIP Orders ------------------------------------------------------------------------------
+	void addToVIPQueueRegionA(Order* ord);	// Adds orders to VIP queue
+	Order* getVIPOrderRegionA();	// Returns the front VIP order
+
+	void addToVIPQueueRegionB(Order* ord);	// Adds orders to VIP queue
+	Order* getVIPOrderRegionB();	// Returns the front VIP order
+
+	void addToVIPQueueRegionC(Order* ord);	// Adds orders to VIP queue
+	Order* getVIPOrderRegionC();	// Returns the front VIP order
+
+	void addToVIPQueueRegionD(Order* ord);	// Adds orders to VIP queue
+	Order* getVIPOrderRegionD();	// Returns the front VIP order
+	// -----------------------------------------------------------------------------------------------
+
+	// All Frozen Orders -----------------------------------------------------------------------------
+	void addToFrozenQueueRegionA(Order* ord);	// Adds orders to Frozen queue
+	Order* getFrozenOrderRegionA();			// Returns the front Frozen order
+
+	void addToFrozenQueueRegionB(Order* ord);	// Adds orders to Frozen queue
+	Order* getFrozenOrderRegionB();			// Returns the front Frozen order
+
+	void addToFrozenQueueRegionC(Order* ord);	// Adds orders to Frozen queue
+	Order* getFrozenOrderRegionC();			// Returns the front Frozen order
+
+	void addToFrozenQueueRegionD(Order* ord);	// Adds orders to Frozen queue
+	Order* getFrozenOrderRegionD();			// Returns the front Frozen order
+	// -----------------------------------------------------------------------------------------------
+
+	// All Normal Orders -----------------------------------------------------------------------------
+	void addToNormalQueueRegionA(Order* ord);	// Adds orders to Normal queue
+	Order* getNormalOrderRegionA();			// Returns the front normal order
+
+	void addToNormalQueueRegionB(Order* ord);	// Adds orders to Normal queue
+	Order* getNormalOrderRegionB();			// Returns the front normal order
+
+	void addToNormalQueueRegionC(Order* ord);	// Adds orders to Normal queue
+	Order* getNormalOrderRegionC();			// Returns the front normal order
+
+	void addToNormalQueueRegionD(Order* ord);	// Adds orders to Normal queue
+	Order* getNormalOrderRegionD();			// Returns the front normal order
+	// -----------------------------------------------------------------------------------------------
+
+	void cancelOrder(int id);			// Cancels an order from all normal orders
+
+	
+	
+
+
 	/// ==> 
 	///  DEMO-related functions. Should be removed in phases 1&2
 	void Just_A_Demo();	//just to show a demo and should be removed in phase1 1 & 2
@@ -42,11 +132,14 @@ public:
 	Order* getDemoOrder();			//return the front order from demo queue
 	/// ==> 
 
-
-	//
-	// TODO: Add More Member Functions As Needed
-	//
-
+private:
+	void drawOneQueue(Queue<Order*>& queue);	// Draws one queue
+	void drawOrdersToScreen();			// Draws all active orders
+	void deleteOrdersEachTimeStep();	// deletes orders each time step as if assigning them to bikes
+	void printStatusBarInfo(int currentTimeStep);	// prints all info in status bar
+	bool cancelFromCertainQueue(int id, Queue<Order*> & queue);	// Cancel order from certain queue
+	bool dequeueFromOneQueue(Queue<Order*> & queue);	// dequeue one order
+	void lastTimeStep(int currentTimeStep);	// To see last Time step
 };
 
 #endif

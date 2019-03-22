@@ -80,7 +80,7 @@ private:
 	void DrawString(const int iX, const int iY, const string Text); // prints a message in the passed coordinates
 	void DrawRestArea() const;	    // draws the restaurant area
 
-	void ClearStatusBar() const;    // clears the status bar
+	
 	void ClearDrawingArea() const;	// clears the Drawing area from all drawings
 
 public:
@@ -93,6 +93,8 @@ public:
 
 	// Output Functions  ---------------------------
 	void PrintMessage(string msg) const; // prints a message in the status bar
+	void PrintStatusMessages(string msg, int lineNo) const;
+	void ClearStatusBar() const;    // clears the status bar
 
 
 	void UpdateInterface();

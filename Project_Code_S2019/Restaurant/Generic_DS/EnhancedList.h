@@ -38,7 +38,7 @@ public:
 	//		cout << curr->getItem();
 	//		curr = curr->getNext();
 	//	}
-	}
+	//}
 	~EnhancedList();
 };
 

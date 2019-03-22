@@ -24,6 +24,9 @@
     <Filter Include="Generic_DS">
       <UniqueIdentifier>{f9c05740-74ef-4242-8f5c-c406c492135c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LoadingFiles">
+      <UniqueIdentifier>{fc034e2a-b8d5-4c4d-9147-aa72a6049986}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defs.h" />
@@ -108,14 +111,22 @@
     <ClInclude Include="Events\ArrivalEvent.h">
       <Filter>Events</Filter>
     </ClInclude>
-    <ClInclude Include="load.h">
-      <Filter>Restaurant</Filter>
-    </ClInclude>
     <ClInclude Include="Generic_DS\PriorityQueue.h">
       <Filter>Generic_DS</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="Generic_DS\EnhancedList.h">
       <Filter>Generic_DS</Filter>
+=======
+    <ClInclude Include="Events\CancelationEvent.h">
+      <Filter>Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Events\PromotionEvent.h">
+      <Filter>Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Rest\load.h">
+      <Filter>LoadingFiles</Filter>
+>>>>>>> 521bbc2fc9613a9ef12f8570bb8728e2d629e64c
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -243,7 +254,15 @@
     <ClCompile Include="Events\ArrivalEvent.cpp">
       <Filter>Events</Filter>
     </ClCompile>
-    <ClCompile Include="load.cpp" />
+    <ClCompile Include="Events\CancelationEvent.cpp">
+      <Filter>Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Events\PromotionEvent.cpp">
+      <Filter>Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Rest\load.cpp">
+      <Filter>LoadingFiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMUgraphicsLib\Manual.txt">

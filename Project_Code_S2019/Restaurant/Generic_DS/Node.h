@@ -20,15 +20,16 @@ public :
 
 
 template < typename T>
-Node<T>::Node() 
+Node<T>::Node():item(T())
 {
 	next = nullptr;
 } 
 
 template < typename T>
 Node<T>::Node( const T& r_Item)
+:item(r_Item)
 {
-	item = r_Item;
+	
 	next = nullptr;
 } 
 

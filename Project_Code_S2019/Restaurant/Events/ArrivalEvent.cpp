@@ -23,10 +23,34 @@ void ArrivalEvent::Execute(Restaurant* pRest)
 
 	Order* pOrd = new Order(OrderID, OrdType, OrdRegion);
 
-	if (OrdType == TYPE_NRM)
-		pRest->addToNormalQueue(pOrd);
-	else if (OrdType == TYPE_FROZ)
-		pRest->addToFrozenQueue(pOrd);
-	else
-		pRest->addToVIPQueue(pOrd);
+	if (OrdType == TYPE_NRM) {
+		if (OrdRegion == A_REG)
+			pRest->addToNormalQueueRegionA(pOrd);
+		else if (OrdRegion == B_REG)
+			pRest->addToNormalQueueRegionB(pOrd);
+		else if (OrdRegion == C_REG)
+			pRest->addToNormalQueueRegionC(pOrd);
+		else
+			pRest->addToNormalQueueRegionD(pOrd);
+	}
+	else if (OrdType == TYPE_FROZ) {
+		if (OrdRegion == A_REG)
+			pRest->addToFrozenQueueRegionA(pOrd);
+		else if (OrdRegion == B_REG)
+			pRest->addToFrozenQueueRegionB(pOrd);
+		else if (OrdRegion == C_REG)
+			pRest->addToFrozenQueueRegionC(pOrd);
+		else
+			pRest->addToFrozenQueueRegionD(pOrd);
+	}
+	else {
+		if (OrdRegion == A_REG)
+			pRest->addToVIPQueueRegionA(pOrd);
+		else if (OrdRegion == B_REG)
+			pRest->addToVIPQueueRegionB(pOrd);
+		else if (OrdRegion == C_REG)
+			pRest->addToVIPQueueRegionC(pOrd);
+		else
+			pRest->addToVIPQueueRegionD(pOrd);
+	}
 }

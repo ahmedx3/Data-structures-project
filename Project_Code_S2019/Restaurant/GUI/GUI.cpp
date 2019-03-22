@@ -75,6 +75,12 @@ void GUI::DrawString(const int iX, const int iY, const string Text)
 	pWind->DrawString(iX, iY, Text);
 }
 
+void GUI::PrintStatusMessages(string msg, int lineNo) const {
+	pWind->SetPen(DARKRED);
+	pWind->SetFont(18, BOLD, BY_NAME, "Arial");
+	pWind->DrawString(10, WindHeight - StatusBarHeight + (lineNo * 20) + 5, msg);
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 void GUI::ClearStatusBar() const
 {

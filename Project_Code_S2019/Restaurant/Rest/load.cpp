@@ -95,7 +95,7 @@ load::load(string path, Restaurant* restaurant)
 							char region;
 
 							string tempTimeStamp = "";
-							while (line[i] != ' ') {
+							while ((line[i] != ' ') && (line[i] != '\0')) {
 								tempTimeStamp += line[i];
 								i++;
 							}
@@ -108,7 +108,7 @@ load::load(string path, Restaurant* restaurant)
 							i += 2;
 
 							string tempID = "";
-							while (line[i] != ' ') {
+							while ((line[i] != ' ') && (line[i] != '\0')) {
 								tempID += line[i];
 								i++;
 							}
@@ -117,7 +117,7 @@ load::load(string path, Restaurant* restaurant)
 							i++;
 
 							string tempDistance = "";
-							while (line[i] != ' ') {
+							while ((line[i] != ' ') && (line[i] != '\0')) {
 								tempDistance += line[i];
 								i++;
 							}
@@ -126,7 +126,7 @@ load::load(string path, Restaurant* restaurant)
 							i++;
 
 							string tempMoney = "";
-							while (line[i] != ' ') {
+							while ((line[i] != ' ') && (line[i] != '\0')) {
 								tempMoney += line[i];
 								i++;
 							}
@@ -146,7 +146,7 @@ load::load(string path, Restaurant* restaurant)
 							i = 2;
 
 							string tempTimeStamp = "";
-							while (line[i] != ' ') {
+							while ((line[i] != ' ') && (line[i] != '\0')) {
 								tempTimeStamp += line[i];
 								i++;
 							}
@@ -155,7 +155,7 @@ load::load(string path, Restaurant* restaurant)
 							i++;
 
 							string tempID = "";
-							while (line[i] != ' ') {
+							while ((line[i] != ' ') && (line[i] != '\0')) {
 								tempID += line[i];
 								i++;
 							}
@@ -171,7 +171,7 @@ load::load(string path, Restaurant* restaurant)
 							i = 2;
 
 							string tempTimeStamp = "";
-							while (line[i] != ' ') {
+							while ((line[i] != ' ') && (line[i] != '\0')) {
 								tempTimeStamp += line[i];
 								i++;
 							}
@@ -180,7 +180,7 @@ load::load(string path, Restaurant* restaurant)
 							i++;
 
 							string tempID = "";
-							while (line[i] != ' ') {
+							while ((line[i] != ' ') && (line[i] != '\0')) {
 								tempID += line[i];
 								i++;
 							}
@@ -189,7 +189,7 @@ load::load(string path, Restaurant* restaurant)
 							i++;
 
 							string tempMoney = "";
-							while (line[i] != ' ') {
+							while ((line[i] != ' ') && (line[i] != '\0')) {
 								tempMoney += line[i];
 								i++;
 							}

@@ -10,6 +10,23 @@ using namespace std;
 Restaurant::Restaurant() 
 {
 	pGUI = NULL;
+
+	totalWaitingOrders = 0;
+
+	waitingVIPA = 0;
+	waitingVIPB = 0;
+	waitingVIPC = 0;
+	waitingVIPD = 0;
+
+	waitingFrozenA = 0;
+	waitingFrozenB = 0;
+	waitingFrozenC = 0;
+	waitingFrozenD = 0;
+
+	waitingNormalA = 0;
+	waitingNormalB = 0;
+	waitingNormalC = 0;
+	waitingNormalD = 0;
 }
 
 void Restaurant::RunSimulation()
@@ -69,14 +86,29 @@ void Restaurant::simulationTestRun() {
 	int currentTimeStep = 1;
 
 	while (!EventsQueue.isEmpty()) {
-		// Print current timeStep
-		char timeStep[10];
-		itoa(currentTimeStep, timeStep, 10);
-		pGUI->PrintMessage(timeStep);
 
 		// Execute events now
 		ExecuteEvents(currentTimeStep);
 
+		// Print all info in status bar
+		printStatusBarInfo(currentTimeStep);
+
+		// Draw orders to screen
+		drawOrdersToScreen();
+
+		// Deleting an order from each type in each region
+		deleteOrdersEachTimeStep();
+		
+		// Advance to next timestep
+		pGUI->waitForClick();
+		currentTimeStep++;
+	}
+
+	// continue until no orders are left
+	while (totalWaitingOrders > 0) {
+
+		// Print all info in status bar
+		printStatusBarInfo(currentTimeStep);
 
 		// Draw orders to screen
 		drawOrdersToScreen();
@@ -84,163 +116,247 @@ void Restaurant::simulationTestRun() {
 		// Deleting an order from each type in each region
 		deleteOrdersEachTimeStep();
 
-		// Print all info in status bar
-		printStatusBarInfo();
-		
+		// Advance to next timestep
 		pGUI->waitForClick();
 		currentTimeStep++;
 	}
-
+	// To see last time step
+	lastTimeStep(currentTimeStep);
+	
 	pGUI->PrintMessage("Simulation Over, Click anywhere to exit!");
 	pGUI->waitForClick();
 }
 
-void Restaurant::printStatusBarInfo()
+// Last Time Step too see everything
+void Restaurant::lastTimeStep(int currentTimeStep) {
+	
+	// Print all info in status bar
+	printStatusBarInfo(currentTimeStep);
+
+	// Draw orders to screen
+	drawOrdersToScreen();
+
+	pGUI->waitForClick();
+}
+
+void Restaurant::printStatusBarInfo(int currentTimeStep)
 {
+	pGUI->ClearStatusBar();
+
+	int lineNo = 0;
+	string Time = "Time Step: ";
+
+	// current time step
+	char timeStep[10];
+	itoa(currentTimeStep, timeStep, 10);
+	Time += timeStep;
+	pGUI->PrintStatusMessages(Time, lineNo++);
+
+	string FirstLine = "                                   VIP                             Frozen                            Normal";
+	pGUI->PrintStatusMessages(FirstLine, lineNo++);
+
+	// Formatting all orders into chars -----------------------------------------------
+	char VIPOrdersA[10];
+	itoa(waitingVIPA, VIPOrdersA, 10);
+	char VIPOrdersB[10];
+	itoa(waitingVIPB, VIPOrdersB, 10);
+	char VIPOrdersC[10];
+	itoa(waitingVIPC, VIPOrdersC, 10);
+	char VIPOrdersD[10];
+	itoa(waitingVIPD, VIPOrdersD, 10);
+
+	char frozenOrdersA[10];
+	itoa(waitingFrozenA, frozenOrdersA, 10);
+	char frozenOrdersB[10];
+	itoa(waitingFrozenB, frozenOrdersB, 10);
+	char frozenOrdersC[10];
+	itoa(waitingFrozenC, frozenOrdersC, 10);
+	char frozenOrdersD[10];
+	itoa(waitingFrozenD, frozenOrdersD, 10);
+
+	char normalOrdersA[10];
+	itoa(waitingNormalA, normalOrdersA, 10);
+	char normalOrdersB[10];
+	itoa(waitingNormalB, normalOrdersB, 10);
+	char normalOrdersC[10];
+	itoa(waitingNormalC, normalOrdersC, 10);
+	char normalOrdersD[10];
+	itoa(waitingNormalD, normalOrdersD, 10);
+	// -------------------------------------------------------------------------------------
+
+	string regionA = "Region A";
+	regionA += "                     ";
+	regionA += VIPOrdersA;
+	regionA += "                                     ";
+	regionA += frozenOrdersA;
+	regionA += "                                      ";
+	regionA += normalOrdersA;
+	pGUI->PrintStatusMessages(regionA, lineNo++);
+
+	string regionB = "Region B";
+	regionB += "                    ";
+	regionB += VIPOrdersB;
+	regionB += "                                     ";
+	regionB += frozenOrdersB;
+	regionB += "                                      ";
+	regionB += normalOrdersB;
+	pGUI->PrintStatusMessages(regionB, lineNo++);
+
+	string regionC = "Region C";
+	regionC += "                    ";
+	regionC += VIPOrdersC;
+	regionC += "                                     ";
+	regionC += frozenOrdersC;
+	regionC += "                                      ";
+	regionC += normalOrdersC;
+	pGUI->PrintStatusMessages(regionC, lineNo++);
+
+	string regionD = "Region D";
+	regionD += "                    ";
+	regionD += VIPOrdersD;
+	regionD += "                                     ";
+	regionD += frozenOrdersD;
+	regionD += "                                      ";
+	regionD += normalOrdersD;
+	pGUI->PrintStatusMessages(regionD, lineNo++);
 }
 
 void Restaurant::deleteOrdersEachTimeStep()
 {
-	
-}
+	// Remove from VIP Orders
+	if (dequeueFromOneQueue(VIPOrdersRegionA))
+		waitingVIPA--;
+	if (dequeueFromOneQueue(VIPOrdersRegionB))
+		waitingVIPB--;
+	if (dequeueFromOneQueue(VIPOrdersRegionC))
+		waitingVIPC--;
+	if (dequeueFromOneQueue(VIPOrdersRegionD))
+		waitingVIPD--;
 
-void Restaurant::addToVIPQueue(Order * ord)
-{
-	VIPOrders.enqueue(ord);
-}
+	// Remove from Frozen Orders
+	if (dequeueFromOneQueue(frozenOrdersRegionA))
+		waitingFrozenA--;
+	if (dequeueFromOneQueue(frozenOrdersRegionB))
+		waitingFrozenB--;
+	if (dequeueFromOneQueue(frozenOrdersRegionC))
+		waitingFrozenC--;
+	if (dequeueFromOneQueue(frozenOrdersRegionD))
+		waitingFrozenD--;
 
-Order * Restaurant::getVIPOrder()
-{
-	Order* pOrd;
-	VIPOrders.dequeue(pOrd);
-	return pOrd;
-}
-
-void Restaurant::addToFrozenQueue(Order * ord)
-{
-	frozenOrders.enqueue(ord);
-}
-
-Order * Restaurant::getFrozenOrder()
-{
-	Order* pOrd;
-	frozenOrders.dequeue(pOrd);
-	return pOrd;
-}
-
-void Restaurant::addToNormalQueue(Order * ord)
-{
-	normalOrders.enqueue(ord);
-}
-
-Order * Restaurant::getNormalOrder()
-{
-	Order* pOrd;
-	normalOrders.dequeue(pOrd);
-	return pOrd;
+	// Remove from Normal Orders
+	if (dequeueFromOneQueue(normalOrdersRegionA))
+		waitingNormalA--;
+	if (dequeueFromOneQueue(normalOrdersRegionB))
+		waitingNormalB--;
+	if (dequeueFromOneQueue(normalOrdersRegionC))
+		waitingNormalC--;
+	if (dequeueFromOneQueue(normalOrdersRegionD))
+		waitingNormalD--;
 }
 
 void Restaurant::cancelOrder(int id)
 {
+	if (cancelFromCertainQueue(id, normalOrdersRegionA))
+		waitingNormalA--;
+	if (cancelFromCertainQueue(id, normalOrdersRegionB))
+		waitingNormalB--;
+	if (cancelFromCertainQueue(id, normalOrdersRegionC))
+		waitingNormalC--;
+	if (cancelFromCertainQueue(id, normalOrdersRegionD))
+		waitingNormalD--;
+}
+
+bool Restaurant::cancelFromCertainQueue(int id, Queue<Order*> & queue) {
 	Order* pOrd;
 	int stopPoint;
-	bool exists = normalOrders.peekFront(pOrd);
+	bool exists = queue.peekFront(pOrd);
 	if (exists) {
 		stopPoint = pOrd->GetID();
 		if (stopPoint == id) {
-			cancelFromNormalOrders();
-			return;
+			queue.dequeue(pOrd);
+			delete pOrd;
+			totalWaitingOrders--;
+			return true;
 		}
 		else {
-			shiftNormalOrders();
+			queue.dequeue(pOrd);
+			queue.enqueue(pOrd);
 		}
 
-		normalOrders.peekFront(pOrd);
+		queue.peekFront(pOrd);
 
 		while (pOrd->GetID() != stopPoint) {
 			if (pOrd->GetID() == id) {
-				cancelFromNormalOrders();
+				queue.dequeue(pOrd);
+				delete pOrd;
+				totalWaitingOrders--;
+				return true;
 			}
 			else {
-				shiftNormalOrders();
-				normalOrders.peekFront(pOrd);
+				queue.dequeue(pOrd);
+				queue.enqueue(pOrd);
+				queue.peekFront(pOrd);
 			}
+		}
+	}
+	return false;
+}
+
+bool Restaurant::dequeueFromOneQueue(Queue<Order*> & queue) {
+	Order* pOrd;
+	bool removed = queue.dequeue(pOrd);
+	if (removed) {
+		delete pOrd;
+		totalWaitingOrders--;
+		return true;
+	}
+	return false;
+}
+
+void Restaurant::drawOneQueue(Queue<Order*> & queue) {
+	Order* pOrd;
+	bool exists = queue.peekFront(pOrd);
+	if (exists) {
+		int stopPoint = pOrd->GetID();
+		pGUI->AddOrderForDrawing(pOrd);
+		queue.dequeue(pOrd);
+		queue.enqueue(pOrd);
+		queue.peekFront(pOrd);
+
+		while (stopPoint != pOrd->GetID())
+		{
+			pGUI->AddOrderForDrawing(pOrd);
+			queue.dequeue(pOrd);
+			queue.enqueue(pOrd);
+			queue.peekFront(pOrd);
 		}
 	}
 }
 
 void Restaurant::drawOrdersToScreen()
 {
-	Order* pOrd;
-	bool exists = VIPOrders.peekFront(pOrd);
-	if (exists) {
-		int stopPoint = pOrd->GetID();
-		pGUI->AddOrderForDrawing(pOrd);
-		VIPOrders.dequeue(pOrd);
-		VIPOrders.enqueue(pOrd);
-		VIPOrders.peekFront(pOrd);
+	// Add VIP Orders for drawing
+	drawOneQueue(VIPOrdersRegionA);
+	drawOneQueue(VIPOrdersRegionB);
+	drawOneQueue(VIPOrdersRegionC);
+	drawOneQueue(VIPOrdersRegionD);
 
-		while (stopPoint != pOrd->GetID())
-		{
-			pGUI->AddOrderForDrawing(pOrd);
-			VIPOrders.dequeue(pOrd);
-			VIPOrders.enqueue(pOrd);
-			VIPOrders.peekFront(pOrd);
-		}
-	}
+	// Add Frozen orders for drawing
+	drawOneQueue(frozenOrdersRegionA);
+	drawOneQueue(frozenOrdersRegionB);
+	drawOneQueue(frozenOrdersRegionC);
+	drawOneQueue(frozenOrdersRegionD);
 
-	exists = normalOrders.peekFront(pOrd);
-	if (exists) {
-		int stopPoint = pOrd->GetID();
-		pGUI->AddOrderForDrawing(pOrd);
-		normalOrders.dequeue(pOrd);
-		normalOrders.enqueue(pOrd);
-		normalOrders.peekFront(pOrd);
+	// Add Normal Orders for drawing
+	drawOneQueue(normalOrdersRegionA);
+	drawOneQueue(normalOrdersRegionB);
+	drawOneQueue(normalOrdersRegionC);
+	drawOneQueue(normalOrdersRegionD);
 
-		while (stopPoint != pOrd->GetID())
-		{
-			pGUI->AddOrderForDrawing(pOrd);
-			normalOrders.dequeue(pOrd);
-			normalOrders.enqueue(pOrd);
-			normalOrders.peekFront(pOrd);
-		}
-	}
-
-	exists = frozenOrders.peekFront(pOrd);
-	if (exists) {
-		int stopPoint = pOrd->GetID();
-		pGUI->AddOrderForDrawing(pOrd);
-		frozenOrders.dequeue(pOrd);
-		frozenOrders.enqueue(pOrd);
-		frozenOrders.peekFront(pOrd);
-
-		while (stopPoint != pOrd->GetID())
-		{
-			pGUI->AddOrderForDrawing(pOrd);
-			frozenOrders.dequeue(pOrd);
-			frozenOrders.enqueue(pOrd);
-			frozenOrders.peekFront(pOrd);
-		}
-	}
-
+	// Draw screen and clear list of drawables again
 	pGUI->UpdateInterface();
 	pGUI->ResetDrawingList();
 }
-
-void Restaurant::cancelFromNormalOrders()
-{
-	Order* pOrd;
-	normalOrders.dequeue(pOrd);
-	delete pOrd;
-}
-
-void Restaurant::shiftNormalOrders() {
-	Order* pOrd;
-	normalOrders.dequeue(pOrd);
-	normalOrders.enqueue(pOrd);
-}
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 /// ==> 
@@ -340,5 +456,175 @@ Order* Restaurant::getDemoOrder()
 
 }
 
-
 /// ==> end of DEMO-related function
+
+
+
+
+void Restaurant::addToVIPQueueRegionA(Order * ord)
+{
+	VIPOrdersRegionA.enqueue(ord);
+	totalWaitingOrders++;
+	waitingVIPA++;
+}
+
+Order * Restaurant::getVIPOrderRegionA()
+{
+	Order* pOrd;
+	VIPOrdersRegionA.dequeue(pOrd);
+	return pOrd;
+}
+
+void Restaurant::addToVIPQueueRegionB(Order * ord)
+{
+	VIPOrdersRegionB.enqueue(ord);
+	totalWaitingOrders++;
+	waitingVIPB++;
+}
+
+Order * Restaurant::getVIPOrderRegionB()
+{
+	Order* pOrd;
+	VIPOrdersRegionB.dequeue(pOrd);
+	return pOrd;
+}
+
+void Restaurant::addToVIPQueueRegionC(Order * ord)
+{
+	VIPOrdersRegionC.enqueue(ord);
+	totalWaitingOrders++;
+	waitingVIPC++;
+}
+
+Order * Restaurant::getVIPOrderRegionC()
+{
+	Order* pOrd;
+	VIPOrdersRegionC.dequeue(pOrd);
+	return pOrd;
+}
+
+void Restaurant::addToVIPQueueRegionD(Order * ord)
+{
+	VIPOrdersRegionD.enqueue(ord);
+	totalWaitingOrders++;
+	waitingVIPD++;
+}
+
+Order * Restaurant::getVIPOrderRegionD()
+{
+	Order* pOrd;
+	VIPOrdersRegionD.dequeue(pOrd);
+	return pOrd;
+}
+
+void Restaurant::addToFrozenQueueRegionA(Order * ord)
+{
+	frozenOrdersRegionA.enqueue(ord);
+	totalWaitingOrders++;
+	waitingFrozenA++;
+}
+
+Order * Restaurant::getFrozenOrderRegionA()
+{
+	Order* pOrd;
+	frozenOrdersRegionA.dequeue(pOrd);
+	return pOrd;
+}
+
+void Restaurant::addToFrozenQueueRegionB(Order * ord)
+{
+	frozenOrdersRegionB.enqueue(ord);
+	totalWaitingOrders++;
+	waitingFrozenB++;
+}
+
+Order * Restaurant::getFrozenOrderRegionB()
+{
+	Order* pOrd;
+	frozenOrdersRegionB.dequeue(pOrd);
+	return pOrd;
+}
+
+void Restaurant::addToFrozenQueueRegionC(Order * ord)
+{
+	frozenOrdersRegionC.enqueue(ord);
+	totalWaitingOrders++;
+	waitingFrozenC++;
+}
+
+Order * Restaurant::getFrozenOrderRegionC()
+{
+	Order* pOrd;
+	frozenOrdersRegionC.dequeue(pOrd);
+	return pOrd;
+}
+
+void Restaurant::addToFrozenQueueRegionD(Order * ord)
+{
+	frozenOrdersRegionD.enqueue(ord);
+	totalWaitingOrders++;
+	waitingFrozenD++;
+}
+
+Order * Restaurant::getFrozenOrderRegionD()
+{
+	Order* pOrd;
+	frozenOrdersRegionD.dequeue(pOrd);
+	return pOrd;
+}
+
+void Restaurant::addToNormalQueueRegionA(Order * ord)
+{
+	normalOrdersRegionA.enqueue(ord);
+	totalWaitingOrders++;
+	waitingNormalA++;
+}
+
+Order * Restaurant::getNormalOrderRegionA()
+{
+	Order* pOrd;
+	normalOrdersRegionA.dequeue(pOrd);
+	return pOrd;
+}
+
+void Restaurant::addToNormalQueueRegionB(Order * ord)
+{
+	normalOrdersRegionB.enqueue(ord);
+	totalWaitingOrders++;
+	waitingNormalB++;
+}
+
+Order * Restaurant::getNormalOrderRegionB()
+{
+	Order* pOrd;
+	normalOrdersRegionB.dequeue(pOrd);
+	return pOrd;
+}
+
+void Restaurant::addToNormalQueueRegionC(Order * ord)
+{
+	normalOrdersRegionC.enqueue(ord);
+	totalWaitingOrders++;
+	waitingNormalC++;
+}
+
+Order * Restaurant::getNormalOrderRegionC()
+{
+	Order* pOrd;
+	normalOrdersRegionC.dequeue(pOrd);
+	return pOrd;
+}
+
+void Restaurant::addToNormalQueueRegionD(Order * ord)
+{
+	normalOrdersRegionD.enqueue(ord);
+	totalWaitingOrders++;
+	waitingNormalD++;
+}
+
+Order * Restaurant::getNormalOrderRegionD()
+{
+	Order* pOrd;
+	normalOrdersRegionD.dequeue(pOrd);
+	return pOrd;
+}

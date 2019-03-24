@@ -22,9 +22,14 @@ protected:
 	//
 
 public:
-	Order(int ID, ORD_TYPE r_Type, REGION r_region);
+	Order(int ID, ORD_TYPE r_Type, REGION r_region, int a_t = 0); //Default value for ArrTime for test purposes
 	Order();
 	virtual ~Order();
+
+
+	void setArrTime(const int& a_t);
+	void setServTime(const int& s_t);
+	void setFinishTime(const int& f_t);
 
 	void SetID(const int& id);
 	int GetID();

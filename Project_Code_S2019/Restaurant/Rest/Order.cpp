@@ -1,10 +1,11 @@
 #include "Order.h"
 
-Order::Order(int id, ORD_TYPE r_Type, REGION r_region)
+Order::Order(int id, ORD_TYPE r_Type, REGION r_region, int a_t)
 {
-	ID = (id>0&&id<1000)?id:0;	//1<ID<999
-	type = r_Type;
-	Region = r_region;
+	SetID(id);	//1<ID<999
+	SetType(r_Type);
+	SetRegion(r_region);
+	setArrTime(a_t);
 	if (r_Type = TYPE_VIP)
 	{
 		setPriority();
@@ -19,6 +20,21 @@ Order::Order() {
 }
 Order::~Order()
 {
+}
+
+void Order::setArrTime(const int & a_t)
+{
+	ArrTime =( a_t > 0)?a_t:0;
+}
+
+void Order::setServTime(const int & s_t)
+{
+	ServTime = (s_t > 0) ? s_t : 0;
+}
+
+void Order::setFinishTime(const int & f_t)
+{
+	FinishTime = (f_t > 0) ? f_t : 0;
 }
 
 void Order::SetID(const int& id)

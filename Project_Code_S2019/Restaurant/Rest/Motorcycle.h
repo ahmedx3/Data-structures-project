@@ -15,6 +15,8 @@ class Motorcycle
 
 public:
 	Motorcycle();
+	Motorcycle(int i, ORD_TYPE t, int s, REGION r, STATUS ss);
+	bool operator>(Motorcycle& m2);
 	virtual ~Motorcycle();
 };
 

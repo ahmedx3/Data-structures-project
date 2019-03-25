@@ -80,7 +80,7 @@ Restaurant::~Restaurant()
 // Main test run for phase 1
 void Restaurant::simulationTestRun() {
 
-	load File("D:/School Work/Data Structures/sample.txt", this);		// Loading the files
+	load File("D:\\First year syllabus\\Second semester\\Data structures and algorithms\\project\\Data-structures-project\\Project_Code_S2019\\Restaurant\\sample.txt", this);		// Loading the files
 	File.printInfo();
 
 	int currentTimeStep = 1;
@@ -302,6 +302,42 @@ bool Restaurant::cancelFromCertainQueue(int id, Queue<Order*> & queue) {
 	return false;
 }
 
+bool Restaurant::cancelFromCertainQueue(int id, PriorityQueue<Order*> & queue) {
+	Order* pOrd;
+	int stopPoint;
+	bool exists = queue.peekFront(pOrd);
+	if (exists) {
+		stopPoint = pOrd->GetID();
+		if (stopPoint == id) {
+			queue.dequeue(pOrd);
+			delete pOrd;
+			totalWaitingOrders--;
+			return true;
+		}
+		else {
+			queue.dequeue(pOrd);
+			queue.enqueue(pOrd);
+		}
+
+		queue.peekFront(pOrd);
+
+		while (pOrd->GetID() != stopPoint) {
+			if (pOrd->GetID() == id) {
+				queue.dequeue(pOrd);
+				delete pOrd;
+				totalWaitingOrders--;
+				return true;
+			}
+			else {
+				queue.dequeue(pOrd);
+				queue.enqueue(pOrd);
+				queue.peekFront(pOrd);
+			}
+		}
+	}
+	return false;
+}
+
 bool Restaurant::dequeueFromOneQueue(Queue<Order*> & queue) {
 	Order* pOrd;
 	bool removed = queue.dequeue(pOrd);
@@ -313,7 +349,105 @@ bool Restaurant::dequeueFromOneQueue(Queue<Order*> & queue) {
 	return false;
 }
 
+bool Restaurant::dequeueFromOneQueue(PriorityQueue<Order*> & queue) {
+	Order* pOrd;
+	bool removed = queue.dequeue(pOrd);
+	if (removed) {
+		delete pOrd;
+		totalWaitingOrders--;
+		return true;
+	}
+	return false;
+}
+
+bool Restaurant::dequeueFromOneQueue(EnhancedList<Order*> & queue) {
+	Order* pOrd;
+	bool removed = queue.dequeue(pOrd);
+	if (removed) {
+		delete pOrd;
+		totalWaitingOrders--;
+		return true;
+	}
+	return false;
+}
+
+bool Restaurant::cancelFromCertainQueue(int id, EnhancedList<Order*> & queue) {
+	Order* pOrd;
+	int stopPoint;
+	bool exists = queue.peekFront(pOrd);
+	if (exists) {
+		stopPoint = pOrd->GetID();
+		if (stopPoint == id) {
+			queue.dequeue(pOrd);
+			delete pOrd;
+			totalWaitingOrders--;
+			return true;
+		}
+		else {
+			queue.dequeue(pOrd);
+			queue.enqueue(pOrd);
+		}
+
+		queue.peekFront(pOrd);
+
+		while (pOrd->GetID() != stopPoint) {
+			if (pOrd->GetID() == id) {
+				queue.dequeue(pOrd);
+				delete pOrd;
+				totalWaitingOrders--;
+				return true;
+			}
+			else {
+				queue.dequeue(pOrd);
+				queue.enqueue(pOrd);
+				queue.peekFront(pOrd);
+			}
+		}
+	}
+	return false;
+}
+
 void Restaurant::drawOneQueue(Queue<Order*> & queue) {
+	Order* pOrd;
+	bool exists = queue.peekFront(pOrd);
+	if (exists) {
+		int stopPoint = pOrd->GetID();
+		pGUI->AddOrderForDrawing(pOrd);
+		queue.dequeue(pOrd);
+		queue.enqueue(pOrd);
+		queue.peekFront(pOrd);
+
+		while (stopPoint != pOrd->GetID())
+		{
+			pGUI->AddOrderForDrawing(pOrd);
+			queue.dequeue(pOrd);
+			queue.enqueue(pOrd);
+			queue.peekFront(pOrd);
+		}
+	}
+}
+
+void Restaurant::drawOneQueue(PriorityQueue<Order*> & queue) {
+	Order* pOrd;
+	bool exists = queue.peekFront(pOrd);
+	if (exists) {
+		int stopPoint = pOrd->GetID();
+		pGUI->AddOrderForDrawing(pOrd);
+		queue.dequeue(pOrd);
+		queue.enqueue(pOrd);
+		queue.peekFront(pOrd);
+
+		while (stopPoint != pOrd->GetID())
+		{
+			pGUI->AddOrderForDrawing(pOrd);
+			queue.dequeue(pOrd);
+			queue.enqueue(pOrd);
+			queue.peekFront(pOrd);
+		}
+	}
+}
+
+void Restaurant::drawOneQueue(EnhancedList<Order*> & queue) {
 	Order* pOrd;
 	bool exists = queue.peekFront(pOrd);
 	if (exists) {

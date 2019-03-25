@@ -12,10 +12,10 @@ class Motorcycle
 	int speed;		//meters it can move in one clock tick (in one timestep)
 	REGION	region;	//region of the motorcycle
 	STATUS	status;	//idle or in-service
-
+	int HP; // health point
 public:
 	Motorcycle();
-	Motorcycle(int i, ORD_TYPE t, int s, REGION r, STATUS ss);
+	Motorcycle(int i, ORD_TYPE t, int s, REGION r, STATUS ss , int hp);
 	bool operator>(Motorcycle& m2);
 	virtual ~Motorcycle();
 };

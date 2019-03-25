@@ -29,7 +29,7 @@ public:
 	bool enqueue(const T& item);				//puts an item in the back of the list [same as queue]
 	bool dequeue(T& item);						//removes an item from the front of the list [same as queue]
 	bool isEmpty() const;						//checks if the list is empty
-	bool getFront(T& item) const;				//gets a copy of the item pointed to by the frontPtr
+	bool peekFront(T& item) const;				//gets a copy of the item pointed to by the frontPtr
 
 	//void display() const {						//for testing only
 	//	Node<T>* curr = frontPtr;
@@ -196,7 +196,7 @@ bool EnhancedList<T>::isEmpty() const {
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template<typename T>
-bool EnhancedList<T>::getFront(T& item) const {
+bool EnhancedList<T>::peekFront(T& item) const {
 	if (isEmpty())
 	{
 		return false;
@@ -208,15 +208,19 @@ bool EnhancedList<T>::getFront(T& item) const {
 template<typename T>
 EnhancedList<T>::~EnhancedList() {
 	Node<T>* tempPtr = frontPtr;
-	frontPtr = frontPtr->getNext();
-	while (frontPtr->getNext() != NULL) {
-		delete tempPtr;
-		tempPtr = frontPtr;
+	if (frontPtr != NULL)
+	{
 		frontPtr = frontPtr->getNext();
+		while (frontPtr->getNext() != NULL) {
+			delete tempPtr;
+			tempPtr = frontPtr;
+			frontPtr = frontPtr->getNext();
+		}
+		delete tempPtr;
+		frontPtr = NULL;
+		backPtr = NULL;
 	}
-	delete tempPtr;
-	frontPtr = NULL;
-	backPtr = NULL;
+	
 }
 
 #endif // !__ENHANCEDLIST_H_

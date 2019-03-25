@@ -6,7 +6,8 @@
 #include "..\GUI\GUI.h"
 #include "..\Generic_DS\Queue.h"
 #include "..\Events\Event.h"
-
+#include "..\Generic_DS\PriorityQueue.h"
+#include "..\Generic_DS\EnhancedList.h"
 
 #include "Order.h"
 #include "load.h"
@@ -30,20 +31,20 @@ private:
 	// TODO: Add More Data Members As Needed
 	//
 
-	Queue<Order*> VIPOrdersRegionA;	// Queue of all active VIP orders of region A
-	Queue<Order*> VIPOrdersRegionB;	// Queue of all active VIP orders of region B
-	Queue<Order*> VIPOrdersRegionC;	// Queue of all active VIP orders of region C
-	Queue<Order*> VIPOrdersRegionD;	// Queue of all active VIP orders of region D
+	PriorityQueue<Order*> VIPOrdersRegionA;	// Queue of all active VIP orders of region A
+	PriorityQueue<Order*> VIPOrdersRegionB;	// Queue of all active VIP orders of region B
+	PriorityQueue<Order*> VIPOrdersRegionC;	// Queue of all active VIP orders of region C
+	PriorityQueue<Order*> VIPOrdersRegionD;	// Queue of all active VIP orders of region D
 
 	Queue<Order*> frozenOrdersRegionA;	// Queue of all active Frozen orders of region A
 	Queue<Order*> frozenOrdersRegionB;	// Queue of all active Frozen orders of region B
 	Queue<Order*> frozenOrdersRegionC;	// Queue of all active Frozen orders of region C
 	Queue<Order*> frozenOrdersRegionD;	// Queue of all active Frozen orders of region D
 
-	Queue<Order*> normalOrdersRegionA;	// Queue of all active Normal orders of region A
-	Queue<Order*> normalOrdersRegionB;	// Queue of all active Normal orders of region B
-	Queue<Order*> normalOrdersRegionC;	// Queue of all active Normal orders of region C
-	Queue<Order*> normalOrdersRegionD;	// Queue of all active Normal orders of region D
+	EnhancedList<Order*> normalOrdersRegionA;	// Queue of all active Normal orders of region A
+	EnhancedList<Order*> normalOrdersRegionB;	// Queue of all active Normal orders of region B
+	EnhancedList<Order*> normalOrdersRegionC;	// Queue of all active Normal orders of region C
+	EnhancedList<Order*> normalOrdersRegionD;	// Queue of all active Normal orders of region D
 
 
 	int waitingVIPA;
@@ -134,11 +135,17 @@ public:
 
 private:
 	void drawOneQueue(Queue<Order*>& queue);	// Draws one queue
+	void drawOneQueue(PriorityQueue<Order*>& queue);
+	void drawOneQueue(EnhancedList<Order*>& queue);
 	void drawOrdersToScreen();			// Draws all active orders
 	void deleteOrdersEachTimeStep();	// deletes orders each time step as if assigning them to bikes
 	void printStatusBarInfo(int currentTimeStep);	// prints all info in status bar
 	bool cancelFromCertainQueue(int id, Queue<Order*> & queue);	// Cancel order from certain queue
+	bool cancelFromCertainQueue(int id, PriorityQueue<Order*>& queue);
 	bool dequeueFromOneQueue(Queue<Order*> & queue);	// dequeue one order
+	bool dequeueFromOneQueue(PriorityQueue<Order*>& queue);
+	bool dequeueFromOneQueue(EnhancedList<Order*>& queue);
+	bool cancelFromCertainQueue(int id, EnhancedList<Order*>& queue);
 	void lastTimeStep(int currentTimeStep);	// To see last Time step
 };
 

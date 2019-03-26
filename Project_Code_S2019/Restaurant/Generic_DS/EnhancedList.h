@@ -207,20 +207,24 @@ bool EnhancedList<T>::peekFront(T& item) const {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template<typename T>
 EnhancedList<T>::~EnhancedList() {
-	Node<T>* tempPtr = frontPtr;
-	if (frontPtr != NULL)
+	if (frontPtr == NULL)
 	{
-		frontPtr = frontPtr->getNext();
-		while (frontPtr->getNext() != NULL) {
-			delete tempPtr;
-			tempPtr = frontPtr;
-			frontPtr = frontPtr->getNext();
-		}
-		delete tempPtr;
-		frontPtr = NULL;
-		backPtr = NULL;
+		return;
 	}
+
+	Node<T>* prev = frontPtr;
+	frontPtr = frontPtr->getNext();
+	while (frontPtr != NULL) {
+		delete prev;
+		prev = frontPtr;
+		frontPtr = frontPtr->getNext();
+	}
+	delete prev;
+	frontPtr = NULL;
+	backPtr = NULL;
+	
 	
 }
+
 
 #endif // !__ENHANCEDLIST_H_

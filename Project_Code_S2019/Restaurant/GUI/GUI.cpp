@@ -125,6 +125,10 @@ void GUI::DrawRestArea() const
 	pWind->SetBrush(BROWN);
 	pWind->DrawRectangle(RestStartX, RestStartY, RestEndX, RestEndY);*/
 
+	// 2- Drawing the 2 brown crossed lines (for making 4 regions)
+	pWind->SetPen(BLACK, 3);
+	pWind->DrawLine(0, YHalfDrawingArea, WindWidth, YHalfDrawingArea);
+	pWind->DrawLine(WindWidth / 2, MenuBarHeight, WindWidth / 2, WindHeight - StatusBarHeight);
 
 	/*To Show Pic Uncomment Next Two Lines with your path*/
 
@@ -133,10 +137,6 @@ void GUI::DrawRestArea() const
 
 
 
-	// 2- Drawing the 2 brown crossed lines (for making 4 regions)
-	pWind->SetPen(BLACK, 3);
-	pWind->DrawLine(0, YHalfDrawingArea, WindWidth, YHalfDrawingArea);
-	pWind->DrawLine(WindWidth / 2, MenuBarHeight, WindWidth / 2, WindHeight - StatusBarHeight);
 
 	/*// 3- Drawing the 2 white crossed lines (inside the Rest)
 	pWind->SetPen(WHITE);

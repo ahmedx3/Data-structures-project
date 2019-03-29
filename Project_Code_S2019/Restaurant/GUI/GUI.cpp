@@ -88,33 +88,57 @@ void GUI::ClearStatusBar() const
 	pWind->SetBrush(WHITE);
 	pWind->DrawRectangle(0, WindHeight - StatusBarHeight , WindWidth, WindHeight);	
 
-	pWind->SetPen(BROWN, 3);
+	pWind->SetPen(BLACK, 3);
 	pWind->DrawLine(0, WindHeight - StatusBarHeight , WindWidth, WindHeight - StatusBarHeight);	
 }
 ///////////////////////////////////////////////////////////////////////////////////
 void GUI::ClearDrawingArea() const
 {
-	// Clearing the Drawing area
+	/*// Clearing the Drawing area
 	pWind->SetPen(KHAKI, 3);
 	pWind->SetBrush(KHAKI);
-	pWind->DrawRectangle(0, MenuBarHeight, WindWidth, WindHeight - StatusBarHeight);
+	pWind->DrawRectangle(0, MenuBarHeight, WindWidth, WindHeight - StatusBarHeight);*/
+
+	pWind->SetPen(RegionAColor, 3);
+	pWind->SetBrush(RegionAColor);
+	pWind->DrawRectangle(0, MenuBarHeight, WindWidth / 2, (MenuBarHeight + WindHeight - StatusBarHeight) / 2);
+
+	pWind->SetPen(RegionBColor, 3);
+	pWind->SetBrush(RegionBColor);
+	pWind->DrawRectangle(WindWidth / 2, MenuBarHeight, WindWidth, YHalfDrawingArea);
+
+	pWind->SetPen(RegionCColor, 3);
+	pWind->SetBrush(RegionCColor);
+	pWind->DrawRectangle(0, YHalfDrawingArea, WindWidth / 2, WindHeight - StatusBarHeight);
+
+	pWind->SetPen(RegionDColor, 3);
+	pWind->SetBrush(RegionDColor);
+	pWind->DrawRectangle(WindWidth / 2, (MenuBarHeight + WindHeight - StatusBarHeight) / 2, WindWidth, WindHeight - StatusBarHeight);
 }
 ///////////////////////////////////////////////////////////////////////////////////
 void GUI::DrawRestArea() const
 {
 	int L = RestWidth / 2;
 
-	// 1- Drawing the brown square of the Rest
+	/*// 1- Drawing the brown square of the Rest
 	pWind->SetPen(BROWN);
 	pWind->SetBrush(BROWN);
-	pWind->DrawRectangle(RestStartX, RestStartY, RestEndX, RestEndY);
+	pWind->DrawRectangle(RestStartX, RestStartY, RestEndX, RestEndY);*/
+
+
+	/*To Show Pic Uncomment Next Two Lines with your path*/
+
+	//image restImage("D:\\Git\\Data-structures-project\\Project_Code_S2019\\Restaurant\\myimage.JPEG");	//this path should be entered according to your comptuer
+	//pWind->DrawImage(restImage, RestStartX + 18, RestStartY + 20);
+
+
 
 	// 2- Drawing the 2 brown crossed lines (for making 4 regions)
-	pWind->SetPen(BROWN, 3);
+	pWind->SetPen(BLACK, 3);
 	pWind->DrawLine(0, YHalfDrawingArea, WindWidth, YHalfDrawingArea);
-	pWind->DrawLine(WindWidth/2, MenuBarHeight, WindWidth/2, WindHeight-StatusBarHeight);
+	pWind->DrawLine(WindWidth / 2, MenuBarHeight, WindWidth / 2, WindHeight - StatusBarHeight);
 
-	// 3- Drawing the 2 white crossed lines (inside the Rest)
+	/*// 3- Drawing the 2 white crossed lines (inside the Rest)
 	pWind->SetPen(WHITE);
 	pWind->DrawLine(WindWidth/2, YHalfDrawingArea - RestWidth/2, WindWidth/2, YHalfDrawingArea + RestWidth/2);
 	pWind->DrawLine(WindWidth/2 - RestWidth/2, YHalfDrawingArea, WindWidth/2 + RestWidth/2, YHalfDrawingArea);
@@ -133,7 +157,14 @@ void GUI::DrawRestArea() const
 	pWind->DrawString(RestStartX + (int)(0.44*L), RestStartY + 5*L/12, "A");
 	pWind->DrawString(RestStartX + (int)(0.44*L), YHalfDrawingArea + 5*L/12, "D");
 	pWind->DrawString(WindWidth/2 + (int)(0.44*L), RestStartY + 5*L/12, "B");
-	pWind->DrawString(WindWidth/2 + (int)(0.44*L), YHalfDrawingArea + 5*L/12, "C"); 
+	pWind->DrawString(WindWidth/2 + (int)(0.44*L), YHalfDrawingArea + 5*L/12, "C"); */
+
+	pWind->SetPen(WHITE);
+	pWind->SetFont(200, BOLD, BY_NAME, "Arial");
+	pWind->DrawString(200, 50, "A");
+	pWind->DrawString(WindWidth - 350, 50, "B");
+	pWind->DrawString(WindWidth - 350, 300, "C");
+	pWind->DrawString(200, 300, "D");
 
 }
 //////////////////////////////////////////////////////////////////////////////////////////

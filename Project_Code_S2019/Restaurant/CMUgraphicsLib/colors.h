@@ -181,6 +181,10 @@ const color DARKCYAN = color(0, 139, 139);
 const color DARKMAGENTA = color(139, 0, 139);
 const color DARKRED = color(139, 0, 0);
 const color LIGHTGREEN = color(144, 238, 144);
+const color RegionAColor = color(192, 221, 248);
+const color RegionBColor = color(197, 230, 181);
+const color RegionCColor = color(233, 243, 115);
+const color RegionDColor = color(250, 130, 99);
 
 
 #endif //COLOR_H

@@ -23,6 +23,7 @@ class EnhancedList {
 
 public:
 	EnhancedList();
+	EnhancedList(const EnhancedList<T>&);			//copy constructor
 
 	bool insert(const T&item);					// inserts items in certain positions depending on their priority [the operator '>' should be overloaded in each class that calls this function]
 	bool remove(const int id, T& item);			//removes items by their IDs
@@ -30,8 +31,9 @@ public:
 	bool dequeue(T& item);						//removes an item from the front of the list [same as queue]
 	bool isEmpty() const;						//checks if the list is empty
 	bool peekFront(T& item) const;				//gets a copy of the item pointed to by the frontPtr
+	
 
-	//void display() const {						//for testing only
+	//void display() const {					//for testing only
 	//	Node<T>* curr = frontPtr;
 	//	while (curr!= NULL)
 	//	{
@@ -39,17 +41,69 @@ public:
 	//		curr = curr->getNext();
 	//	}
 	//}
-	~EnhancedList();
+
+	EnhancedList<T>& operator=(const EnhancedList<T>&);	//assignment operator
+	~EnhancedList();								//destructor
 };
 
 
 
 template<typename T>
 EnhancedList<T>::EnhancedList() {
-	frontPtr = NULL;							//initializing an empty list --> frontPtr and backPtr point to NULL
+	frontPtr = NULL;											//initializing an empty list --> frontPtr and backPtr point to NULL
 	backPtr = NULL;
 }
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+template<typename T>
+EnhancedList<T>::EnhancedList(const EnhancedList& e2) {				//Copy constructor
+	if (e2.isEmpty())
+	{
+		frontPtr = NULL;
+		backPtr = NULL;
+	}
+	else {
+		frontPtr = NULL;										//This initialization is important for enqueue function to work properly
+		backPtr = NULL;
+		Node<T>* ptrToOld = e2.frontPtr;
+		while (ptrToOld != NULL)
+		{
+			enqueue(ptrToOld->getItem());						//enqueue()--->handles everything...check it out.
+			ptrToOld = ptrToOld->getNext();
+		}
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+template<typename T>
+EnhancedList<T>& EnhancedList<T>::operator=(const EnhancedList& e2) {
+	if (&e2 == this)							//handles the case in which the  the object is assigned to itself(usually happens implicitly)
+	{
+		return *this;
+	}											//Same as copy constructor
+	if (e2.isEmpty())
+	{
+		frontPtr = NULL;
+		backPtr = NULL;
+	}
+	else {
+		frontPtr = NULL;										
+		backPtr = NULL;
+		Node<T>* ptrToOld = e2.frontPtr;
+		while (ptrToOld != NULL)
+		{
+			enqueue(ptrToOld->getItem());
+			ptrToOld = ptrToOld->getNext();
+		}
+	}
+	return *this;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 template<typename T>
 bool EnhancedList<T>::insert(const T&item) {
 	Node<T>* newNode = new Node<T>(item);
@@ -150,7 +204,7 @@ bool EnhancedList<T>::enqueue(const T& item) {
 	{
 		return false;
 	}
-	if (isEmpty())					// if the list is empty
+	if (isEmpty())					// if the list is empty [The front pointer must be initialized by NULL]
 	{
 		frontPtr = newNode;
 		backPtr = newNode;
@@ -187,7 +241,7 @@ bool EnhancedList<T>::dequeue(T& item) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-bool EnhancedList<T>::isEmpty() const {
+bool EnhancedList<T>::isEmpty() const {			//[The front pointer must be initialized by NULL]
 	if (backPtr == NULL || frontPtr == NULL)
 	{
 		return true;

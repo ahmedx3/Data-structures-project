@@ -80,7 +80,7 @@ Restaurant::~Restaurant()
 // Main test run for phase 1
 void Restaurant::simulationTestRun() {
 
-	load File("D:\\First year syllabus\\Second semester\\Data structures and algorithms\\project\\Data-structures-project\\Project_Code_S2019\\Restaurant\\sample.txt", this);		// Loading the files
+	load File("D:\\DsProject\\Data-structures-project\\Project_Code_S2019\\Restaurant\\sample.txt", this);		// Loading the files
 	File.printInfo();
 
 	int currentTimeStep = 1;

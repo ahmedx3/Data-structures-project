@@ -129,6 +129,7 @@ void GUI::DrawRestArea() const
 	pWind->SetPen(BLACK, 3);
 	pWind->DrawLine(0, YHalfDrawingArea, WindWidth, YHalfDrawingArea);
 	pWind->DrawLine(WindWidth / 2, MenuBarHeight, WindWidth / 2, WindHeight - StatusBarHeight);
+	pWind->DrawLine(0, MenuBarHeight, WindWidth, MenuBarHeight);
 
 	/*To Show Pic Uncomment Next Two Lines with your path*/
 

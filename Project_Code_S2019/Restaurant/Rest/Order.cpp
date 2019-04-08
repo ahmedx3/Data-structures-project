@@ -1,11 +1,13 @@
 #include "Order.h"
 
-Order::Order(int id, ORD_TYPE r_Type, REGION r_region, int a_t)
+Order::Order(int id, ORD_TYPE r_Type, REGION r_region, int a_t, int d, double money)
 {
 	SetID(id);	//1<ID<999
 	SetType(r_Type);
 	SetRegion(r_region);
 	setArrTime(a_t);
+	SetDistance(d);
+	setMoney(money);
 	if (r_Type = TYPE_VIP)
 	{
 		setPriority();
@@ -45,6 +47,16 @@ void Order::SetID(const int& id)
 int Order::GetID()
 {
 	return ID;
+}
+
+void Order::setMoney(double money)
+{
+	totalMoney = (money > 0) ? money : 0;
+}
+
+double Order::getMoney() const
+{
+	return totalMoney;
 }
 
 void Order::SetRegion(const REGION & r_region)

@@ -133,8 +133,8 @@ void GUI::DrawRestArea() const
 
 	/*To Show Pic Uncomment Next Two Lines with your path*/
 
-	//image restImage("D:\\Git\\Data-structures-project\\Project_Code_S2019\\Restaurant\\myimage.JPEG");	//this path should be entered according to your comptuer
-	//pWind->DrawImage(restImage, RestStartX + 18, RestStartY + 20);
+	image restImage("D:\\Git\\Data-structures-project\\Project_Code_S2019\\Restaurant\\myimage.JPEG");	//this path should be entered according to your comptuer
+	pWind->DrawImage(restImage, RestStartX + 18, RestStartY + 20);
 
 
 

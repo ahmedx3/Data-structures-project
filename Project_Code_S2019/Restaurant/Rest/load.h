@@ -13,9 +13,9 @@ using namespace std;
 class load
 {
 	Restaurant* restaurant;
-	int sn;
-	int sf;
-	int sv;
+	int sn;		//Normal motocycles speed
+	int sf;		//Frozen motocycles speed
+	int sv;		//vip motocycles speed
 	int n[4];
 	int f[4];
 	int v[4];

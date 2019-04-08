@@ -22,7 +22,7 @@ protected:
 	//
 
 public:
-	Order(int ID, ORD_TYPE r_Type, REGION r_region, int a_t = 0); //Default value for ArrTime for test purposes
+	Order(int ID, ORD_TYPE r_Type, REGION r_region, int a_t, int d, double money);
 	Order();
 	virtual ~Order();
 
@@ -34,7 +34,9 @@ public:
 	void SetID(const int& id);
 	int GetID();
 
-	
+	void setMoney(double money);
+	double getMoney()const;
+
 
 	void SetType(const ORD_TYPE& r_Type);
 	int GetType() const;

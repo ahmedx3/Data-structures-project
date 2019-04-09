@@ -80,7 +80,7 @@ Restaurant::~Restaurant()
 // Main test run for phase 1
 void Restaurant::simulationTestRun() {
 
-	load File("D:\\DsProject\\Data-structures-project\\Project_Code_S2019\\Restaurant\\sample.txt", this);		// Loading the files
+	load File("D:\\First year syllabus\\Second semester\\Data structures and algorithms\\project\\Data-structures-project\\Project_Code_S2019\\Restaurant\\sample1.txt", this);		// Loading the files
 	File.printInfo();
 
 	int currentTimeStep = 1;
@@ -431,18 +431,25 @@ void Restaurant::drawOneQueue(PriorityQueue<Order*> & queue) {
 	Order* pOrd;
 	bool exists = queue.peekFront(pOrd);
 	if (exists) {
-		int stopPoint = pOrd->GetID();
+		Queue<Order*> tempQ;				//solves the problem of enqueuing in the same place in priority queue
+
+		/*int stopPoint = pOrd->GetID();
 		pGUI->AddOrderForDrawing(pOrd);
 		queue.dequeue(pOrd);
-		queue.enqueue(pOrd);
-		queue.peekFront(pOrd);
+		tempQ.enqueue(pOrd);
+		queue.peekFront(pOrd);*/
 
-		while (stopPoint != pOrd->GetID())
+		while (!queue.isEmpty())  //if(stopPoint != pOrd->GetID()) --> this was the the previous condition
 		{
 			pGUI->AddOrderForDrawing(pOrd);
 			queue.dequeue(pOrd);
-			queue.enqueue(pOrd);
+			tempQ.enqueue(pOrd);
 			queue.peekFront(pOrd);
+		}
+		while (!tempQ.isEmpty())
+		{
+			tempQ.dequeue(pOrd);
+			queue.enqueue(pOrd);
 		}
 	}
 }

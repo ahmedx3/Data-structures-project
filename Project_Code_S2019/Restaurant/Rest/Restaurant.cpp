@@ -152,7 +152,7 @@ void Restaurant::printStatusBarInfo(int currentTimeStep)
 	Time += timeStep;
 	pGUI->PrintStatusMessages(Time, lineNo++);
 
-	string FirstLine = "                                   VIP                             Frozen                            Normal";
+	string FirstLine = "                                   VIP                             Frozen                            Normal                            VIP Motors                            Frozen Motors                            Normal Motors";
 	pGUI->PrintStatusMessages(FirstLine, lineNo++);
 
 	// Formatting all orders into chars -----------------------------------------------
@@ -191,7 +191,38 @@ void Restaurant::printStatusBarInfo(int currentTimeStep)
 	regionA += frozenOrdersA;
 	regionA += "                                      ";
 	regionA += normalOrdersA;
+
+	if (VIP[0] < 9)
+		regionA += "                                      ";
+	else if (VIP[0] < 100)
+		regionA += "                                     ";
+	else
+		regionA += "                                    ";
+	char VIPMCA[10];
+	itoa(VIP[0], VIPMCA, 10);
+	regionA += VIPMCA;
+	
+	if (Frozen[0] < 9)
+		regionA += "                                                    ";
+	else if (Frozen[0] < 100)
+		regionA += "                                                   ";
+	else
+		regionA += "                                                  ";
+	char FrozenMCA[10];
+	itoa(Frozen[0], FrozenMCA, 10);
+	regionA += FrozenMCA;
+
+	if (Normal[0] < 9)
+		regionA += "                                                    ";
+	else if (Normal[0] < 100)
+		regionA += "                                                   ";
+	else
+		regionA += "                                                  ";
+	char NormalMCA[10];
+	itoa(Normal[0], NormalMCA, 10);
+	regionA += NormalMCA;
 	pGUI->PrintStatusMessages(regionA, lineNo++);
+
 
 	string regionB = "Region B";
 	regionB += "                    ";
@@ -200,6 +231,36 @@ void Restaurant::printStatusBarInfo(int currentTimeStep)
 	regionB += frozenOrdersB;
 	regionB += "                                      ";
 	regionB += normalOrdersB;
+
+	if (VIP[1] < 9)
+		regionB += "                                      ";
+	else if (VIP[1] < 100)
+		regionB += "                                     ";
+	else
+		regionB += "                                    ";
+	char VIPMCB[10];
+	itoa(VIP[1], VIPMCB, 10);
+	regionB += VIPMCB;
+
+	if (Frozen[1] < 9)
+		regionB += "                                                    ";
+	else if (Frozen[1] < 100)
+		regionB += "                                                   ";
+	else
+		regionB += "                                                  ";
+	char FrozenMCB[10];
+	itoa(Frozen[1], FrozenMCB, 10);
+	regionB += FrozenMCB;
+
+	if (Normal[1] < 9)
+		regionB += "                                                    ";
+	else if (Normal[1] < 100)
+		regionB += "                                                   ";
+	else
+		regionB += "                                                  ";
+	char NormalMCB[10];
+	itoa(Normal[1], NormalMCB, 10);
+	regionB += NormalMCB;
 	pGUI->PrintStatusMessages(regionB, lineNo++);
 
 	string regionC = "Region C";
@@ -209,6 +270,36 @@ void Restaurant::printStatusBarInfo(int currentTimeStep)
 	regionC += frozenOrdersC;
 	regionC += "                                      ";
 	regionC += normalOrdersC;
+
+	if (VIP[2] < 9)
+		regionC += "                                      ";
+	else if (VIP[2] < 100)
+		regionC += "                                     ";
+	else
+		regionC += "                                    ";
+	char VIPMCC[10];
+	itoa(VIP[2], VIPMCC, 10);
+	regionC += VIPMCC;
+
+	if (Frozen[2] < 9)
+		regionC += "                                                    ";
+	else if (Frozen[2] < 100)
+		regionC += "                                                   ";
+	else
+		regionC += "                                                  ";
+	char FrozenMCC[10];
+	itoa(Frozen[2], FrozenMCC, 10);
+	regionC += FrozenMCC;
+
+	if (Normal[2] < 9)
+		regionC += "                                                    ";
+	else if (Normal[2] < 100)
+		regionC += "                                                   ";
+	else
+		regionC += "                                                  ";
+	char NormalMCC[10];
+	itoa(Normal[2], NormalMCC, 10);
+	regionC += NormalMCC;
 	pGUI->PrintStatusMessages(regionC, lineNo++);
 
 	string regionD = "Region D";
@@ -218,6 +309,36 @@ void Restaurant::printStatusBarInfo(int currentTimeStep)
 	regionD += frozenOrdersD;
 	regionD += "                                      ";
 	regionD += normalOrdersD;
+
+	if (VIP[3] < 9)
+		regionD += "                                      ";
+	else if (VIP[3] < 100)
+		regionD += "                                     ";
+	else
+		regionD += "                                    ";
+	char VIPMCD[10];
+	itoa(VIP[3], VIPMCD, 10);
+	regionD += VIPMCD;
+
+	if (Frozen[3] < 9)
+		regionD += "                                                    ";
+	else if (Frozen[3] < 100)
+		regionD += "                                                   ";
+	else
+		regionD += "                                                  ";
+	char FrozenMCD[10];
+	itoa(Frozen[3], FrozenMCD, 10);
+	regionD += FrozenMCD;
+
+	if (Normal[3] < 9)
+		regionD += "                                                    ";
+	else if (Normal[3] < 100)
+		regionD += "                                                   ";
+	else
+		regionD += "                                                  ";
+	char NormalMCD[10];
+	itoa(Normal[3], NormalMCD, 10);
+	regionD += NormalMCD;
 	pGUI->PrintStatusMessages(regionD, lineNo++);
 }
 
@@ -264,6 +385,15 @@ void Restaurant::cancelOrder(int id)
 		waitingNormalC--;
 	if (cancelFromCertainQueue(id, normalOrdersRegionD))
 		waitingNormalD--;
+}
+
+void Restaurant::setMCs(int MCNormal[], int MCFrozen[], int MCVIP[])
+{
+	for (int i = 0; i < 4; i++) {
+		Normal[i] = MCNormal[i];
+		Frozen[i] = MCFrozen[i];
+		VIP[i] = MCVIP[i];
+	}
 }
 
 bool Restaurant::cancelFromCertainQueue(int id, Queue<Order*> & queue) {

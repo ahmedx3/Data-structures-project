@@ -222,11 +222,26 @@ load::load(string path, Restaurant* restaurant)
 		this->sn = stoi(sn);
 		this->sf = stoi(sf);
 		this->sv = stoi(sv);
+
+		int Normal[4];
+		int Frozen[4];
+		int VIP[4];
+
 		for (int k = 0; k < 4; k++) {
 			this->n[k] = stoi(n[k]);
+			Normal[k] = stoi(n[k]);
 			this->f[k] = stoi(f[k]);
+			Frozen[k] = stoi(f[k]);
 			this->v[k] = stoi(v[k]);
+			VIP[k] = stoi(v[k]);
 		}
+
+
+
+		restaurant->setMCs(Normal, Frozen, VIP);
+		
+		
+		
 		this->autoS = stoi(autoS);
 		this->m = stoi(m);
 		//cout << "Sum = " << sum << endl;

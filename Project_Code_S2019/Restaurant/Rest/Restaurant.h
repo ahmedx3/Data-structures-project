@@ -21,6 +21,11 @@ private:
 
 	int totalWaitingOrders;
 
+	int Normal[4];
+	int Frozen[4];
+	int VIP[4];
+
+
 	
 	/// ==> 
 	//	DEMO-related members. Should be removed in phases 1&2
@@ -123,7 +128,7 @@ public:
 	void cancelOrder(int id);			// Cancels an order from all normal orders
 
 	
-	
+	void setMCs(int MCNormal[], int MCFrozen[], int MCVIP[]);
 
 
 	/// ==> 

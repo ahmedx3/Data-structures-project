@@ -53,6 +53,7 @@ private :
 	Node<T>* frontPtr;
 public :
 	Queue();	
+	Queue(const Queue<T>&);			//copy constructor
 	bool isEmpty() const ;
 	bool enqueue(const T& newEntry);
 	bool dequeue(T& frntEntry);  
@@ -73,6 +74,27 @@ Queue<T>::Queue()
 	backPtr=nullptr;
 	frontPtr=nullptr;
 
+}
+/////////////////////////////////////////////////////////////////////////////////////////
+
+template<typename T>
+inline Queue<T>::Queue(const Queue<T>& q2)
+{
+	if (q2.isEmpty())
+	{
+		frontPtr = NULL;
+		backPtr = NULL;
+	}
+	else {
+		frontPtr = NULL;										//This initialization is important for enqueue function to work properly
+		backPtr = NULL;
+		Node<T>* ptrToOld = q2.frontPtr;
+		while (ptrToOld != NULL)
+		{
+			enqueue(ptrToOld->getItem());						//enqueue()--->handles everything...check it out.
+			ptrToOld = ptrToOld->getNext();
+		}
+	}
 }
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -171,5 +193,20 @@ bool Queue<T>:: peekFront(T& frntEntry) const
 template <typename T>
 Queue<T>::~Queue()
 {
+	if (frontPtr == NULL)
+	{
+		return;
+	}
+
+	Node<T>* prev = frontPtr;
+	frontPtr = frontPtr->getNext();
+	while (frontPtr != NULL) {
+		delete prev;
+		prev = frontPtr;
+		frontPtr = frontPtr->getNext();
+	}
+	delete prev;
+	frontPtr = NULL;
+	backPtr = NULL;
 }
 #endif

@@ -10,6 +10,7 @@ private:
 	Node<T>* frontPtr;
 public:
 	PriorityQueue();
+	PriorityQueue(const PriorityQueue<T>&);			//copy constructor
 	bool isEmpty() const;
 	bool enqueue(const T& newEntry);
 	bool dequeue(T& frntEntry);
@@ -23,6 +24,27 @@ inline PriorityQueue<T>::PriorityQueue()
 {
 	backPtr = nullptr;
 	frontPtr = nullptr;
+}
+
+///////////////////////////////////////////////////////////////////////////
+template<typename T>
+inline PriorityQueue<T>::PriorityQueue(const PriorityQueue<T>& p2)
+{
+	if (p2.isEmpty())
+	{
+		frontPtr = NULL;
+		backPtr = NULL;
+	}
+	else {
+		frontPtr = NULL;										//This initialization is important for enqueue function to work properly
+		backPtr = NULL;
+		Node<T>* ptrToOld = p2.frontPtr;
+		while (ptrToOld != NULL)
+		{
+			enqueue(ptrToOld->getItem());						//enqueue()--->handles everything...check it out.
+			ptrToOld = ptrToOld->getNext();
+		}
+	}
 }
 ///////////////////////////////////////////////////////////////////////////
 
@@ -116,6 +138,21 @@ inline bool PriorityQueue<T>::peekFront(T & frntEntry) const
 template<typename T>
 inline PriorityQueue<T>::~PriorityQueue()
 {
+	if (frontPtr == NULL)
+	{
+		return;
+	}
+
+	Node<T>* prev = frontPtr;
+	frontPtr = frontPtr->getNext();
+	while (frontPtr != NULL) {
+		delete prev;
+		prev = frontPtr;
+		frontPtr = frontPtr->getNext();
+	}
+	delete prev;
+	frontPtr = NULL;
+	backPtr = NULL;
 }
 ///////////////////////////////////////////////////////////////////////////
 

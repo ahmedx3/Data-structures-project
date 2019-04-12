@@ -81,7 +81,7 @@ Restaurant::~Restaurant()
 void Restaurant::simulationTestRun() {
 
 
-	load File("C:\\Users\\bahaaEldeen\\Desktop\\Data-structures-project\\Project_Code_S2019\\Restaurant\\sample2.txt", this);		// Loading the files
+	load File("../Restaurant/sample1.txt", this);		// Loading the files
 
 	File.printInfo();
 

@@ -7,7 +7,7 @@
 #include "..\Generic_DS\Queue.h"
 #include "..\Events\Event.h"
 #include "..\Generic_DS\PriorityQueue.h"
-#include "..\Generic_DS\EnhancedList.h"
+#include "..\Generic_DS\LinkedList.h"
 
 #include "Order.h"
 #include "load.h"
@@ -46,10 +46,10 @@ private:
 	Queue<Order*> frozenOrdersRegionC;	// Queue of all active Frozen orders of region C
 	Queue<Order*> frozenOrdersRegionD;	// Queue of all active Frozen orders of region D
 
-	EnhancedList<Order*> normalOrdersRegionA;	// Queue of all active Normal orders of region A
-	EnhancedList<Order*> normalOrdersRegionB;	// Queue of all active Normal orders of region B
-	EnhancedList<Order*> normalOrdersRegionC;	// Queue of all active Normal orders of region C
-	EnhancedList<Order*> normalOrdersRegionD;	// Queue of all active Normal orders of region D
+	LinkedList<Order*> normalOrdersRegionA;	// Queue of all active Normal orders of region A
+	LinkedList<Order*> normalOrdersRegionB;	// Queue of all active Normal orders of region B
+	LinkedList<Order*> normalOrdersRegionC;	// Queue of all active Normal orders of region C
+	LinkedList<Order*> normalOrdersRegionD;	// Queue of all active Normal orders of region D
 
 
 	int waitingVIPA;
@@ -124,7 +124,6 @@ public:
 	void addToNormalQueueRegionD(Order* ord);	// Adds orders to Normal queue
 	Order* getNormalOrderRegionD();			// Returns the front normal order
 	// -----------------------------------------------------------------------------------------------
-
 	void cancelOrder(int id);			// Cancels an order from all normal orders
 
 	
@@ -141,7 +140,7 @@ public:
 private:
 	void drawOneQueue(Queue<Order*>& queue);	// Draws one queue
 	void drawOneQueue(PriorityQueue<Order*>& queue);
-	void drawOneQueue(EnhancedList<Order*>& queue);
+	void drawOneQueue(LinkedList<Order*>& queue);
 	void drawOrdersToScreen();			// Draws all active orders
 	void deleteOrdersEachTimeStep();	// deletes orders each time step as if assigning them to bikes
 	void printStatusBarInfo(int currentTimeStep);	// prints all info in status bar
@@ -149,8 +148,8 @@ private:
 	bool cancelFromCertainQueue(int id, PriorityQueue<Order*>& queue);
 	bool dequeueFromOneQueue(Queue<Order*> & queue);	// dequeue one order
 	bool dequeueFromOneQueue(PriorityQueue<Order*>& queue);
-	bool dequeueFromOneQueue(EnhancedList<Order*>& queue);
-	bool cancelFromCertainQueue(int id, EnhancedList<Order*>& queue);
+	bool dequeueFromOneQueue(LinkedList<Order*>& queue);
+	bool cancelFromCertainQueue(int id, LinkedList<Order*>& queue);
 	void lastTimeStep(int currentTimeStep);	// To see last Time step
 };
 

@@ -490,9 +490,9 @@ bool Restaurant::dequeueFromOneQueue(PriorityQueue<Order*> & queue) {
 	return false;
 }
 
-bool Restaurant::dequeueFromOneQueue(EnhancedList<Order*> & queue) {
+bool Restaurant::dequeueFromOneQueue(LinkedList<Order*> & queue) {
 	Order* pOrd;
-	bool removed = queue.dequeue(pOrd);
+	bool removed = queue.removeFront(pOrd);
 	if (removed) {
 		delete pOrd;
 		totalWaitingOrders--;
@@ -501,35 +501,35 @@ bool Restaurant::dequeueFromOneQueue(EnhancedList<Order*> & queue) {
 	return false;
 }
 
-bool Restaurant::cancelFromCertainQueue(int id, EnhancedList<Order*> & queue) {
+bool Restaurant::cancelFromCertainQueue(int id, LinkedList<Order*> & queue) {
 	Order* pOrd;
 	int stopPoint;
 	bool exists = queue.peekFront(pOrd);
 	if (exists) {
 		stopPoint = pOrd->GetID();
 		if (stopPoint == id) {
-			queue.dequeue(pOrd);
+			queue.removeFront(pOrd);
 			delete pOrd;
 			totalWaitingOrders--;
 			return true;
 		}
 		else {
-			queue.dequeue(pOrd);
-			queue.enqueue(pOrd);
+			queue.removeFront(pOrd);
+			queue.insertEnd(pOrd);
 		}
 
 		queue.peekFront(pOrd);
 
 		while (pOrd->GetID() != stopPoint) {
 			if (pOrd->GetID() == id) {
-				queue.dequeue(pOrd);
+				queue.removeFront(pOrd);
 				delete pOrd;
 				totalWaitingOrders--;
 				return true;
 			}
 			else {
-				queue.dequeue(pOrd);
-				queue.enqueue(pOrd);
+				queue.removeFront(pOrd);
+				queue.insertEnd(pOrd);
 				queue.peekFront(pOrd);
 			}
 		}
@@ -584,21 +584,21 @@ void Restaurant::drawOneQueue(PriorityQueue<Order*> & queue) {
 	}
 }
 
-void Restaurant::drawOneQueue(EnhancedList<Order*> & queue) {
+void Restaurant::drawOneQueue(LinkedList<Order*> & queue) {
 	Order* pOrd;
 	bool exists = queue.peekFront(pOrd);
 	if (exists) {
 		int stopPoint = pOrd->GetID();
 		pGUI->AddOrderForDrawing(pOrd);
-		queue.dequeue(pOrd);
-		queue.enqueue(pOrd);
+		queue.removeFront(pOrd);
+		queue.insertEnd(pOrd);
 		queue.peekFront(pOrd);
 
 		while (stopPoint != pOrd->GetID())
 		{
 			pGUI->AddOrderForDrawing(pOrd);
-			queue.dequeue(pOrd);
-			queue.enqueue(pOrd);
+			queue.removeFront(pOrd);
+			queue.insertEnd(pOrd);
 			queue.peekFront(pOrd);
 		}
 	}
@@ -846,7 +846,7 @@ Order * Restaurant::getFrozenOrderRegionD()
 
 void Restaurant::addToNormalQueueRegionA(Order * ord)
 {
-	normalOrdersRegionA.enqueue(ord);
+	normalOrdersRegionA.insertEnd(ord);
 	totalWaitingOrders++;
 	waitingNormalA++;
 }
@@ -854,13 +854,13 @@ void Restaurant::addToNormalQueueRegionA(Order * ord)
 Order * Restaurant::getNormalOrderRegionA()
 {
 	Order* pOrd;
-	normalOrdersRegionA.dequeue(pOrd);
+	normalOrdersRegionA.removeFront(pOrd);
 	return pOrd;
 }
 
 void Restaurant::addToNormalQueueRegionB(Order * ord)
 {
-	normalOrdersRegionB.enqueue(ord);
+	normalOrdersRegionB.insertEnd(ord);
 	totalWaitingOrders++;
 	waitingNormalB++;
 }
@@ -868,13 +868,13 @@ void Restaurant::addToNormalQueueRegionB(Order * ord)
 Order * Restaurant::getNormalOrderRegionB()
 {
 	Order* pOrd;
-	normalOrdersRegionB.dequeue(pOrd);
+	normalOrdersRegionB.removeFront(pOrd);
 	return pOrd;
 }
 
 void Restaurant::addToNormalQueueRegionC(Order * ord)
 {
-	normalOrdersRegionC.enqueue(ord);
+	normalOrdersRegionC.insertEnd(ord);
 	totalWaitingOrders++;
 	waitingNormalC++;
 }
@@ -882,13 +882,13 @@ void Restaurant::addToNormalQueueRegionC(Order * ord)
 Order * Restaurant::getNormalOrderRegionC()
 {
 	Order* pOrd;
-	normalOrdersRegionC.dequeue(pOrd);
+	normalOrdersRegionC.removeFront(pOrd);
 	return pOrd;
 }
 
 void Restaurant::addToNormalQueueRegionD(Order * ord)
 {
-	normalOrdersRegionD.enqueue(ord);
+	normalOrdersRegionD.insertEnd(ord);
 	totalWaitingOrders++;
 	waitingNormalD++;
 }
@@ -896,6 +896,6 @@ void Restaurant::addToNormalQueueRegionD(Order * ord)
 Order * Restaurant::getNormalOrderRegionD()
 {
 	Order* pOrd;
-	normalOrdersRegionD.dequeue(pOrd);
+	normalOrdersRegionD.removeFront(pOrd);
 	return pOrd;
 }

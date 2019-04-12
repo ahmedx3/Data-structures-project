@@ -20,7 +20,7 @@ public :
 
 
 template < typename T>
-Node<T>::Node():item(T())
+Node<T>::Node():item(T()) //If a constant object is instantiated from class Node, the data member "item" must have a value in the initializer list --- also the class T must have a default constructor to handle this properly
 {
 	next = nullptr;
 } 

@@ -2,6 +2,7 @@
 #include "Rest\Restaurant.h"
 #include "GUI\GUI.h"
 
+
 int main()
 {
 
@@ -9,6 +10,8 @@ int main()
 	pRest->RunSimulation();
 	
 	delete pRest;
+	
+	
 	
 	return 0;
 }

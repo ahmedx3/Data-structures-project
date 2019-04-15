@@ -306,3 +306,35 @@ void load::promoteOrder(int timeStamp, int ID, double money)
 
 	restaurant->AddEvent(event);
 }
+int load::getNormalSpeed() {
+	return sn;
+}
+
+int load::getFrozenSpeed() {
+	return sf;
+
+}
+int load::getVIPSpeed() {
+	return sv;
+
+}
+
+int * load::getNormalMotorsNumber()
+{
+	return n;
+}
+
+int * load::getVIPMotorsNumber()
+{
+	return v;
+}
+
+int * load::getFrozenMotorsNumber()
+{
+	return f;
+}
+
+int load::getTimeLimit()
+{
+	return autoS;
+}

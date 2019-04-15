@@ -84,7 +84,14 @@ void Restaurant::simulationTestRun() {
 	load File("../Restaurant/sample1.txt", this);		// Loading the files
 
 	File.printInfo();
-
+	// initialize motors info
+	sn = File.getNormalSpeed();
+	sf = File.getFrozenSpeed();
+	sv = File.getVIPSpeed();
+	n = File.getNormalMotorsNumber();
+	f = File.getFrozenMotorsNumber();
+	v = File.getVIPMotorsNumber();
+	autoS = File.getTimeLimit();
 	int currentTimeStep = 1;
 
 	while (!EventsQueue.isEmpty()) {
@@ -347,13 +354,16 @@ void Restaurant::printStatusBarInfo(int currentTimeStep)
 void Restaurant::deleteOrdersEachTimeStep()
 {
 	// Remove from VIP Orders
-	if (dequeueFromOneQueue(VIPOrdersRegionA))
+	if (dequeueFromOneQueue(VIPOrdersRegionA,n[0],v[0],f[0])) {
+
 		waitingVIPA--;
-	if (dequeueFromOneQueue(VIPOrdersRegionB))
+
+	}
+	if (dequeueFromOneQueue(VIPOrdersRegionB, n[1], v[1], f[1]))
 		waitingVIPB--;
-	if (dequeueFromOneQueue(VIPOrdersRegionC))
+	if (dequeueFromOneQueue(VIPOrdersRegionC, n[2], v[2], f[2]))
 		waitingVIPC--;
-	if (dequeueFromOneQueue(VIPOrdersRegionD))
+	if (dequeueFromOneQueue(VIPOrdersRegionD, n[3], v[3], f[3]))
 		waitingVIPD--;
 
 	// Remove from Frozen Orders
@@ -481,9 +491,11 @@ bool Restaurant::dequeueFromOneQueue(Queue<Order*> & queue) {
 	return false;
 }
 
-bool Restaurant::dequeueFromOneQueue(PriorityQueue<Order*> & queue) {
+bool Restaurant::dequeueFromOneQueue(PriorityQueue<Order*> & queue,int noOFNormalAvailable,int noOFVIPAvailable,int noOfFrozenAvailable) {
 	Order* pOrd;
+	
 	bool removed = queue.dequeue(pOrd);
+	
 	if (removed) {
 		delete pOrd;
 		totalWaitingOrders--;

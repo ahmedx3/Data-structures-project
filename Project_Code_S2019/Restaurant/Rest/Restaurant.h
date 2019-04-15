@@ -66,7 +66,14 @@ private:
 	int waitingNormalB;
 	int waitingNormalC;
 	int waitingNormalD;
-
+	// data members for motorcycle info
+	int sn;		//Normal motocycles speed
+	int sf;		//Frozen motocycles speed
+	int sv;		//vip motocycles speed
+	int* n; // no of normal
+	int* f; // no of frozen
+	int* v; // no of vip
+	int autoS; // time limit
 
 public:
 	
@@ -147,7 +154,7 @@ private:
 	bool cancelFromCertainQueue(int id, Queue<Order*> & queue);	// Cancel order from certain queue
 	bool cancelFromCertainQueue(int id, PriorityQueue<Order*>& queue);
 	bool dequeueFromOneQueue(Queue<Order*> & queue);	// dequeue one order
-	bool dequeueFromOneQueue(PriorityQueue<Order*>& queue);
+	bool dequeueFromOneQueue(PriorityQueue<Order*>& queue, int noOFNormalAvailable, int noOFVIPAvailable, int noOfFrozenAvailable);
 	bool dequeueFromOneQueue(LinkedList<Order*>& queue);
 	bool cancelFromCertainQueue(int id, LinkedList<Order*>& queue);
 	void lastTimeStep(int currentTimeStep);	// To see last Time step

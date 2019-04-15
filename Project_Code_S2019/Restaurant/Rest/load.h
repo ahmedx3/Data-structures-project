@@ -26,10 +26,18 @@ public:
 	load(string path, Restaurant* restaurant);
 	void printInfo();
 	~load();
-
+	// getters
+	int getNormalSpeed();
+	int getFrozenSpeed();
+	int getVIPSpeed();
+	int* getNormalMotorsNumber();
+	int* getVIPMotorsNumber();
+	int* getFrozenMotorsNumber();
+	int getTimeLimit();
 private:
 	void addOrder(int timeStamp, char type, int ID, int distance, double money, char region);
 	void cancelOrder(int timeStamp, int ID);
 	void promoteOrder(int timeStamp, int ID, double money);
+	
 };
 

@@ -7,7 +7,7 @@ using namespace std;
 #include "..\Events\ArrivalEvent.h"
 
 
-Restaurant::Restaurant() 
+Restaurant::Restaurant()
 {
 	pGUI = NULL;
 
@@ -32,19 +32,9 @@ Restaurant::Restaurant()
 void Restaurant::RunSimulation()
 {
 	pGUI = new GUI;
-	PROG_MODE	mode = pGUI->getGUIMode();
-		
-	switch (mode)	//Add a function for each mode in next phases
-	{
-	case MODE_INTR:
-		break;
-	case MODE_STEP:
-		break;
-	case MODE_SLNT:
-		break;
-	case MODE_DEMO:
-		simulationTestRun();
-	};
+	this->mode = pGUI->getGUIMode();
+
+	simulationTestRun();
 }
 
 
@@ -59,9 +49,9 @@ void Restaurant::AddEvent(Event* pE)	//adds a new event to the queue of events
 void Restaurant::ExecuteEvents(int CurrentTimeStep)
 {
 	Event *pE;
-	while( EventsQueue.peekFront(pE) )	//as long as there are more events
+	while (EventsQueue.peekFront(pE))	//as long as there are more events
 	{
-		if(pE->getEventTime() > CurrentTimeStep )	//no more events at current time
+		if (pE->getEventTime() > CurrentTimeStep)	//no more events at current time
 			return;
 
 		pE->Execute(this);
@@ -74,14 +64,53 @@ void Restaurant::ExecuteEvents(int CurrentTimeStep)
 
 Restaurant::~Restaurant()
 {
+	Motorcycle* motor;
+
+	while (VIPMCA.dequeue(motor))
+		delete motor;
+	while (VIPMCB.dequeue(motor))
+		delete motor;
+	while (VIPMCC.dequeue(motor))
+		delete motor;
+	while (VIPMCD.dequeue(motor))
+		delete motor;
+
+	while (FrozenMCA.dequeue(motor))
+		delete motor;
+	while (FrozenMCB.dequeue(motor))
+		delete motor;
+	while (FrozenMCC.dequeue(motor))
+		delete motor;
+	while (FrozenMCD.dequeue(motor))
+		delete motor;
+
+	while (NormalMCA.dequeue(motor))
+		delete motor;
+	while (NormalMCB.dequeue(motor))
+		delete motor;
+	while (NormalMCC.dequeue(motor))
+		delete motor;
+	while (NormalMCD.dequeue(motor))
+		delete motor;
+
+	while (occupiedA.dequeue(motor))
+		delete motor;
+	while (occupiedB.dequeue(motor))
+		delete motor;
+	while (occupiedC.dequeue(motor))
+		delete motor;
+	while (occupiedD.dequeue(motor))
+		delete motor;
+
 	delete pGUI;
 }
 
 // Main test run for phase 1
 void Restaurant::simulationTestRun() {
 
+	pGUI->PrintMessage("Enter simulation file name");
 
-	load File("../Restaurant/sample1.txt", this);		// Loading the files
+	load File("../Restaurant/" + pGUI->GetString() + ".txt", this);		// Loading the files
 
 	File.printInfo();
 	// initialize motors info
@@ -92,6 +121,7 @@ void Restaurant::simulationTestRun() {
 	f = File.getFrozenMotorsNumber();
 	v = File.getVIPMotorsNumber();
 	autoS = File.getTimeLimit();
+	setMCs();
 	int currentTimeStep = 1;
 
 	while (!EventsQueue.isEmpty()) {
@@ -99,53 +129,71 @@ void Restaurant::simulationTestRun() {
 		// Execute events now
 		ExecuteEvents(currentTimeStep);
 
-		// Print all info in status bar
-		printStatusBarInfo(currentTimeStep);
+		if (mode != MODE_SLNT) {
+			// Print all info in status bar
+			printStatusBarInfo(currentTimeStep);
 
-		// Draw orders to screen
-		drawOrdersToScreen();
+			// Draw orders to screen
+			drawOrdersToScreen();
+		}
 
 		// Deleting an order from each type in each region
-		deleteOrdersEachTimeStep();
-		
+		deleteOrdersEachTimeStep(currentTimeStep);
+
+
+		if (mode == MODE_INTR)
+			pGUI->waitForClick();
+		else if (mode == MODE_STEP)
+			Sleep(1000);
+
 		// Advance to next timestep
-		pGUI->waitForClick();
 		currentTimeStep++;
 	}
 
 	// continue until no orders are left
 	while (totalWaitingOrders > 0) {
 
-		// Print all info in status bar
-		printStatusBarInfo(currentTimeStep);
+		if (mode != MODE_SLNT) {
+			// Print all info in status bar
+			printStatusBarInfo(currentTimeStep);
 
-		// Draw orders to screen
-		drawOrdersToScreen();
+			// Draw orders to screen
+			drawOrdersToScreen();
+		}
 
 		// Deleting an order from each type in each region
-		deleteOrdersEachTimeStep();
+		deleteOrdersEachTimeStep(currentTimeStep);
+
+		if (mode == MODE_INTR)
+			pGUI->waitForClick();
+		else if (mode == MODE_STEP)
+			Sleep(1000);
 
 		// Advance to next timestep
-		pGUI->waitForClick();
 		currentTimeStep++;
 	}
 	// To see last time step
 	lastTimeStep(currentTimeStep);
-	
+
 	pGUI->PrintMessage("Simulation Over, Click anywhere to exit!");
 	pGUI->waitForClick();
 }
 
 // Last Time Step too see everything
 void Restaurant::lastTimeStep(int currentTimeStep) {
-	
-	// Print all info in status bar
-	printStatusBarInfo(currentTimeStep);
 
-	// Draw orders to screen
-	drawOrdersToScreen();
+	if (mode != MODE_SLNT) {
+		// Print all info in status bar
+		printStatusBarInfo(currentTimeStep);
 
-	pGUI->waitForClick();
+		// Draw orders to screen
+		drawOrdersToScreen();
+	}
+
+	if (mode == MODE_INTR)
+		pGUI->waitForClick();
+	else if (mode == MODE_STEP)
+		Sleep(1000);
 }
 
 void Restaurant::printStatusBarInfo(int currentTimeStep)
@@ -210,7 +258,7 @@ void Restaurant::printStatusBarInfo(int currentTimeStep)
 	char VIPMCA[10];
 	itoa(VIP[0], VIPMCA, 10);
 	regionA += VIPMCA;
-	
+
 	if (Frozen[0] < 9)
 		regionA += "                                                    ";
 	else if (Frozen[0] < 100)
@@ -351,39 +399,134 @@ void Restaurant::printStatusBarInfo(int currentTimeStep)
 	pGUI->PrintStatusMessages(regionD, lineNo++);
 }
 
-void Restaurant::deleteOrdersEachTimeStep()
+void Restaurant::ReturnMotors(int timeStep) {
+	Motorcycle* motor;
+
+	while (occupiedA.peekFront(motor))
+	{
+		if (motor->getFT() > timeStep)
+			break;
+
+		occupiedA.dequeue(motor);
+		motor->deAssign();
+
+		if (motor->getOrdType() == TYPE_VIP) {
+			VIPMCA.enqueue(motor);
+			VIP[0]++;
+		}
+		else if (motor->getOrdType() == TYPE_FROZ) {
+			FrozenMCA.enqueue(motor);
+			Frozen[0]++;
+		}
+		else {
+			NormalMCA.enqueue(motor);
+			Normal[0]++;
+		}
+	}
+
+	while (occupiedB.peekFront(motor))
+	{
+		if (motor->getFT() > timeStep)
+			break;
+
+		occupiedB.dequeue(motor);
+		motor->deAssign();
+
+		if (motor->getOrdType() == TYPE_VIP) {
+			VIPMCB.enqueue(motor);
+			VIP[1]++;
+		}
+		else if (motor->getOrdType() == TYPE_FROZ) {
+			FrozenMCB.enqueue(motor);
+			Frozen[1]++;
+		}
+		else {
+			NormalMCB.enqueue(motor);
+			Normal[1]++;
+		}
+	}
+
+	while (occupiedC.peekFront(motor))
+	{
+		if (motor->getFT() > timeStep)
+			break;
+
+		occupiedC.dequeue(motor);
+		motor->deAssign();
+
+		if (motor->getOrdType() == TYPE_VIP) {
+			VIPMCC.enqueue(motor);
+			VIP[2]++;
+		}
+		else if (motor->getOrdType() == TYPE_FROZ) {
+			FrozenMCC.enqueue(motor);
+			Frozen[2]++;
+		}
+		else {
+			NormalMCC.enqueue(motor);
+			Normal[2]++;
+		}
+	}
+
+	while (occupiedD.peekFront(motor))
+	{
+		if (motor->getFT() > timeStep)
+			break;
+
+		occupiedD.dequeue(motor);
+		motor->deAssign();
+
+		if (motor->getOrdType() == TYPE_VIP) {
+			VIPMCD.enqueue(motor);
+			VIP[3]++;
+		}
+		else if (motor->getOrdType() == TYPE_FROZ) {
+			FrozenMCD.enqueue(motor);
+			Frozen[3]++;
+		}
+		else {
+			NormalMCD.enqueue(motor);
+			Normal[3]++;
+		}
+	}
+}
+
+void Restaurant::deleteOrdersEachTimeStep(int timeStep)
 {
+	// Check if any motorcycles returned
+	ReturnMotors(timeStep);
+
 	// Remove from VIP Orders
-	if (dequeueFromOneQueue(VIPOrdersRegionA,n[0],v[0],f[0])) {
+	if (dequeueFromOneQueue(VIPOrdersRegionA, n[0], v[0], f[0], timeStep)) {
 
 		waitingVIPA--;
 
 	}
-	if (dequeueFromOneQueue(VIPOrdersRegionB, n[1], v[1], f[1]))
+	if (dequeueFromOneQueue(VIPOrdersRegionB, n[1], v[1], f[1], timeStep))
 		waitingVIPB--;
-	if (dequeueFromOneQueue(VIPOrdersRegionC, n[2], v[2], f[2]))
+	if (dequeueFromOneQueue(VIPOrdersRegionC, n[2], v[2], f[2], timeStep))
 		waitingVIPC--;
-	if (dequeueFromOneQueue(VIPOrdersRegionD, n[3], v[3], f[3]))
+	if (dequeueFromOneQueue(VIPOrdersRegionD, n[3], v[3], f[3], timeStep))
 		waitingVIPD--;
 
 	// Remove from Frozen Orders
-	if (dequeueFromOneQueue(frozenOrdersRegionA))
+	if (dequeueFromOneQueue(frozenOrdersRegionA, timeStep))
 		waitingFrozenA--;
-	if (dequeueFromOneQueue(frozenOrdersRegionB))
+	if (dequeueFromOneQueue(frozenOrdersRegionB, timeStep))
 		waitingFrozenB--;
-	if (dequeueFromOneQueue(frozenOrdersRegionC))
+	if (dequeueFromOneQueue(frozenOrdersRegionC, timeStep))
 		waitingFrozenC--;
-	if (dequeueFromOneQueue(frozenOrdersRegionD))
+	if (dequeueFromOneQueue(frozenOrdersRegionD, timeStep))
 		waitingFrozenD--;
 
 	// Remove from Normal Orders
-	if (dequeueFromOneQueue(normalOrdersRegionA))
+	if (dequeueFromOneQueue(normalOrdersRegionA, timeStep))
 		waitingNormalA--;
-	if (dequeueFromOneQueue(normalOrdersRegionB))
+	if (dequeueFromOneQueue(normalOrdersRegionB, timeStep))
 		waitingNormalB--;
-	if (dequeueFromOneQueue(normalOrdersRegionC))
+	if (dequeueFromOneQueue(normalOrdersRegionC, timeStep))
 		waitingNormalC--;
-	if (dequeueFromOneQueue(normalOrdersRegionD))
+	if (dequeueFromOneQueue(normalOrdersRegionD, timeStep))
 		waitingNormalD--;
 }
 
@@ -399,12 +542,89 @@ void Restaurant::cancelOrder(int id)
 		waitingNormalD--;
 }
 
-void Restaurant::setMCs(int MCNormal[], int MCFrozen[], int MCVIP[])
+void Restaurant::setMCs()
 {
 	for (int i = 0; i < 4; i++) {
-		Normal[i] = MCNormal[i];
-		Frozen[i] = MCFrozen[i];
-		VIP[i] = MCVIP[i];
+		Normal[i] = n[i];
+		Frozen[i] = f[i];
+		VIP[i] = v[i];
+	}
+
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < Normal[i]; j++) {
+
+			REGION reg;
+
+			if (i == 0)
+				reg = A_REG;
+			else if (i == 1)
+				reg = B_REG;
+			else if (i == 2)
+				reg = C_REG;
+			else
+				reg = D_REG;
+
+			Motorcycle* motor = new Motorcycle(-1, TYPE_NRM, sn, reg, IDLE, 100);
+
+			if (i == 0)
+				NormalMCA.enqueue(motor);
+			else if (i == 1)
+				NormalMCB.enqueue(motor);
+			else if (i == 2)
+				NormalMCC.enqueue(motor);
+			else
+				NormalMCD.enqueue(motor);
+		}
+
+		for (int j = 0; j < VIP[i]; j++) {
+
+			REGION reg;
+
+			if (i == 0)
+				reg = A_REG;
+			else if (i == 1)
+				reg = B_REG;
+			else if (i == 2)
+				reg = C_REG;
+			else
+				reg = D_REG;
+
+			Motorcycle* motor = new Motorcycle(-1, TYPE_VIP, sv, reg, IDLE, 100);
+
+			if (i == 0)
+				VIPMCA.enqueue(motor);
+			else if (i == 1)
+				VIPMCB.enqueue(motor);
+			else if (i == 2)
+				VIPMCC.enqueue(motor);
+			else
+				VIPMCD.enqueue(motor);
+		}
+
+		for (int j = 0; j < Frozen[i]; j++) {
+
+			REGION reg;
+
+			if (i == 0)
+				reg = A_REG;
+			else if (i == 1)
+				reg = B_REG;
+			else if (i == 2)
+				reg = C_REG;
+			else
+				reg = D_REG;
+
+			Motorcycle* motor = new Motorcycle(-1, TYPE_FROZ, sf, reg, IDLE, 100);
+
+			if (i == 0)
+				FrozenMCA.enqueue(motor);
+			else if (i == 1)
+				FrozenMCB.enqueue(motor);
+			else if (i == 2)
+				FrozenMCC.enqueue(motor);
+			else
+				FrozenMCD.enqueue(motor);
+		}
 	}
 }
 
@@ -480,39 +700,300 @@ bool Restaurant::cancelFromCertainQueue(int id, PriorityQueue<Order*> & queue) {
 	return false;
 }
 
-bool Restaurant::dequeueFromOneQueue(Queue<Order*> & queue) {
+bool Restaurant::dequeueFromOneQueue(Queue<Order*> & queue, int timeStep) {
 	Order* pOrd;
-	bool removed = queue.dequeue(pOrd);
+	bool removed = queue.peekFront(pOrd);
 	if (removed) {
-		delete pOrd;
-		totalWaitingOrders--;
-		return true;
+		bool assigned = AssignOrder(pOrd, timeStep);
+		if (assigned) {
+			queue.dequeue(pOrd);
+			delete pOrd;
+			totalWaitingOrders--;
+			return true;
+		}
 	}
 	return false;
 }
 
-bool Restaurant::dequeueFromOneQueue(PriorityQueue<Order*> & queue,int noOFNormalAvailable,int noOFVIPAvailable,int noOfFrozenAvailable) {
+bool Restaurant::dequeueFromOneQueue(PriorityQueue<Order*> & queue, int noOFNormalAvailable, int noOFVIPAvailable, int noOfFrozenAvailable, int timeStep) {
 	Order* pOrd;
-	
-	bool removed = queue.dequeue(pOrd);
-	
+
+	bool removed = queue.peekFront(pOrd);
+
 	if (removed) {
-		delete pOrd;
-		totalWaitingOrders--;
-		return true;
+		bool assigned = AssignOrder(pOrd, timeStep);
+		if (assigned) {
+			queue.dequeue(pOrd);
+			delete pOrd;
+			totalWaitingOrders--;
+			return true;
+		}
 	}
 	return false;
 }
 
-bool Restaurant::dequeueFromOneQueue(LinkedList<Order*> & queue) {
+bool Restaurant::dequeueFromOneQueue(LinkedList<Order*> & queue, int timeStep) {
 	Order* pOrd;
-	bool removed = queue.removeFront(pOrd);
+	bool removed = queue.peekFront(pOrd);
 	if (removed) {
-		delete pOrd;
-		totalWaitingOrders--;
-		return true;
+		bool assigned = AssignOrder(pOrd, timeStep);
+		if (assigned) {
+			queue.removeFront(pOrd);
+			delete pOrd;
+			totalWaitingOrders--;
+			return true;
+		}
 	}
 	return false;
+}
+
+bool Restaurant::AssignOrder(Order* & ord, int timeStep) {
+	if (ord->GetType() == TYPE_VIP)
+		return VIPAssign(ord, timeStep);
+	else if (ord->GetType() == TYPE_FROZ)
+		return FrozAssign(ord, timeStep);
+	else
+		return NormAssign(ord, timeStep);
+}
+
+bool Restaurant::VIPAssign(Order* & ord, int timeStep) {
+	Motorcycle* motor;
+
+	if (ord->GetRegion() == A_REG) {
+		if (VIPMCA.peekFront(motor)) {
+			VIPMCA.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			VIP[0]--;
+			occupiedA.enqueue(motor);
+			return true;
+		}
+		else if (NormalMCA.peekFront(motor)) {
+			NormalMCA.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			Normal[0]--;
+			occupiedA.enqueue(motor);
+			return true;
+		}
+		else if (FrozenMCA.peekFront(motor)) {
+			FrozenMCA.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			Frozen[0]--;
+			occupiedA.enqueue(motor);
+			return true;
+		}
+		else
+			return false;
+	}
+
+	else if (ord->GetRegion() == B_REG) {
+		if (VIPMCB.peekFront(motor)) {
+			VIPMCB.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			VIP[1]--;
+			occupiedB.enqueue(motor);
+			return true;
+		}
+		else if (NormalMCB.peekFront(motor)) {
+			NormalMCB.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			Normal[1]--;
+			occupiedB.enqueue(motor);
+			return true;
+		}
+		else if (FrozenMCB.peekFront(motor)) {
+			FrozenMCB.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			Frozen[1]--;
+			occupiedB.enqueue(motor);
+			return true;
+		}
+		else
+			return false;
+	}
+
+	else if (ord->GetRegion() == C_REG) {
+		if (VIPMCC.peekFront(motor)) {
+			VIPMCC.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			VIP[2]--;
+			occupiedC.enqueue(motor);
+			return true;
+		}
+		else if (NormalMCC.peekFront(motor)) {
+			NormalMCC.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			Normal[2]--;
+			occupiedC.enqueue(motor);
+			return true;
+		}
+		else if (FrozenMCC.peekFront(motor)) {
+			FrozenMCC.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			Frozen[2]--;
+			occupiedC.enqueue(motor);
+			return true;
+		}
+		else
+			return false;
+	}
+
+	else {
+		if (VIPMCD.peekFront(motor)) {
+			VIPMCD.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			VIP[3]--;
+			occupiedD.enqueue(motor);
+			return true;
+		}
+		else if (NormalMCD.peekFront(motor)) {
+			NormalMCD.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			Normal[3]--;
+			occupiedD.enqueue(motor);
+			return true;
+		}
+		else if (FrozenMCD.peekFront(motor)) {
+			FrozenMCD.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			Frozen[3]--;
+			occupiedD.enqueue(motor);
+			return true;
+		}
+		else
+			return false;
+	}
+}
+
+bool Restaurant::FrozAssign(Order* & ord, int timeStep) {
+	Motorcycle* motor;
+
+	if (ord->GetRegion() == A_REG) {
+		if (FrozenMCA.peekFront(motor)) {
+			FrozenMCA.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			Frozen[0]--;
+			occupiedA.enqueue(motor);
+			return true;
+		}
+		else
+			return false;
+	}
+
+	else if (ord->GetRegion() == B_REG) {
+		if (FrozenMCB.peekFront(motor)) {
+			FrozenMCB.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			Frozen[1]--;
+			occupiedB.enqueue(motor);
+			return true;
+		}
+		else
+			return false;
+	}
+
+	else if (ord->GetRegion() == C_REG) {
+		if (FrozenMCC.peekFront(motor)) {
+			FrozenMCC.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			Frozen[2]--;
+			occupiedC.enqueue(motor);
+			return true;
+		}
+		else
+			return false;
+	}
+
+	else {
+		if (FrozenMCD.peekFront(motor)) {
+			FrozenMCD.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			Frozen[3]--;
+			occupiedD.enqueue(motor);
+			return true;
+		}
+		else
+			return false;
+	}
+}
+
+bool Restaurant::NormAssign(Order* & ord, int timeStep) {
+	Motorcycle* motor;
+
+	if (ord->GetRegion() == A_REG) {
+		if (NormalMCA.peekFront(motor)) {
+			NormalMCA.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			Normal[0]--;
+			occupiedA.enqueue(motor);
+			return true;
+		}
+		else if (VIPMCA.peekFront(motor)) {
+			VIPMCA.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			VIP[0]--;
+			occupiedA.enqueue(motor);
+			return true;
+		}
+		else
+			return false;
+	}
+
+	else if (ord->GetRegion() == B_REG) {
+		if (NormalMCB.peekFront(motor)) {
+			NormalMCB.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			Normal[1]--;
+			occupiedB.enqueue(motor);
+			return true;
+		}
+		else if (VIPMCB.peekFront(motor)) {
+			VIPMCB.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			VIP[1]--;
+			occupiedB.enqueue(motor);
+			return true;
+		}
+		else
+			return false;
+	}
+
+	else if (ord->GetRegion() == C_REG) {
+		if (NormalMCC.peekFront(motor)) {
+			NormalMCC.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			Normal[2]--;
+			occupiedC.enqueue(motor);
+			return true;
+		}
+		else if (VIPMCC.peekFront(motor)) {
+			VIPMCC.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			VIP[2]--;
+			occupiedC.enqueue(motor);
+			return true;
+		}
+		else
+			return false;
+	}
+
+	else {
+		if (NormalMCD.peekFront(motor)) {
+			NormalMCD.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			Normal[3]--;
+			occupiedD.enqueue(motor);
+			return true;
+		}
+		else if (VIPMCD.peekFront(motor)) {
+			VIPMCD.dequeue(motor);
+			motor->Assign(ord, timeStep);
+			VIP[3]--;
+			occupiedD.enqueue(motor);
+			return true;
+		}
+		else
+			return false;
+	}
 }
 
 bool Restaurant::cancelFromCertainQueue(int id, LinkedList<Order*> & queue) {
@@ -651,12 +1132,12 @@ void Restaurant::drawOrdersToScreen()
 //It should be removed starting phase 1
 void Restaurant::Just_A_Demo()
 {
-	
+
 	//
 	// THIS IS JUST A DEMO FUNCTION
 	// IT SHOULD BE REMOVED IN PHASE 1 AND PHASE 2
-	
-	int EventCnt;	
+
+	int EventCnt;
 	Order* pOrd;
 	Event* pEv;
 	srand(time(NULL));
@@ -667,42 +1148,42 @@ void Restaurant::Just_A_Demo()
 	pGUI->UpdateInterface();
 
 	pGUI->PrintMessage("Generating orders randomly... In next phases, orders should be loaded from a file");
-		
+
 	int EvTime = 0;
-	
+
 	//Create Random events
 	//All generated event will be "ArrivalEvents" for the demo
-	for(int i=0; i<EventCnt; i++)
+	for (int i = 0; i < EventCnt; i++)
 	{
-		int O_id = i+1;
-		
+		int O_id = i + 1;
+
 		//Rendomize order type
 		int OType;
-		if(i<EventCnt*0.2)	//let 1st 20% of orders be VIP (just for sake of demo)
+		if (i < EventCnt*0.2)	//let 1st 20% of orders be VIP (just for sake of demo)
 			OType = TYPE_VIP;
-		else if(i<EventCnt*0.5)	
+		else if (i < EventCnt*0.5)
 			OType = TYPE_FROZ;	//let next 30% be Frozen
 		else
 			OType = TYPE_NRM;	//let the rest be normal
 
-		
-		int reg = rand()% REG_CNT;	//randomize region
+
+		int reg = rand() % REG_CNT;	//randomize region
 
 
 		//Randomize event time
-		EvTime += rand()%4;
-		pEv = new ArrivalEvent(EvTime,O_id,(ORD_TYPE)OType,(REGION)reg);
+		EvTime += rand() % 4;
+		pEv = new ArrivalEvent(EvTime, O_id, (ORD_TYPE)OType, (REGION)reg);
 		AddEvent(pEv);
 
-	}	
+	}
 
 	int CurrentTimeStep = 1;
 	//as long as events queue is not empty yet
-	while(!EventsQueue.isEmpty())
+	while (!EventsQueue.isEmpty())
 	{
 		//print current timestep
 		char timestep[10];
-		itoa(CurrentTimeStep,timestep,10);	
+		itoa(CurrentTimeStep, timestep, 10);
 		pGUI->PrintMessage(timestep);
 
 
@@ -711,7 +1192,7 @@ void Restaurant::Just_A_Demo()
 
 		//Let's draw all arrived orders by passing them to the GUI to draw
 
-		while(DEMO_Queue.dequeue(pOrd))
+		while (DEMO_Queue.dequeue(pOrd))
 		{
 			pGUI->AddOrderForDrawing(pOrd);
 			pGUI->UpdateInterface();
@@ -724,7 +1205,7 @@ void Restaurant::Just_A_Demo()
 	pGUI->PrintMessage("generation done, click to END program");
 	pGUI->waitForClick();
 
-	
+
 }
 ////////////////
 

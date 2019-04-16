@@ -8,6 +8,7 @@
 #include "..\Events\Event.h"
 #include "..\Generic_DS\PriorityQueue.h"
 #include "..\Generic_DS\LinkedList.h"
+#include "Motorcycle.h"
 
 #include "Order.h"
 #include "load.h"
@@ -16,6 +17,9 @@
 class Restaurant  
 {	
 private:
+
+	PROG_MODE mode;
+
 	GUI *pGUI;
 	Queue<Event*> EventsQueue;	//Queue of all events that will be loaded from file
 
@@ -50,6 +54,26 @@ private:
 	LinkedList<Order*> normalOrdersRegionB;	// Queue of all active Normal orders of region B
 	LinkedList<Order*> normalOrdersRegionC;	// Queue of all active Normal orders of region C
 	LinkedList<Order*> normalOrdersRegionD;	// Queue of all active Normal orders of region D
+
+	Queue<Motorcycle*> VIPMCA;				// Available MC in region A VIP
+	Queue<Motorcycle*> VIPMCB;				// Available MC in region B VIP
+	Queue<Motorcycle*> VIPMCC;				// Available MC in region C VIP
+	Queue<Motorcycle*> VIPMCD;				// Available MC in region D VIP
+
+	Queue<Motorcycle*> FrozenMCA;			// Available MC in region A Frozen
+	Queue<Motorcycle*> FrozenMCB;			// Available MC in region B Frozen
+	Queue<Motorcycle*> FrozenMCC;			// Available MC in region C Frozen
+	Queue<Motorcycle*> FrozenMCD;			// Available MC in region D Frozen
+
+	Queue<Motorcycle*> NormalMCA;			// Available MC in region A Normal
+	Queue<Motorcycle*> NormalMCB;			// Available MC in region B Normal
+	Queue<Motorcycle*> NormalMCC;			// Available MC in region C Normal
+	Queue<Motorcycle*> NormalMCD;			// Available MC in region D Normal
+
+	PriorityQueue<Motorcycle*> occupiedA;	// in use MC in Region A
+	PriorityQueue<Motorcycle*> occupiedB;	// in use MC in Region B
+	PriorityQueue<Motorcycle*> occupiedC;	// in use MC in Region C
+	PriorityQueue<Motorcycle*> occupiedD;	// in use MC in Region D
 
 
 	int waitingVIPA;
@@ -134,7 +158,7 @@ public:
 	void cancelOrder(int id);			// Cancels an order from all normal orders
 
 	
-	void setMCs(int MCNormal[], int MCFrozen[], int MCVIP[]);
+	void setMCs();
 
 
 	/// ==> 
@@ -149,15 +173,23 @@ private:
 	void drawOneQueue(PriorityQueue<Order*>& queue);
 	void drawOneQueue(LinkedList<Order*>& queue);
 	void drawOrdersToScreen();			// Draws all active orders
-	void deleteOrdersEachTimeStep();	// deletes orders each time step as if assigning them to bikes
+	void deleteOrdersEachTimeStep(int timeStep);	// deletes orders each time step as if assigning them to bikes
 	void printStatusBarInfo(int currentTimeStep);	// prints all info in status bar
 	bool cancelFromCertainQueue(int id, Queue<Order*> & queue);	// Cancel order from certain queue
 	bool cancelFromCertainQueue(int id, PriorityQueue<Order*>& queue);
-	bool dequeueFromOneQueue(Queue<Order*> & queue);	// dequeue one order
-	bool dequeueFromOneQueue(PriorityQueue<Order*>& queue, int noOFNormalAvailable, int noOFVIPAvailable, int noOfFrozenAvailable);
-	bool dequeueFromOneQueue(LinkedList<Order*>& queue);
+	bool dequeueFromOneQueue(Queue<Order*> & queue, int timeStep);	// dequeue one order
+	bool dequeueFromOneQueue(PriorityQueue<Order*>& queue, int noOFNormalAvailable, int noOFVIPAvailable, int noOfFrozenAvailable, int timeStep);
+	bool dequeueFromOneQueue(LinkedList<Order*>& queue, int timeStep);
 	bool cancelFromCertainQueue(int id, LinkedList<Order*>& queue);
 	void lastTimeStep(int currentTimeStep);	// To see last Time step
+
+	// Assign functions
+	bool AssignOrder(Order* & ord, int timeStep);
+	bool VIPAssign(Order* & ord, int timeStep);
+	bool FrozAssign(Order* & ord, int timeStep);
+	bool NormAssign(Order* & ord, int timeStep);
+	void ReturnMotors(int timeStep);
+
 };
 
 #endif

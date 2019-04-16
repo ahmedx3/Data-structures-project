@@ -235,10 +235,6 @@ load::load(string path, Restaurant* restaurant)
 			this->v[k] = stoi(v[k]);
 			VIP[k] = stoi(v[k]);
 		}
-
-
-
-		restaurant->setMCs(Normal, Frozen, VIP);
 		
 		
 		

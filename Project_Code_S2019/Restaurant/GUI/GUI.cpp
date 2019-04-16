@@ -133,8 +133,8 @@ void GUI::DrawRestArea() const
 
 	/*To Show Pic Uncomment Next Two Lines with your path*/
 
-	//image restImage("D:\\First year syllabus\\Second semester\\Data structures and algorithms\\project\\Data-structures-project\\Project_Code_S2019\\Restaurant\\myimage.JPEG");	//this path should be entered according to your comptuer
-	//pWind->DrawImage(restImage, RestStartX + 18, RestStartY + 20);
+	image restImage("../Restaurant/myimage.JPEG");	//this path should be entered according to your comptuer
+	pWind->DrawImage(restImage, RestStartX + 18, RestStartY + 20);
 
 
 
@@ -280,7 +280,7 @@ PROG_MODE	GUI::getGUIMode() const
 	PROG_MODE Mode;
 	do
 	{
-		PrintMessage("Please select GUI mode: (1)Interactive, (2)StepByStep, (3)Silent, (4)DEMO... ");
+		PrintMessage("Please select GUI mode: (1)Interactive, (2)StepByStep, (3)Silent");
 		string S = GetString();
 		Mode = (PROG_MODE) (atoi(S.c_str())-1);
 	}

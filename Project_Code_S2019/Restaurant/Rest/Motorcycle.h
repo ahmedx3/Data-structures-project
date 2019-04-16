@@ -3,6 +3,7 @@
 
 
 #include "..\Defs.h"
+#include "Order.h"
 
 #pragma once
 class Motorcycle	
@@ -13,11 +14,17 @@ class Motorcycle
 	REGION	region;	//region of the motorcycle
 	STATUS	status;	//idle or in-service
 	int HP; // health point
+	int FT;
+
 public:
 	Motorcycle();
 	Motorcycle(int i, ORD_TYPE t, int s, REGION r, STATUS ss , int hp);
 	bool operator>(Motorcycle& m2);
 	virtual ~Motorcycle();
+	void Assign(Order* & ord, int timeStep);
+	int getFT() const;
+	void deAssign();
+	ORD_TYPE getOrdType() const;
 };
 
 #endif

@@ -39,7 +39,7 @@ public:
 
 
 	void SetType(const ORD_TYPE& r_Type);
-	int GetType() const;
+	ORD_TYPE GetType() const;
 
 	void SetRegion(const REGION& r_region);
 	REGION GetRegion() const;

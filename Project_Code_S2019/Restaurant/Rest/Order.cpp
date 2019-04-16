@@ -71,7 +71,7 @@ void Order::SetType(const ORD_TYPE & r_Type)
 }
 
 
-int Order::GetType() const
+ORD_TYPE Order::GetType() const
 {
 	return type;
 }

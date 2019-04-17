@@ -16,6 +16,7 @@ Order::Order(int id, ORD_TYPE r_Type, REGION r_region, int a_t, int d, double mo
 	{
 		Priority = -1;		//default value for non VIP orders
 	}
+	WaitingTime = 0;
 }
 Order::Order() {
 	//To avoid errors if a node is instantiated without assigning a value to its item of type Order

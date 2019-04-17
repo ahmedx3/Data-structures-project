@@ -15,7 +15,7 @@ protected:
 	REGION Region;						//Region of this order
 	int Distance;						//The distance (in meters) between the order location and the resturant 
 	double totalMoney;					//Total order money
-	int ArrTime, ServTime, FinishTime;	//arrival, service start, and finish times
+	int ArrTime, ServTime, FinishTime, WaitingTime;	//arrival, service start, and finish times
 	double Priority;					//Priority of the order (ony for VIP orders)
 	//
 	// TODO: Add More Data Members As Needed

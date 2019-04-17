@@ -190,6 +190,10 @@ private:
 	bool NormAssign(Order* & ord, int timeStep);
 	void ReturnMotors(int timeStep);
 
+
+	// Promotion functions
+	void promotToVIP(Order* ord);
+
 };
 
 #endif

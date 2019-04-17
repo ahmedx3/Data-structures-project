@@ -491,6 +491,30 @@ void Restaurant::ReturnMotors(int timeStep) {
 	}
 }
 
+void Restaurant::promotToVIP(Order* ord)
+{
+	if (ord->GetRegion() == A_REG) {
+		addToVIPQueueRegionA(ord);
+		cancelOrder(ord->GetID());
+		
+	}
+	if (ord->GetRegion() == B_REG) {
+		addToVIPQueueRegionB(ord);
+		cancelOrder(ord->GetID());
+
+	}
+	if (ord->GetRegion() == C_REG) {
+		addToVIPQueueRegionC(ord);
+		cancelOrder(ord->GetID());
+
+	}
+	if (ord->GetRegion() == D_REG) {
+		addToVIPQueueRegionD(ord);
+		cancelOrder(ord->GetID());
+
+	}
+}
+
 void Restaurant::deleteOrdersEachTimeStep(int timeStep)
 {
 	// Check if any motorcycles returned

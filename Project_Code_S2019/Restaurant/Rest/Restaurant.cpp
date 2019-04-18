@@ -515,6 +515,17 @@ void Restaurant::promotToVIP(Order* ord)
 	}
 }
 
+bool Restaurant::checkPromotion(LinkedList<Order*>& queue)
+{
+	
+	//queue.traverse();
+}
+
+void Restaurant::addWaitingTime(Order* ord)
+{
+	ord->setWaitingTime();
+}
+
 void Restaurant::deleteOrdersEachTimeStep(int timeStep)
 {
 	// Check if any motorcycles returned

@@ -120,6 +120,11 @@ bool Order::operator==(const int id) const
 	return false;
 }
 
+void Order::setWaitingTime()
+{
+	WaitingTime++;
+}
+
 
 	/*---------------------------------------------for testing only------------------------------------------*/
 

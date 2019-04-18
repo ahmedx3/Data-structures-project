@@ -193,7 +193,8 @@ private:
 
 	// Promotion functions
 	void promotToVIP(Order* ord);
-
+	bool checkPromotion(LinkedList<Order*>& queue);
+	void addWaitingTime(Order* ord);
 };
 
 #endif

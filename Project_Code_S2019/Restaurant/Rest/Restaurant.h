@@ -1,6 +1,7 @@
 #ifndef __RESTAURANT_H_
 #define __RESTAURANT_H_
-
+#include <iostream>
+#include <string>
 #include "..\Defs.h"
 #include "..\CMUgraphicsLib\CMUgraphics.h"
 #include "..\GUI\GUI.h"
@@ -98,6 +99,8 @@ private:
 	int* f; // no of frozen
 	int* v; // no of vip
 	int autoS; // time limit
+
+	ofstream outputFile;
 
 public:
 	

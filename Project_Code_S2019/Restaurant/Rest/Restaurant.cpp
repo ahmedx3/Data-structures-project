@@ -1,6 +1,6 @@
 #include <cstdlib>
 #include <time.h>
-#include <iostream>
+
 using namespace std;
 
 #include "Restaurant.h"
@@ -27,6 +27,8 @@ Restaurant::Restaurant()
 	waitingNormalB = 0;
 	waitingNormalC = 0;
 	waitingNormalD = 0;
+	outputFile.open("output.txt");
+	outputFile << "FT ID AT WT ST" << endl;
 }
 
 void Restaurant::RunSimulation()
@@ -107,7 +109,7 @@ Restaurant::~Restaurant()
 
 // Main test run for phase 1
 void Restaurant::simulationTestRun() {
-
+	
 	pGUI->PrintMessage("Enter simulation file name");
 
 	load File("../Restaurant/" + pGUI->GetString() + ".txt", this);		// Loading the files

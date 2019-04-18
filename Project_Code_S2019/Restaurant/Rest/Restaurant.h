@@ -192,7 +192,7 @@ private:
 
 
 	// Promotion functions
-	void promotToVIP(Order* ord);
+	void promotToVIP(Order* ord , double extraMoney);
 
 };
 

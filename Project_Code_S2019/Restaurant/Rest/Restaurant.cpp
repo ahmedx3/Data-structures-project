@@ -494,24 +494,29 @@ void Restaurant::ReturnMotors(int timeStep) {
 void Restaurant::promotToVIP(Order* ord)
 {
 	if (ord->GetRegion() == A_REG) {
+		ord->SetType(TYPE_VIP);
 		addToVIPQueueRegionA(ord);
 		cancelOrder(ord->GetID());
-		
 	}
-	if (ord->GetRegion() == B_REG) {
+	else if (ord->GetRegion() == B_REG) 
+	{
+		ord->SetType(TYPE_VIP);
 		addToVIPQueueRegionB(ord);
 		cancelOrder(ord->GetID());
 
 	}
-	if (ord->GetRegion() == C_REG) {
+	else if (ord->GetRegion() == C_REG)
+	{
+		ord->SetType(TYPE_VIP);
 		addToVIPQueueRegionC(ord);
 		cancelOrder(ord->GetID());
 
 	}
-	if (ord->GetRegion() == D_REG) {
+	else
+	{
+		ord->SetType(TYPE_VIP);
 		addToVIPQueueRegionD(ord);
 		cancelOrder(ord->GetID());
-
 	}
 }
 

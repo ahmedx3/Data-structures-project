@@ -17,6 +17,31 @@ ArrivalEvent::ArrivalEvent(int eTime, int oID, ORD_TYPE oType, REGION reg, doubl
 	arrivalTime = eTime;
 }
 
+int ArrivalEvent::getArrivaltime()
+{
+	return arrivalTime;
+}
+
+double ArrivalEvent::getOrderMoney()
+{
+	return OrdMoney;
+}
+
+ORD_TYPE ArrivalEvent::getOrderType()
+{
+	return OrdType;
+}
+
+REGION ArrivalEvent::getOrderRegion()
+{
+	return OrdRegion;
+}
+
+int ArrivalEvent::getOrderDistqance()
+{
+	return OrdDistance;
+}
+
 void ArrivalEvent::Execute(Restaurant* pRest)
 {
 	//This function should create an order and fills its data 

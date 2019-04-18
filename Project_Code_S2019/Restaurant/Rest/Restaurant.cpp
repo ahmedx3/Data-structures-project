@@ -53,11 +53,27 @@ void Restaurant::ExecuteEvents(int CurrentTimeStep)
 	Event *pE;
 	while (EventsQueue.peekFront(pE))	//as long as there are more events
 	{
+		
 		if (pE->getEventTime() > CurrentTimeStep)	//no more events at current time
 			return;
 
 		pE->Execute(this);
-		EventsQueue.dequeue(pE);	//remove event from the queue
+		if (EventsQueue.dequeue(pE)) {	//remove event from the queue
+			outputFile << pE->getEventTime() << " " << pE->getOrderID() << " ";
+			// downcast the event to get its info
+			ArrivalEvent* pA = dynamic_cast<ArrivalEvent*>(pE);
+			CancelationEvent* pC = dynamic_cast<CancelationEvent*>(pE);
+			PromotionEvent* pP = dynamic_cast<PromotionEvent*>(pE);
+			if (pA) {
+				outputFile << pA->getArrivaltime() << " " << CurrentTimeStep - pA->getArrivaltime() << " " << " ST" << endl;
+			}
+			else if (pC) {
+
+			}
+			else if (pP) {
+
+			}
+		}
 		delete pE;		//deallocate event object from memory
 	}
 

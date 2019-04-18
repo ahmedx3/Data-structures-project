@@ -18,7 +18,11 @@ public:
 	//Add more constructors if needed
 
 	ArrivalEvent(int eTime, int oID, ORD_TYPE oType, REGION reg, double money, int distance);
-	
+	int getArrivaltime();
+	double getOrderMoney();
+	ORD_TYPE getOrderType();
+	REGION getOrderRegion();
+	int getOrderDistqance();
 	virtual void Execute(Restaurant *pRest);	//override execute function
 
 };

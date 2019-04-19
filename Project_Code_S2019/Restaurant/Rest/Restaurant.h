@@ -29,9 +29,6 @@ private:
 	int Normal[4];
 	int Frozen[4];
 	int VIP[4];
-
-
-	
 	/// ==> 
 	//	DEMO-related members. Should be removed in phases 1&2
 	Queue<Order*> DEMO_Queue;	//Important: This is just for demo
@@ -91,14 +88,15 @@ private:
 	int waitingNormalB;
 	int waitingNormalC;
 	int waitingNormalD;
+
 	// data members for motorcycle info
 	int sn;		//Normal motocycles speed
 	int sf;		//Frozen motocycles speed
 	int sv;		//vip motocycles speed
-	int* n; // no of normal
-	int* f; // no of frozen
-	int* v; // no of vip
-	int autoS; // time limit
+	int* n;		// no of normal
+	int* f;		// no of frozen
+	int* v;		// no of vip
+	int autoS;	// time limit
 
 	ofstream outputFile;
 
@@ -106,7 +104,7 @@ public:
 	
 	Restaurant();
 	~Restaurant();
-	void AddEvent(Event* pE);	//adds a new event to the queue of events
+	void AddEvent(Event* pE);			//adds a new event to the queue of events
 	void ExecuteEvents(int TimeStep);	//executes all events at current timestep
 	void RunSimulation();
 
@@ -119,46 +117,46 @@ public:
 
 	// All VIP Orders ------------------------------------------------------------------------------
 	void addToVIPQueueRegionA(Order* ord);	// Adds orders to VIP queue
-	Order* getVIPOrderRegionA();	// Returns the front VIP order
+	Order* getVIPOrderRegionA();			// Returns the front VIP order
 
 	void addToVIPQueueRegionB(Order* ord);	// Adds orders to VIP queue
-	Order* getVIPOrderRegionB();	// Returns the front VIP order
+	Order* getVIPOrderRegionB();			// Returns the front VIP order
 
 	void addToVIPQueueRegionC(Order* ord);	// Adds orders to VIP queue
-	Order* getVIPOrderRegionC();	// Returns the front VIP order
+	Order* getVIPOrderRegionC();			// Returns the front VIP order
 
 	void addToVIPQueueRegionD(Order* ord);	// Adds orders to VIP queue
-	Order* getVIPOrderRegionD();	// Returns the front VIP order
+	Order* getVIPOrderRegionD();			// Returns the front VIP order
 	// -----------------------------------------------------------------------------------------------
 
 	// All Frozen Orders -----------------------------------------------------------------------------
 	void addToFrozenQueueRegionA(Order* ord);	// Adds orders to Frozen queue
-	Order* getFrozenOrderRegionA();			// Returns the front Frozen order
+	Order* getFrozenOrderRegionA();				// Returns the front Frozen order
 
 	void addToFrozenQueueRegionB(Order* ord);	// Adds orders to Frozen queue
-	Order* getFrozenOrderRegionB();			// Returns the front Frozen order
+	Order* getFrozenOrderRegionB();				// Returns the front Frozen order
 
 	void addToFrozenQueueRegionC(Order* ord);	// Adds orders to Frozen queue
-	Order* getFrozenOrderRegionC();			// Returns the front Frozen order
+	Order* getFrozenOrderRegionC();				// Returns the front Frozen order
 
 	void addToFrozenQueueRegionD(Order* ord);	// Adds orders to Frozen queue
-	Order* getFrozenOrderRegionD();			// Returns the front Frozen order
+	Order* getFrozenOrderRegionD();				// Returns the front Frozen order
 	// -----------------------------------------------------------------------------------------------
 
 	// All Normal Orders -----------------------------------------------------------------------------
 	void addToNormalQueueRegionA(Order* ord);	// Adds orders to Normal queue
-	Order* getNormalOrderRegionA();			// Returns the front normal order
+	Order* getNormalOrderRegionA();				// Returns the front normal order
 
 	void addToNormalQueueRegionB(Order* ord);	// Adds orders to Normal queue
-	Order* getNormalOrderRegionB();			// Returns the front normal order
+	Order* getNormalOrderRegionB();				// Returns the front normal order
 
 	void addToNormalQueueRegionC(Order* ord);	// Adds orders to Normal queue
-	Order* getNormalOrderRegionC();			// Returns the front normal order
+	Order* getNormalOrderRegionC();				// Returns the front normal order
 
 	void addToNormalQueueRegionD(Order* ord);	// Adds orders to Normal queue
-	Order* getNormalOrderRegionD();			// Returns the front normal order
+	Order* getNormalOrderRegionD();				// Returns the front normal order
 	// -----------------------------------------------------------------------------------------------
-	void cancelOrder(int id);			// Cancels an order from all normal orders
+	void cancelOrder(int id);					// Cancels an order from all normal orders
 
 	
 	void setMCs();
@@ -166,25 +164,25 @@ public:
 
 	/// ==> 
 	///  DEMO-related functions. Should be removed in phases 1&2
-	void Just_A_Demo();	//just to show a demo and should be removed in phase1 1 & 2
+	void Just_A_Demo();				//just to show a demo and should be removed in phase1 1 & 2
 	void AddtoDemoQueue(Order* po);	//adds an order to the demo queue
 	Order* getDemoOrder();			//return the front order from demo queue
 	/// ==> 
 
 private:
-	void drawOneQueue(Queue<Order*>& queue);	// Draws one queue
+	void drawOneQueue(Queue<Order*>& queue);						// Draws one queue
 	void drawOneQueue(PriorityQueue<Order*>& queue);
 	void drawOneQueue(LinkedList<Order*>& queue);
-	void drawOrdersToScreen();			// Draws all active orders
-	void deleteOrdersEachTimeStep(int timeStep);	// deletes orders each time step as if assigning them to bikes
-	void printStatusBarInfo(int currentTimeStep);	// prints all info in status bar
-	bool cancelFromCertainQueue(int id, Queue<Order*> & queue);	// Cancel order from certain queue
+	void drawOrdersToScreen();										// Draws all active orders
+	void deleteOrdersEachTimeStep(int timeStep);					// deletes orders each time step as if assigning them to bikes
+	void printStatusBarInfo(int currentTimeStep);					// prints all info in status bar
+	bool cancelFromCertainQueue(int id, Queue<Order*> & queue);		// Cancel order from certain queue
 	bool cancelFromCertainQueue(int id, PriorityQueue<Order*>& queue);
 	bool dequeueFromOneQueue(Queue<Order*> & queue, int timeStep);	// dequeue one order
 	bool dequeueFromOneQueue(PriorityQueue<Order*>& queue, int noOFNormalAvailable, int noOFVIPAvailable, int noOfFrozenAvailable, int timeStep);
 	bool dequeueFromOneQueue(LinkedList<Order*>& queue, int timeStep);
 	bool cancelFromCertainQueue(int id, LinkedList<Order*>& queue);
-	void lastTimeStep(int currentTimeStep);	// To see last Time step
+	void lastTimeStep(int currentTimeStep);							// To see last Time step
 
 	// Assign functions
 	bool AssignOrder(Order* & ord, int timeStep);

@@ -13,6 +13,7 @@ using namespace std;
 class load
 {
 	Restaurant* restaurant;
+	ifstream inFile;
 	int sn;		//Normal motocycles speed
 	int sf;		//Frozen motocycles speed
 	int sv;		//vip motocycles speed
@@ -23,7 +24,7 @@ class load
 	int m;
 	
 public:
-	load(string path, Restaurant* restaurant);
+	load(Restaurant* restaurant);
 	void printInfo();
 	~load();
 	// getters
@@ -34,6 +35,9 @@ public:
 	int* getVIPMotorsNumber();
 	int* getFrozenMotorsNumber();
 	int getTimeLimit();
+	bool openFile(string path);
+	void processFile();
+
 private:
 	void addOrder(int timeStamp, char type, int ID, int distance, double money, char region);
 	void cancelOrder(int timeStamp, int ID);

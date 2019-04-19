@@ -157,9 +157,13 @@ public:
 	Order* getNormalOrderRegionD();				// Returns the front normal order
 	// -----------------------------------------------------------------------------------------------
 	void cancelOrder(int id);					// Cancels an order from all normal orders
-
-	
+	// -----------------------------------------------------------------------------------------------
 	void setMCs();
+	// -----------------------------------------------------------------------------------------------
+	bool promoteToVIP(int i, double extraMoney);//Promotion Event
+
+
+
 
 
 	/// ==> 
@@ -192,8 +196,9 @@ private:
 	void ReturnMotors(int timeStep);
 
 
-	// Promotion functions
-	void promotToVIP(Order* ord , double extraMoney);
+	//For Promotion functions
+	Order* getOrderById(int i);
+	bool autoPromoteOrders(int TS);
 
 };
 

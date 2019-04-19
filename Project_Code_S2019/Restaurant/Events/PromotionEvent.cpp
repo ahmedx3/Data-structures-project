@@ -1,5 +1,5 @@
 #include "PromotionEvent.h"
-
+#include "..\Rest\Restaurant.h"
 
 
 PromotionEvent::PromotionEvent(int eTime, int oID, double Money): Event(eTime, oID)
@@ -12,6 +12,7 @@ PromotionEvent::~PromotionEvent()
 {
 }
 
-void PromotionEvent::Execute(Restaurant * pRest)
+void PromotionEvent::Execute(Restaurant*pRest)
 {
+	pRest->promoteToVIP(OrderID, extraMoney);
 }

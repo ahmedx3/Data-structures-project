@@ -30,6 +30,11 @@ void Order::setArrTime(const int & a_t)
 	ArrTime =( a_t > 0)?a_t:0;
 }
 
+int Order::getArrTime() const
+{
+	return ArrTime;
+}
+
 void Order::setServTime(const int & s_t)
 {
 	ServTime = (s_t > 0) ? s_t : 0;

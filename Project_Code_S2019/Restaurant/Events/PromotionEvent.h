@@ -1,5 +1,5 @@
-#pragma once
-
+#ifndef __PROMOTION_EVENT_H_
+#define __PROMOTION_EVENT_H_
 #include "Event.h"
 
 class PromotionEvent: public Event
@@ -13,3 +13,4 @@ public:
 	virtual void Execute(Restaurant *pRest);
 };
 
+#endif //!__PROMOTION_EVENT_H_

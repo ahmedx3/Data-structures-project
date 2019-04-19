@@ -28,6 +28,7 @@ public:
 
 
 	void setArrTime(const int& a_t);
+	int getArrTime() const;
 	void setServTime(const int& s_t);
 	void setFinishTime(const int& f_t);
 

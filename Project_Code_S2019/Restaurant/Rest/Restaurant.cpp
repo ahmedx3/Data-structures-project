@@ -44,7 +44,6 @@ void Restaurant::RunSimulation()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 							//////////////////////////////////  Event handling functions   /////////////////////////////
 
 void Restaurant::AddEvent(Event* pE)	//adds a new event to the queue of events
@@ -163,12 +162,15 @@ void Restaurant::simulationTestRun() {
 		if (mode != MODE_SLNT) {			
 			printStatusBarInfo(currentTimeStep);	// Print all info in status bar		
 			drawOrdersToScreen();					// Draw orders to screen
-		}		
+		}
+		autoPromoteOrders(currentTimeStep);			//It works with normal orders only if the current Time step >= arrivalTime of the order + autoS
 		deleteOrdersEachTimeStep(currentTimeStep);	// Deleting an order from each type in each region
+		
+		
 		if (mode == MODE_INTR)
 			pGUI->waitForClick();
 		else if (mode == MODE_STEP)
-			Sleep(1000);		
+			Sleep(500);	
 		currentTimeStep++;							// Advance to next timestep
 	}
 	//////////////////////////////////////////////////////////////////////////////
@@ -181,11 +183,12 @@ void Restaurant::simulationTestRun() {
 			printStatusBarInfo(currentTimeStep);	// Print all info in status bar
 			drawOrdersToScreen();					// Draw orders to screen
 		}
+		autoPromoteOrders(currentTimeStep);			//It works with normal orders only if the current Time step >= arrivalTime of the order + autoS
 		deleteOrdersEachTimeStep(currentTimeStep);	// Deleting an order from each type in each region
 		if (mode == MODE_INTR)
 			pGUI->waitForClick();
 		else if (mode == MODE_STEP)
-			Sleep(1000);
+			Sleep(500);
 		currentTimeStep++;							// Advance to next timestep
 	}
 	//////////////////////////////////////////////////////////////////////////////
@@ -525,8 +528,185 @@ void Restaurant::ReturnMotors(int timeStep) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Restaurant::promotToVIP(Order* ord , double extraMoney)
+
+Order * Restaurant::getOrderById(int i)
 {
+	Order* order;
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////Region A
+
+	if (normalOrdersRegionA.peekFront(order))	//if there exist at least one order
+	{
+		int firstId = order->GetID();
+		if (firstId == i)
+		{
+			return order;
+		}
+		normalOrdersRegionA.removeFront(order);
+		normalOrdersRegionA.insertEnd(order);
+		while (normalOrdersRegionA.peekFront(order) && order->GetID() != firstId)
+		{
+			if (order->GetID() == i)
+			{
+				return order;
+			}
+			normalOrdersRegionA.removeFront(order);
+			normalOrdersRegionA.insertEnd(order);
+		}
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////Region B
+
+	if (normalOrdersRegionB.peekFront(order))	//if there exist at least one order
+	{
+		int firstId = order->GetID();
+		if (firstId == i)
+		{
+			return order;
+		}
+		normalOrdersRegionB.removeFront(order);
+		normalOrdersRegionB.insertEnd(order);
+		while (normalOrdersRegionB.peekFront(order) && order->GetID() != firstId)
+		{
+			if (order->GetID() == i)
+			{
+				return order;
+			}
+			normalOrdersRegionB.removeFront(order);
+			normalOrdersRegionB.insertEnd(order);
+		}
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////Region C
+
+	if (normalOrdersRegionC.peekFront(order))	//if there exist at least one order
+	{
+		int firstId = order->GetID();
+		if (firstId == i)
+		{
+			return order;
+		}
+		normalOrdersRegionC.removeFront(order);
+		normalOrdersRegionC.insertEnd(order);
+		while (normalOrdersRegionC.peekFront(order) && order->GetID() != firstId)
+		{
+			if (order->GetID() == i)
+			{
+				return order;
+			}
+			normalOrdersRegionC.removeFront(order);
+			normalOrdersRegionC.insertEnd(order);
+		}
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////Region D
+
+	if (normalOrdersRegionD.peekFront(order))	//if there exist at least one order
+	{
+		int firstId = order->GetID();
+		if (firstId == i)
+		{
+			return order;
+		}
+		normalOrdersRegionD.removeFront(order);
+		normalOrdersRegionD.insertEnd(order);
+		while (normalOrdersRegionD.peekFront(order) && order->GetID() != firstId)
+		{
+			if (order->GetID() == i)
+			{
+				return order;
+			}
+			normalOrdersRegionD.removeFront(order);
+			normalOrdersRegionD.insertEnd(order);
+		}
+	}
+	return NULL;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+bool Restaurant::autoPromoteOrders(int TS)
+{
+	bool promotionExists = false;
+	Order* ord;
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////Region A
+	if (normalOrdersRegionA.peekFront(ord) && TS >= (ord->getArrTime() + autoS))
+	{
+		promotionExists = true;
+		while (normalOrdersRegionA.peekFront(ord) && TS >= (ord->getArrTime() + autoS))
+		{
+			normalOrdersRegionA.removeFront(ord);
+			ord->SetType(TYPE_VIP);
+			ord->setPriority();
+			totalWaitingOrders--;
+			waitingNormalA--;
+			addToVIPQueueRegionA(ord);
+			
+		}
+
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////Region B
+	if (normalOrdersRegionB.peekFront(ord) && TS >= (ord->getArrTime() + autoS))
+	{
+		promotionExists = true;
+		while (normalOrdersRegionB.peekFront(ord) && TS >= (ord->getArrTime() + autoS))
+		{
+			normalOrdersRegionB.removeFront(ord);
+			ord->SetType(TYPE_VIP);
+			ord->setPriority();
+			totalWaitingOrders--;
+			waitingNormalB--;
+			addToVIPQueueRegionB(ord);
+			
+		}
+
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////Region C
+	if (normalOrdersRegionC.peekFront(ord) && TS >= (ord->getArrTime() + autoS))
+	{
+		promotionExists = true;
+		while (normalOrdersRegionC.peekFront(ord) && TS >= (ord->getArrTime() + autoS))
+		{
+			normalOrdersRegionC.removeFront(ord);
+			ord->SetType(TYPE_VIP);
+			ord->setPriority();
+			totalWaitingOrders--;
+			waitingNormalC--;
+			addToVIPQueueRegionC(ord);
+			
+		}
+
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////Region D
+	if (normalOrdersRegionD.peekFront(ord) && TS >= (ord->getArrTime() + autoS))
+	{
+		promotionExists = true;
+		while (normalOrdersRegionD.peekFront(ord) && TS >= (ord->getArrTime() + autoS))
+		{
+			normalOrdersRegionD.removeFront(ord);
+			ord->SetType(TYPE_VIP);
+			ord->setPriority();
+			totalWaitingOrders--;
+			waitingNormalD--;
+			addToVIPQueueRegionD(ord);
+			
+		}
+
+	}
+
+	return promotionExists;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+bool Restaurant::promoteToVIP(int i, double extraMoney)
+{
+	
+	Order* ord = getOrderById(i);
+	if (ord == NULL) return false;
+
 	if (ord->GetRegion() == A_REG) {
 		ord->SetType(TYPE_VIP);
 		ord->setMoney(ord->getMoney() + extraMoney);
@@ -560,6 +740,7 @@ void Restaurant::promotToVIP(Order* ord , double extraMoney)
 		addToVIPQueueRegionD(ord);
 		cancelOrder(ord->GetID());
 	}
+	return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -571,36 +752,34 @@ void Restaurant::deleteOrdersEachTimeStep(int timeStep)
 	ReturnMotors(timeStep);
 
 	// Remove from VIP Orders
-	if (dequeueFromOneQueue(VIPOrdersRegionA, n[0], v[0], f[0], timeStep)) {
-
+	while (dequeueFromOneQueue(VIPOrdersRegionA, n[0], v[0], f[0], timeStep)) {
 		waitingVIPA--;
-
 	}
-	if (dequeueFromOneQueue(VIPOrdersRegionB, n[1], v[1], f[1], timeStep))
+	while (dequeueFromOneQueue(VIPOrdersRegionB, n[1], v[1], f[1], timeStep))
 		waitingVIPB--;
-	if (dequeueFromOneQueue(VIPOrdersRegionC, n[2], v[2], f[2], timeStep))
+	while (dequeueFromOneQueue(VIPOrdersRegionC, n[2], v[2], f[2], timeStep))
 		waitingVIPC--;
-	if (dequeueFromOneQueue(VIPOrdersRegionD, n[3], v[3], f[3], timeStep))
+	while (dequeueFromOneQueue(VIPOrdersRegionD, n[3], v[3], f[3], timeStep))
 		waitingVIPD--;
 
 	// Remove from Frozen Orders
-	if (dequeueFromOneQueue(frozenOrdersRegionA, timeStep))
+	while (dequeueFromOneQueue(frozenOrdersRegionA, timeStep))
 		waitingFrozenA--;
-	if (dequeueFromOneQueue(frozenOrdersRegionB, timeStep))
+	while (dequeueFromOneQueue(frozenOrdersRegionB, timeStep))
 		waitingFrozenB--;
-	if (dequeueFromOneQueue(frozenOrdersRegionC, timeStep))
+	while (dequeueFromOneQueue(frozenOrdersRegionC, timeStep))
 		waitingFrozenC--;
-	if (dequeueFromOneQueue(frozenOrdersRegionD, timeStep))
+	while (dequeueFromOneQueue(frozenOrdersRegionD, timeStep))
 		waitingFrozenD--;
 
 	// Remove from Normal Orders
-	if (dequeueFromOneQueue(normalOrdersRegionA, timeStep))
+	while (dequeueFromOneQueue(normalOrdersRegionA, timeStep))
 		waitingNormalA--;
-	if (dequeueFromOneQueue(normalOrdersRegionB, timeStep))
+	while (dequeueFromOneQueue(normalOrdersRegionB, timeStep))
 		waitingNormalB--;
-	if (dequeueFromOneQueue(normalOrdersRegionC, timeStep))
+	while (dequeueFromOneQueue(normalOrdersRegionC, timeStep))
 		waitingNormalC--;
-	if (dequeueFromOneQueue(normalOrdersRegionD, timeStep))
+	while (dequeueFromOneQueue(normalOrdersRegionD, timeStep))
 		waitingNormalD--;
 }
 

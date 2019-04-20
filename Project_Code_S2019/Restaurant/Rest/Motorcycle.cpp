@@ -31,11 +31,17 @@ void Motorcycle::Assign(Order* & ord, int timeStep)
 	status = SERV;
 
 	FT = timeStep + (2 * (ord->GetDistance() / speed));
+	ST =(double) (ord->GetDistance() / speed);
 }
 
 int Motorcycle::getFT() const
 {
 	return FT;
+}
+
+double Motorcycle::getST() const
+{
+	return ST;
 }
 
 void Motorcycle::deAssign() {

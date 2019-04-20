@@ -15,6 +15,7 @@ class Motorcycle
 	STATUS	status;	//idle or in-service
 	int HP; // health point
 	int FT;
+	double ST;
 
 public:
 	Motorcycle();
@@ -23,6 +24,7 @@ public:
 	virtual ~Motorcycle();
 	void Assign(Order* & ord, int timeStep);
 	int getFT() const;
+	double getST() const;
 	void deAssign();
 	ORD_TYPE getOrdType() const;
 };

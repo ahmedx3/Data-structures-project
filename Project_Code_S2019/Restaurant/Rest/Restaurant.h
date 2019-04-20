@@ -120,6 +120,11 @@ private:
 	double totalWaitingB;
 	double totalWaitingD;
 
+	double totalServA;
+	double totalServB;
+	double totalServC;
+	double totalServD;
+
 public:
 	
 	Restaurant();

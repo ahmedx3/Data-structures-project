@@ -48,6 +48,11 @@ Restaurant::Restaurant()
 	 totalWaitingC = 0;
 	 totalWaitingB = 0;
 	 totalWaitingD = 0;
+
+	 totalServA = 0;
+	 totalServB = 0;
+	 totalServC = 0;
+	 totalServD = 0;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,8 +96,14 @@ void Restaurant::ExecuteEvents(int CurrentTimeStep)									//Executes ALL event
 			CancelationEvent* pC = dynamic_cast<CancelationEvent*>(pE);
 			PromotionEvent* pP = dynamic_cast<PromotionEvent*>(pE);
 			if (pA) {
-				outputFile << pA->getArrivaltime() << " " << CurrentTimeStep - pA->getArrivaltime() << " " << " ST" << endl;
+				Motorcycle* m;
+				outputFile << pA->getArrivaltime() << " " << CurrentTimeStep - pA->getArrivaltime() << " " ;
 				if (pA->getOrderRegion() == A_REG) {
+					cout<<occupiedA.peekFront(m);
+					//cout << "m " << m->getST() << endl;
+					//m = nullptr;
+					//outputFile << m->getST() << endl;
+					//totalServA += m->getST();
 					if (pA->getOrderType() == TYPE_NRM) {
 						noOfNormOrdersA++;
 					}
@@ -105,6 +116,9 @@ void Restaurant::ExecuteEvents(int CurrentTimeStep)									//Executes ALL event
 					totalWaitingA += CurrentTimeStep - pA->getArrivaltime();
 				}
 				else if (pA->getOrderRegion() == B_REG) {
+				//	occupiedB.peekFront(m);
+					//outputFile << m->getST() << endl;
+					//totalServB += m->getST();
 					totalWaitingB += CurrentTimeStep - pA->getArrivaltime();
 					if (pA->getOrderType() == TYPE_NRM) {
 						noOfNormOrdersB++;
@@ -117,6 +131,9 @@ void Restaurant::ExecuteEvents(int CurrentTimeStep)									//Executes ALL event
 					}
 				}
 				else if (pA->getOrderRegion() == C_REG) {
+				//	occupiedC.peekFront(m);
+					//outputFile << m->getST() << endl;
+					//totalServC += m->getST();
 					totalWaitingC += CurrentTimeStep - pA->getArrivaltime();
 					if (pA->getOrderType() == TYPE_NRM) {
 						noOfNormOrdersC++;
@@ -129,6 +146,9 @@ void Restaurant::ExecuteEvents(int CurrentTimeStep)									//Executes ALL event
 					}
 				}
 				else if (pA->getOrderRegion() == D_REG) {
+					//occupiedD.peekFront(m);
+					//outputFile << m->getST() << endl;
+					//totalServD += m->getST();
 					totalWaitingD += CurrentTimeStep - pA->getArrivaltime();
 					if (pA->getOrderType() == TYPE_NRM) {
 						noOfNormOrdersD++;
@@ -263,7 +283,7 @@ void Restaurant::simulationTestRun() {
 	outputFile << "Region A : " << endl;
 	outputFile << "orders: " << noOfFrozenOrdersA + noOfNormOrdersA + noOfVipOrdersA << " [Norm:" << noOfNormOrdersA << ", frozen:" << noOfFrozenOrdersA << ", VIP:" << noOfVipOrdersA << "]" << endl;
 	outputFile << "MotorC: " << n[0] + f[0] + v[0] << "[Norm:" << n[0] << ", frozen:" << f[0] << ", vip:" << v[0] << "]" << endl;
-	outputFile << "Avg. waiting : " << totalWaitingA / (noOfFrozenOrdersA + noOfNormOrdersA + noOfVipOrdersA) << " Avg serving : " << endl;
+	outputFile << "Avg. waiting : " << totalWaitingA / (noOfFrozenOrdersA + noOfNormOrdersA + noOfVipOrdersA) << " Avg serving : "<<totalServA/ (noOfFrozenOrdersA + noOfNormOrdersA + noOfVipOrdersA) << endl;
 
 	//////////////////////////////////////////////////////////////////////////////
 

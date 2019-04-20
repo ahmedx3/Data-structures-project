@@ -102,8 +102,10 @@ void Restaurant::ExecuteEvents(int CurrentTimeStep)									//Executes ALL event
 					else if (pA->getOrderType() == TYPE_VIP) {
 						noOfVipOrdersA++;
 					}
+					totalWaitingA += CurrentTimeStep - pA->getArrivaltime();
 				}
 				else if (pA->getOrderRegion() == B_REG) {
+					totalWaitingB += CurrentTimeStep - pA->getArrivaltime();
 					if (pA->getOrderType() == TYPE_NRM) {
 						noOfNormOrdersB++;
 					}
@@ -115,6 +117,7 @@ void Restaurant::ExecuteEvents(int CurrentTimeStep)									//Executes ALL event
 					}
 				}
 				else if (pA->getOrderRegion() == C_REG) {
+					totalWaitingC += CurrentTimeStep - pA->getArrivaltime();
 					if (pA->getOrderType() == TYPE_NRM) {
 						noOfNormOrdersC++;
 					}
@@ -126,6 +129,7 @@ void Restaurant::ExecuteEvents(int CurrentTimeStep)									//Executes ALL event
 					}
 				}
 				else if (pA->getOrderRegion() == D_REG) {
+					totalWaitingD += CurrentTimeStep - pA->getArrivaltime();
 					if (pA->getOrderType() == TYPE_NRM) {
 						noOfNormOrdersD++;
 					}
@@ -259,6 +263,7 @@ void Restaurant::simulationTestRun() {
 	outputFile << "Region A : " << endl;
 	outputFile << "orders: " << noOfFrozenOrdersA + noOfNormOrdersA + noOfVipOrdersA << " [Norm:" << noOfNormOrdersA << ", frozen:" << noOfFrozenOrdersA << ", VIP:" << noOfVipOrdersA << "]" << endl;
 	outputFile << "MotorC: " << n[0] + f[0] + v[0] << "[Norm:" << n[0] << ", frozen:" << f[0] << ", vip:" << v[0] << "]" << endl;
+	outputFile << "Avg. waiting : " << totalWaitingA / (noOfFrozenOrdersA + noOfNormOrdersA + noOfVipOrdersA) << " Avg serving : " << endl;
 
 	//////////////////////////////////////////////////////////////////////////////
 

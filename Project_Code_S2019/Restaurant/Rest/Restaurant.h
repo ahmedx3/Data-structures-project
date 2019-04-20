@@ -115,10 +115,10 @@ private:
 	int noOfVipOrdersC;
 	int noOfVipOrdersD;
 
-	int totalWaitingA;
-	int totalWaitingC;
-	int totalWaitingB;
-	int totalWaitingD;
+	double totalWaitingA;
+	double totalWaitingC;
+	double totalWaitingB;
+	double totalWaitingD;
 
 public:
 	

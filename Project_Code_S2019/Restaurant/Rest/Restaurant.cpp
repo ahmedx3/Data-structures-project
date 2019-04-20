@@ -29,6 +29,25 @@ Restaurant::Restaurant()
 	waitingNormalD = 0;
 	outputFile.open("output.txt");
 	outputFile << "FT ID AT WT ST" << endl;
+	 noOfNormOrdersA = 0;
+	 noOfNormOrdersB = 0;
+	 noOfNormOrdersC = 0;
+	 noOfNormOrdersD = 0;
+
+	 noOfFrozenOrdersA = 0;
+	 noOfFrozenOrdersC = 0;
+	 noOfFrozenOrdersB = 0;
+	 noOfFrozenOrdersD = 0;
+
+	 noOfVipOrdersA = 0;
+	 noOfVipOrdersB = 0;
+	 noOfVipOrdersC = 0;
+	 noOfVipOrdersD = 0;
+
+	 totalWaitingA = 0;
+	 totalWaitingC = 0;
+	 totalWaitingB = 0;
+	 totalWaitingD = 0;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,6 +92,51 @@ void Restaurant::ExecuteEvents(int CurrentTimeStep)									//Executes ALL event
 			PromotionEvent* pP = dynamic_cast<PromotionEvent*>(pE);
 			if (pA) {
 				outputFile << pA->getArrivaltime() << " " << CurrentTimeStep - pA->getArrivaltime() << " " << " ST" << endl;
+				if (pA->getOrderRegion() == A_REG) {
+					if (pA->getOrderType() == TYPE_NRM) {
+						noOfNormOrdersA++;
+					}
+					else if (pA->getOrderType() == TYPE_FROZ) {
+						noOfFrozenOrdersA++;
+					}
+					else if (pA->getOrderType() == TYPE_VIP) {
+						noOfVipOrdersA++;
+					}
+				}
+				else if (pA->getOrderRegion() == B_REG) {
+					if (pA->getOrderType() == TYPE_NRM) {
+						noOfNormOrdersB++;
+					}
+					else if (pA->getOrderType() == TYPE_FROZ) {
+						noOfFrozenOrdersB++;
+					}
+					else if (pA->getOrderType() == TYPE_VIP) {
+						noOfVipOrdersB++;
+					}
+				}
+				else if (pA->getOrderRegion() == C_REG) {
+					if (pA->getOrderType() == TYPE_NRM) {
+						noOfNormOrdersC++;
+					}
+					else if (pA->getOrderType() == TYPE_FROZ) {
+						noOfFrozenOrdersC++;
+					}
+					else if (pA->getOrderType() == TYPE_VIP) {
+						noOfVipOrdersC++;
+					}
+				}
+				else if (pA->getOrderRegion() == D_REG) {
+					if (pA->getOrderType() == TYPE_NRM) {
+						noOfNormOrdersD++;
+					}
+					else if (pA->getOrderType() == TYPE_FROZ) {
+						noOfFrozenOrdersD++;
+					}
+					else if (pA->getOrderType() == TYPE_VIP) {
+						noOfVipOrdersD++;
+					}
+				}
+
 			}
 			else if (pC) {
 
@@ -191,6 +255,11 @@ void Restaurant::simulationTestRun() {
 			Sleep(500);
 		currentTimeStep++;							// Advance to next timestep
 	}
+
+	outputFile << "Region A : " << endl;
+	outputFile << "orders: " << noOfFrozenOrdersA + noOfNormOrdersA + noOfVipOrdersA << " [Norm:" << noOfNormOrdersA << ", frozen:" << noOfFrozenOrdersA << ", VIP:" << noOfVipOrdersA << "]" << endl;
+	outputFile << "MotorC: " << n[0] + f[0] + v[0] << "[Norm:" << n[0] << ", frozen:" << f[0] << ", vip:" << v[0] << "]" << endl;
+
 	//////////////////////////////////////////////////////////////////////////////
 
 	////////////////////////////////////////////////////////////////////////////// Finishing simulation

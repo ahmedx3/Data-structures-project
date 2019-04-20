@@ -99,6 +99,26 @@ private:
 	int autoS;	// time limit
 
 	ofstream outputFile;
+	// data members for no of orders
+	int noOfNormOrdersA;
+	int noOfNormOrdersB;
+	int noOfNormOrdersC;
+	int noOfNormOrdersD;
+
+	int noOfFrozenOrdersA;
+	int noOfFrozenOrdersC;
+	int noOfFrozenOrdersB;
+	int noOfFrozenOrdersD;
+
+	int noOfVipOrdersA;
+	int noOfVipOrdersB;
+	int noOfVipOrdersC;
+	int noOfVipOrdersD;
+
+	int totalWaitingA;
+	int totalWaitingC;
+	int totalWaitingB;
+	int totalWaitingD;
 
 public:
 	

@@ -124,7 +124,10 @@ private:
 	double totalServB;
 	double totalServC;
 	double totalServD;
-
+	// ouput info
+	struct info;
+	info* infoArr;
+	int curr;
 public:
 	
 	Restaurant();
@@ -214,16 +217,18 @@ private:
 	void lastTimeStep(int currentTimeStep);							// To see last Time step
 
 	// Assign functions
-	bool AssignOrder(Order* & ord, int timeStep);
-	bool VIPAssign(Order* & ord, int timeStep);
-	bool FrozAssign(Order* & ord, int timeStep);
-	bool NormAssign(Order* & ord, int timeStep);
+	bool AssignOrder(Order* & ord, int timeStep,Motorcycle* &m);
+	bool VIPAssign(Order* & ord, int timeStep,Motorcycle* &m);
+	bool FrozAssign(Order* & ord, int timeStep, Motorcycle* &m);
+	bool NormAssign(Order* & ord, int timeStep, Motorcycle* &m);
 	void ReturnMotors(int timeStep);
 
 
 	//For Promotion functions
 	Order* getOrderById(int i);
 	bool autoPromoteOrders(int TS);
+	// sort outpur
+	void sortInfo(info* in, int size);
 
 };
 

@@ -1,11 +1,11 @@
 #include "Motorcycle.h"
-
+#include "Math.h"
 
 Motorcycle::Motorcycle()
 {
 }
 
-Motorcycle::Motorcycle(int i, ORD_TYPE t, int s, REGION r, STATUS ss , int hp)
+Motorcycle::Motorcycle(int i, ORD_TYPE t, double s, REGION r, STATUS ss , int hp)
 {
 	ID = i;
 	type = t;
@@ -23,6 +23,7 @@ bool Motorcycle::operator>(Motorcycle & m2)
 
 Motorcycle::~Motorcycle()
 {
+	
 }
 
 void Motorcycle::Assign(Order* & ord, int timeStep)
@@ -30,8 +31,8 @@ void Motorcycle::Assign(Order* & ord, int timeStep)
 	ID = ord->GetID();
 	status = SERV;
 
-	FT = timeStep + (2 * (ord->GetDistance() / speed));
-	ST =(double) (ord->GetDistance() / speed);
+	FT = timeStep + (2 * ceil(ord->GetDistance() / speed));
+	ST = ceil(ord->GetDistance() / speed);
 }
 
 int Motorcycle::getFT() const

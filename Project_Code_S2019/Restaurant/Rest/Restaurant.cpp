@@ -53,8 +53,15 @@ Restaurant::Restaurant()
 	 totalServB = 0;
 	 totalServC = 0;
 	 totalServD = 0;
+	 curr = 0;
 }
-
+struct Restaurant::info {
+	double ST;
+	double WT;
+	double FT;
+	double AT;
+	int ID;
+};
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -81,7 +88,13 @@ void Restaurant::AddEvent(Event* pE)	//adds a new event to the queue of events
 
 void Restaurant::ExecuteEvents(int CurrentTimeStep)									//Executes ALL events that should take place at current timestep
 {
+	int tot = 0; // no of orders
+	for (int i = 0; i < 4; i++) {
+		tot += n[i] + f[i] + v[i];
+	}
+	infoArr = new info[tot]; // allocate arr
 	Event *pE;
+	int j = 0; // index for info arr
 	while (EventsQueue.peekFront(pE))												//as long as there are more events
 	{
 		
@@ -89,19 +102,25 @@ void Restaurant::ExecuteEvents(int CurrentTimeStep)									//Executes ALL event
 			return;
 
 		pE->Execute(this);
-
-		if (EventsQueue.dequeue(pE)) {												//remove event from the queue
-			outputFile << pE->getEventTime() << " " << pE->getOrderID() << " ";
-			ArrivalEvent* pA = dynamic_cast<ArrivalEvent*>(pE);						// downcast the event to get its info
-			CancelationEvent* pC = dynamic_cast<CancelationEvent*>(pE);
-			PromotionEvent* pP = dynamic_cast<PromotionEvent*>(pE);
+		//Motorcycle* m = nullptr;
+		//cout << "ocupied " << occupiedA.peekFront(m) << " isempty " << occupiedA.isEmpty() << endl;
+		if (EventsQueue.dequeue(pE)) {
+			/*//remove event from the queue
+			//outputFile << pE->getEventTime() << " " << pE->getOrderID() << " ";
+			//ArrivalEvent* pA = dynamic_cast<ArrivalEvent*>(pE);						// downcast the event to get its info
+			//CancelationEvent* pC = dynamic_cast<CancelationEvent*>(pE);
+			//PromotionEvent* pP = dynamic_cast<PromotionEvent*>(pE);
 			if (pA) {
-				Motorcycle* m;
-				outputFile << pA->getArrivaltime() << " " << CurrentTimeStep - pA->getArrivaltime() << " " ;
+				if (m != nullptr) {
+					cout << "m ST : " << m->getST() << " "<<CurrentTimeStep<< endl;
+				}
+				m = nullptr;
+				//outputFile << pA->getArrivaltime() << " " << CurrentTimeStep - pA->getArrivaltime() << " " ;
 				if (pA->getOrderRegion() == A_REG) {
-					cout<<occupiedA.peekFront(m);
-					//cout << "m " << m->getST() << endl;
-					//m = nullptr;
+
+					//cout<<"ocupied "<<occupiedB.peekFront(m)<<" isempty "<<occupiedB.isEmpty()<<endl;
+					//cout<<"ocupied "<<occupiedC.peekFront(m)<<" isempty "<<occupiedC.isEmpty()<<endl;
+
 					//outputFile << m->getST() << endl;
 					//totalServA += m->getST();
 					if (pA->getOrderType() == TYPE_NRM) {
@@ -168,6 +187,8 @@ void Restaurant::ExecuteEvents(int CurrentTimeStep)									//Executes ALL event
 			else if (pP) {
 
 			}
+		}
+		*/
 		}
 		delete pE;																	//deallocate event object from memory
 	}
@@ -245,7 +266,7 @@ void Restaurant::simulationTestRun() {
 	////////////////////////////////////////////////////////////////////////////// Starting the simulation (executing events till all events are executed)
 	int currentTimeStep = 1;
 	while (!EventsQueue.isEmpty()) {
-		
+		cout << " time " << currentTimeStep << endl;
 		ExecuteEvents(currentTimeStep);				// Execute events now
 		if (mode != MODE_SLNT) {			
 			printStatusBarInfo(currentTimeStep);	// Print all info in status bar		
@@ -279,7 +300,10 @@ void Restaurant::simulationTestRun() {
 			Sleep(500);
 		currentTimeStep++;							// Advance to next timestep
 	}
-
+	for (int h = 0; h < curr; h++) {
+		cout << infoArr[h].FT << " loop main" << endl;
+	}
+	sortInfo(infoArr, curr);
 	outputFile << "Region A : " << endl;
 	outputFile << "orders: " << noOfFrozenOrdersA + noOfNormOrdersA + noOfVipOrdersA << " [Norm:" << noOfNormOrdersA << ", frozen:" << noOfFrozenOrdersA << ", VIP:" << noOfVipOrdersA << "]" << endl;
 	outputFile << "MotorC: " << n[0] + f[0] + v[0] << "[Norm:" << n[0] << ", frozen:" << f[0] << ", vip:" << v[0] << "]" << endl;
@@ -792,6 +816,30 @@ bool Restaurant::autoPromoteOrders(int TS)
 	return promotionExists;
 }
 
+void Restaurant::sortInfo(info* in, int size)
+{
+	for (int i = 0; i < size; i++) {
+		for (int j = i+1; j < size; j++) {
+			//cout << "sort " << in[i].FT << " " << in[j].FT <<" i : "<<i<<" j : "<<j<<endl;
+			if (in[i].FT > in[j].FT) {
+				info temp = in[j];
+				in[j] = in[i];
+				in[i] = temp;
+			}
+			else if (in[i].FT == in[j].FT) {
+				if (in[i].ST > in[j].ST) {
+					info temp = in[j];
+					in[j] = in[i];
+					in[i] = temp;
+				}
+			}
+		}
+	}
+	for (int i = 0; i < size; i++) {
+		//cout << in[i].FT << " " << in[i].ST << endl;
+	}
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -842,6 +890,7 @@ bool Restaurant::promoteToVIP(int i, double extraMoney)
 
 void Restaurant::deleteOrdersEachTimeStep(int timeStep)
 {
+
 	// Check if any motorcycles returned
 	ReturnMotors(timeStep);
 
@@ -1067,8 +1116,73 @@ bool Restaurant::dequeueFromOneQueue(Queue<Order*> & queue, int timeStep) {
 	Order* pOrd;
 	bool removed = queue.peekFront(pOrd);
 	if (removed) {
-		bool assigned = AssignOrder(pOrd, timeStep);
+		Motorcycle* m = nullptr;
+		bool assigned = AssignOrder(pOrd, timeStep,m);
 		if (assigned) {
+			if (m) {
+				//cout << "order : " << pOrd->GetID() << " in region : " << pOrd->GetRegion() << " arrived at " << pOrd->getArrTime() << " assigned motor at " << timeStep << " " << " finished at " << m->getFT() << " serviced at " << m->getST() << endl;
+				if (pOrd->GetRegion() == A_REG) {
+					totalServA += m->getST();
+					totalWaitingA += timeStep - pOrd->getArrTime();
+					if (pOrd->GetType() == TYPE_NRM) {
+						noOfNormOrdersA++;
+					}
+					else if (pOrd->GetType() == TYPE_FROZ) {
+						noOfFrozenOrdersA++;
+					}
+					else if (pOrd->GetType() == TYPE_VIP) {
+						noOfVipOrdersA++;
+					}
+				}
+				else if (pOrd->GetRegion() == B_REG) {
+					totalServB += m->getST();
+					totalWaitingB += timeStep - pOrd->getArrTime();
+					if (pOrd->GetType() == TYPE_NRM) {
+						noOfNormOrdersB++;
+					}
+					else if (pOrd->GetType() == TYPE_FROZ) {
+						noOfFrozenOrdersB++;
+					}
+					else if (pOrd->GetType() == TYPE_VIP) {
+						noOfVipOrdersB++;
+					}
+				}
+				else if (pOrd->GetRegion() == C_REG) {
+					totalServC += m->getST();
+					totalWaitingC += timeStep - pOrd->getArrTime();
+					if (pOrd->GetType() == TYPE_NRM) {
+						noOfNormOrdersC++;
+					}
+					else if (pOrd->GetType() == TYPE_FROZ) {
+						noOfFrozenOrdersC++;
+					}
+					else if (pOrd->GetType() == TYPE_VIP) {
+						noOfVipOrdersC++;
+					}
+				}
+				else if (pOrd->GetRegion() == D_REG) {
+					totalServD += m->getST();
+					totalWaitingD += timeStep - pOrd->getArrTime();
+					if (pOrd->GetType() == TYPE_NRM) {
+						noOfNormOrdersD++;
+					}
+					else if (pOrd->GetType() == TYPE_FROZ) {
+						noOfFrozenOrdersD++;
+					}
+					else if (pOrd->GetType() == TYPE_VIP) {
+						noOfVipOrdersD++;
+					}
+				}
+				info x;
+				x.AT = pOrd->getArrTime();
+				x.ID = pOrd->GetID();
+				x.FT = m->getFT();
+				x.ST = m->getST();
+				x.WT = timeStep - pOrd->getArrTime();
+				infoArr[curr] = x;
+				cout << "curr " << curr << " info X : " << infoArr[curr].FT << endl;
+				curr++;
+			}
 			queue.dequeue(pOrd);
 			delete pOrd;
 			totalWaitingOrders--;
@@ -1086,10 +1200,76 @@ bool Restaurant::dequeueFromOneQueue(PriorityQueue<Order*> & queue, int noOFNorm
 	Order* pOrd;
 
 	bool removed = queue.peekFront(pOrd);
-
+	
 	if (removed) {
-		bool assigned = AssignOrder(pOrd, timeStep);
+		//cout << pOrd->getArrTime() << " from delete" << endl;
+		Motorcycle* m = nullptr;
+		bool assigned = AssignOrder(pOrd, timeStep,m);
 		if (assigned) {
+			if (m) {
+			//	cout << "order : " << pOrd->GetID() << " in region : " << pOrd->GetRegion() << " arrived at " << pOrd->getArrTime() << " assigned motor at " << timeStep  << " " << " finished at " << m->getFT() << " serviced at " << m->getST() << endl;
+				if (pOrd->GetRegion() == A_REG) {
+					totalServA += m->getST();
+					totalWaitingA += timeStep - pOrd->getArrTime();
+					if (pOrd->GetType() == TYPE_NRM) {
+						noOfNormOrdersA++;
+					}
+					else if (pOrd->GetType() == TYPE_FROZ) {
+						noOfFrozenOrdersA++;
+					}
+					else if (pOrd->GetType() == TYPE_VIP) {
+						noOfVipOrdersA++;
+					}
+				}
+				else if (pOrd->GetRegion() == B_REG) {
+					totalServB += m->getST();
+					totalWaitingB += timeStep - pOrd->getArrTime();
+					if (pOrd->GetType() == TYPE_NRM) {
+						noOfNormOrdersB++;
+					}
+					else if (pOrd->GetType() == TYPE_FROZ) {
+						noOfFrozenOrdersB++;
+					}
+					else if (pOrd->GetType() == TYPE_VIP) {
+						noOfVipOrdersB++;
+					}
+				}
+				else if (pOrd->GetRegion() == C_REG) {
+					totalServC += m->getST();
+					totalWaitingC += timeStep - pOrd->getArrTime();
+					if (pOrd->GetType() == TYPE_NRM) {
+						noOfNormOrdersC++;
+					}
+					else if (pOrd->GetType() == TYPE_FROZ) {
+						noOfFrozenOrdersC++;
+					}
+					else if (pOrd->GetType() == TYPE_VIP) {
+						noOfVipOrdersC++;
+					}
+				}
+				else if (pOrd->GetRegion() == D_REG) {
+					totalServD += m->getST();
+					totalWaitingD += timeStep - pOrd->getArrTime();
+					if (pOrd->GetType() == TYPE_NRM) {
+						noOfNormOrdersD++;
+					}
+					else if (pOrd->GetType() == TYPE_FROZ) {
+						noOfFrozenOrdersD++;
+					}
+					else if (pOrd->GetType() == TYPE_VIP) {
+						noOfVipOrdersD++;
+					}
+				}
+				info x;
+				x.AT = pOrd->getArrTime();
+				x.ID = pOrd->GetID();
+				x.FT = m->getFT();
+				x.ST = m->getST();
+				x.WT = timeStep - pOrd->getArrTime();
+				infoArr[curr] = x;
+				cout << "curr " << curr << " info X : " << infoArr[curr].FT << endl;
+				curr++;
+			}
 			queue.dequeue(pOrd);
 			delete pOrd;
 			totalWaitingOrders--;
@@ -1106,8 +1286,72 @@ bool Restaurant::dequeueFromOneQueue(LinkedList<Order*> & queue, int timeStep) {
 	Order* pOrd;
 	bool removed = queue.peekFront(pOrd);
 	if (removed) {
-		bool assigned = AssignOrder(pOrd, timeStep);
+		Motorcycle* m = nullptr;
+		bool assigned = AssignOrder(pOrd, timeStep,m);
 		if (assigned) {
+			if (m) {
+				//cout << "order : " << pOrd->GetID() << " in region : " << pOrd->GetRegion() << " arrived at " << pOrd->getArrTime() << " assigned motor at " << timeStep  << " " << " finished at " << m->getFT() << " serviced at " << m->getST() << endl;
+				if (pOrd->GetRegion() == A_REG) {
+					totalServA += m->getST();
+					totalWaitingA += timeStep - pOrd->getArrTime();
+					if (pOrd->GetType() == TYPE_NRM) {
+						noOfNormOrdersA++;
+					}else if (pOrd->GetType() == TYPE_FROZ) {
+						noOfFrozenOrdersA++;
+					}else if (pOrd->GetType() == TYPE_VIP) {
+						noOfVipOrdersA++;
+					}
+				}
+				else if (pOrd->GetRegion() == B_REG) {
+					totalServB += m->getST();
+					totalWaitingB += timeStep - pOrd->getArrTime();
+					if (pOrd->GetType() == TYPE_NRM) {
+						noOfNormOrdersB++;
+					}
+					else if (pOrd->GetType() == TYPE_FROZ) {
+						noOfFrozenOrdersB++;
+					}
+					else if (pOrd->GetType() == TYPE_VIP) {
+						noOfVipOrdersB++;
+					}
+				}
+				else if (pOrd->GetRegion() == C_REG) {
+					totalServC += m->getST();
+					totalWaitingC += timeStep - pOrd->getArrTime();
+					if (pOrd->GetType() == TYPE_NRM) {
+						noOfNormOrdersC++;
+					}
+					else if (pOrd->GetType() == TYPE_FROZ) {
+						noOfFrozenOrdersC++;
+					}
+					else if (pOrd->GetType() == TYPE_VIP) {
+						noOfVipOrdersC++;
+					}
+				}
+				else if (pOrd->GetRegion() == D_REG) {
+					totalServD += m->getST();
+					totalWaitingD += timeStep - pOrd->getArrTime();
+					if (pOrd->GetType() == TYPE_NRM) {
+						noOfNormOrdersD++;
+					}
+					else if (pOrd->GetType() == TYPE_FROZ) {
+						noOfFrozenOrdersD++;
+					}
+					else if (pOrd->GetType() == TYPE_VIP) {
+						noOfVipOrdersD++;
+					}
+				}
+				info x;
+				x.AT = pOrd->getArrTime();
+				x.ID = pOrd->GetID();
+				x.FT = m->getFT();
+				x.ST = m->getST();
+				x.WT = timeStep - pOrd->getArrTime();
+				cout << " X : " << x.FT << endl;
+				infoArr[curr] = x;
+				cout << "curr " << curr << " info X : " << infoArr[curr].FT << endl;
+				curr++;
+			}
 			queue.removeFront(pOrd);
 			delete pOrd;
 			totalWaitingOrders--;
@@ -1120,19 +1364,19 @@ bool Restaurant::dequeueFromOneQueue(LinkedList<Order*> & queue, int timeStep) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-bool Restaurant::AssignOrder(Order* & ord, int timeStep) {
+bool Restaurant::AssignOrder(Order* & ord, int timeStep,Motorcycle* &m) {
 	if (ord->GetType() == TYPE_VIP)
-		return VIPAssign(ord, timeStep);
+		return VIPAssign(ord, timeStep,m);
 	else if (ord->GetType() == TYPE_FROZ)
-		return FrozAssign(ord, timeStep);
+		return FrozAssign(ord, timeStep,m);
 	else
-		return NormAssign(ord, timeStep);
+		return NormAssign(ord, timeStep,m);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-bool Restaurant::VIPAssign(Order* & ord, int timeStep) {
+bool Restaurant::VIPAssign(Order* & ord, int timeStep, Motorcycle* &m) {
 	Motorcycle* motor;
 
 	if (ord->GetRegion() == A_REG) {
@@ -1141,6 +1385,7 @@ bool Restaurant::VIPAssign(Order* & ord, int timeStep) {
 			motor->Assign(ord, timeStep);
 			VIP[0]--;
 			occupiedA.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else if (NormalMCA.peekFront(motor)) {
@@ -1148,6 +1393,7 @@ bool Restaurant::VIPAssign(Order* & ord, int timeStep) {
 			motor->Assign(ord, timeStep);
 			Normal[0]--;
 			occupiedA.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else if (FrozenMCA.peekFront(motor)) {
@@ -1155,6 +1401,7 @@ bool Restaurant::VIPAssign(Order* & ord, int timeStep) {
 			motor->Assign(ord, timeStep);
 			Frozen[0]--;
 			occupiedA.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else
@@ -1167,6 +1414,7 @@ bool Restaurant::VIPAssign(Order* & ord, int timeStep) {
 			motor->Assign(ord, timeStep);
 			VIP[1]--;
 			occupiedB.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else if (NormalMCB.peekFront(motor)) {
@@ -1174,6 +1422,7 @@ bool Restaurant::VIPAssign(Order* & ord, int timeStep) {
 			motor->Assign(ord, timeStep);
 			Normal[1]--;
 			occupiedB.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else if (FrozenMCB.peekFront(motor)) {
@@ -1181,6 +1430,7 @@ bool Restaurant::VIPAssign(Order* & ord, int timeStep) {
 			motor->Assign(ord, timeStep);
 			Frozen[1]--;
 			occupiedB.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else
@@ -1193,6 +1443,7 @@ bool Restaurant::VIPAssign(Order* & ord, int timeStep) {
 			motor->Assign(ord, timeStep);
 			VIP[2]--;
 			occupiedC.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else if (NormalMCC.peekFront(motor)) {
@@ -1200,6 +1451,7 @@ bool Restaurant::VIPAssign(Order* & ord, int timeStep) {
 			motor->Assign(ord, timeStep);
 			Normal[2]--;
 			occupiedC.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else if (FrozenMCC.peekFront(motor)) {
@@ -1207,6 +1459,7 @@ bool Restaurant::VIPAssign(Order* & ord, int timeStep) {
 			motor->Assign(ord, timeStep);
 			Frozen[2]--;
 			occupiedC.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else
@@ -1219,6 +1472,7 @@ bool Restaurant::VIPAssign(Order* & ord, int timeStep) {
 			motor->Assign(ord, timeStep);
 			VIP[3]--;
 			occupiedD.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else if (NormalMCD.peekFront(motor)) {
@@ -1226,6 +1480,7 @@ bool Restaurant::VIPAssign(Order* & ord, int timeStep) {
 			motor->Assign(ord, timeStep);
 			Normal[3]--;
 			occupiedD.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else if (FrozenMCD.peekFront(motor)) {
@@ -1233,6 +1488,7 @@ bool Restaurant::VIPAssign(Order* & ord, int timeStep) {
 			motor->Assign(ord, timeStep);
 			Frozen[3]--;
 			occupiedD.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else
@@ -1243,7 +1499,7 @@ bool Restaurant::VIPAssign(Order* & ord, int timeStep) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-bool Restaurant::FrozAssign(Order* & ord, int timeStep) {
+bool Restaurant::FrozAssign(Order* & ord, int timeStep, Motorcycle* &m) {
 	Motorcycle* motor;
 
 	if (ord->GetRegion() == A_REG) {
@@ -1252,6 +1508,7 @@ bool Restaurant::FrozAssign(Order* & ord, int timeStep) {
 			motor->Assign(ord, timeStep);
 			Frozen[0]--;
 			occupiedA.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else
@@ -1264,6 +1521,7 @@ bool Restaurant::FrozAssign(Order* & ord, int timeStep) {
 			motor->Assign(ord, timeStep);
 			Frozen[1]--;
 			occupiedB.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else
@@ -1276,6 +1534,7 @@ bool Restaurant::FrozAssign(Order* & ord, int timeStep) {
 			motor->Assign(ord, timeStep);
 			Frozen[2]--;
 			occupiedC.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else
@@ -1288,6 +1547,7 @@ bool Restaurant::FrozAssign(Order* & ord, int timeStep) {
 			motor->Assign(ord, timeStep);
 			Frozen[3]--;
 			occupiedD.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else
@@ -1299,7 +1559,7 @@ bool Restaurant::FrozAssign(Order* & ord, int timeStep) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-bool Restaurant::NormAssign(Order* & ord, int timeStep) {
+bool Restaurant::NormAssign(Order* & ord, int timeStep, Motorcycle* &m) {
 	Motorcycle* motor;
 
 	if (ord->GetRegion() == A_REG) {
@@ -1307,14 +1567,18 @@ bool Restaurant::NormAssign(Order* & ord, int timeStep) {
 			NormalMCA.dequeue(motor);
 			motor->Assign(ord, timeStep);
 			Normal[0]--;
-			occupiedA.enqueue(motor);
+			
+			 occupiedA.enqueue(motor) ;
+			 m = motor;
 			return true;
 		}
 		else if (VIPMCA.peekFront(motor)) {
 			VIPMCA.dequeue(motor);
 			motor->Assign(ord, timeStep);
 			VIP[0]--;
+			
 			occupiedA.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else
@@ -1327,6 +1591,7 @@ bool Restaurant::NormAssign(Order* & ord, int timeStep) {
 			motor->Assign(ord, timeStep);
 			Normal[1]--;
 			occupiedB.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else if (VIPMCB.peekFront(motor)) {
@@ -1334,6 +1599,7 @@ bool Restaurant::NormAssign(Order* & ord, int timeStep) {
 			motor->Assign(ord, timeStep);
 			VIP[1]--;
 			occupiedB.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else
@@ -1346,6 +1612,7 @@ bool Restaurant::NormAssign(Order* & ord, int timeStep) {
 			motor->Assign(ord, timeStep);
 			Normal[2]--;
 			occupiedC.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else if (VIPMCC.peekFront(motor)) {
@@ -1353,6 +1620,7 @@ bool Restaurant::NormAssign(Order* & ord, int timeStep) {
 			motor->Assign(ord, timeStep);
 			VIP[2]--;
 			occupiedC.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else
@@ -1365,6 +1633,7 @@ bool Restaurant::NormAssign(Order* & ord, int timeStep) {
 			motor->Assign(ord, timeStep);
 			Normal[3]--;
 			occupiedD.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else if (VIPMCD.peekFront(motor)) {
@@ -1372,6 +1641,7 @@ bool Restaurant::NormAssign(Order* & ord, int timeStep) {
 			motor->Assign(ord, timeStep);
 			VIP[3]--;
 			occupiedD.enqueue(motor);
+			m = motor;
 			return true;
 		}
 		else

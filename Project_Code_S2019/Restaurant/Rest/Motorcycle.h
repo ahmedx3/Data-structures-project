@@ -10,7 +10,7 @@ class Motorcycle
 {
 	int ID;
 	ORD_TYPE type;	//for each order type there is a corresponding motorcycle type 
-	int speed;		//meters it can move in one clock tick (in one timestep)
+	double speed;		//meters it can move in one clock tick (in one timestep)
 	REGION	region;	//region of the motorcycle
 	STATUS	status;	//idle or in-service
 	int HP; // health point
@@ -19,7 +19,7 @@ class Motorcycle
 
 public:
 	Motorcycle();
-	Motorcycle(int i, ORD_TYPE t, int s, REGION r, STATUS ss , int hp);
+	Motorcycle(int i, ORD_TYPE t, double s, REGION r, STATUS ss , int hp);
 	bool operator>(Motorcycle& m2);
 	virtual ~Motorcycle();
 	void Assign(Order* & ord, int timeStep);

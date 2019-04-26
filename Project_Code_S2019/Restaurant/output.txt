@@ -1,5 +1,5 @@
 FT ID AT WT ST
-7 1 7 0 7 2 7 0 7 3 7 0 7 4 7 0 7 5 7 0 7 6 7 0 7 7 7 0 7 8 7 0 7 9 7 0 7 10 7 0 9 11 9 0 9 12 9 0 12 13 12 0 15 1 19 14 19 0 19 2 25 6 25 0 Region A : 
-orders: 10 [Norm:10, frozen:0, VIP:0]
+Region A : 
+orders: 10 [Norm:3, frozen:0, VIP:7]
 MotorC: 6[Norm:2, frozen:3, vip:1]
-Avg. waiting : 0 Avg serving : 0
+Avg. waiting : 7.3 Avg serving : 5.8

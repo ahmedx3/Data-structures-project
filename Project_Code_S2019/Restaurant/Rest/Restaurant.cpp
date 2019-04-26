@@ -6,7 +6,13 @@ using namespace std;
 #include "Restaurant.h"
 #include "..\Events\ArrivalEvent.h"
 
-
+struct Restaurant::info {
+	double ST;
+	double WT;
+	double FT;
+	double AT;
+	int ID;
+};
 Restaurant::Restaurant()
 {
 	pGUI = NULL;
@@ -54,14 +60,9 @@ Restaurant::Restaurant()
 	 totalServC = 0;
 	 totalServD = 0;
 	 curr = 0;
+	
 }
-struct Restaurant::info {
-	double ST;
-	double WT;
-	double FT;
-	double AT;
-	int ID;
-};
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -69,8 +70,8 @@ void Restaurant::RunSimulation()
 {
 	pGUI = new GUI;
 	this->mode = pGUI->getGUIMode();
-
 	simulationTestRun();
+	
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,13 +89,9 @@ void Restaurant::AddEvent(Event* pE)	//adds a new event to the queue of events
 
 void Restaurant::ExecuteEvents(int CurrentTimeStep)									//Executes ALL events that should take place at current timestep
 {
-	int tot = 0; // no of orders
-	for (int i = 0; i < 4; i++) {
-		tot += n[i] + f[i] + v[i];
-	}
-	infoArr = new info[tot]; // allocate arr
+	
 	Event *pE;
-	int j = 0; // index for info arr
+	
 	while (EventsQueue.peekFront(pE))												//as long as there are more events
 	{
 		
@@ -260,13 +257,18 @@ void Restaurant::simulationTestRun() {
 	f = File.getFrozenMotorsNumber();
 	v = File.getVIPMotorsNumber();
 	autoS = File.getTimeLimit();
+	int tot = 0; // no of orders
+	for (int i = 0; i < 4; i++) {
+		tot += n[i] + f[i] + v[i];
+	}
+	infoArr = new info[tot]; // allocate arr
 	setMCs();
 	//////////////////////////////////////////////////////////////////////////////
 
 	////////////////////////////////////////////////////////////////////////////// Starting the simulation (executing events till all events are executed)
 	int currentTimeStep = 1;
 	while (!EventsQueue.isEmpty()) {
-		cout << " time " << currentTimeStep << endl;
+		//cout << " time " << currentTimeStep << endl;
 		ExecuteEvents(currentTimeStep);				// Execute events now
 		if (mode != MODE_SLNT) {			
 			printStatusBarInfo(currentTimeStep);	// Print all info in status bar		
@@ -300,14 +302,28 @@ void Restaurant::simulationTestRun() {
 			Sleep(500);
 		currentTimeStep++;							// Advance to next timestep
 	}
-	for (int h = 0; h < curr; h++) {
-		cout << infoArr[h].FT << " loop main" << endl;
-	}
+	
 	sortInfo(infoArr, curr);
+	outputFile << "FT | ID | AT | WT | ST" << endl;
+	for (int i = 0; i < curr; i++) {
+		outputFile << infoArr[i].FT << " | " << infoArr[i].ID << " | " << infoArr[i].AT << " | " << infoArr[i].WT << " | " << infoArr[i].ST << endl;;
+	}
 	outputFile << "Region A : " << endl;
 	outputFile << "orders: " << noOfFrozenOrdersA + noOfNormOrdersA + noOfVipOrdersA << " [Norm:" << noOfNormOrdersA << ", frozen:" << noOfFrozenOrdersA << ", VIP:" << noOfVipOrdersA << "]" << endl;
 	outputFile << "MotorC: " << n[0] + f[0] + v[0] << "[Norm:" << n[0] << ", frozen:" << f[0] << ", vip:" << v[0] << "]" << endl;
 	outputFile << "Avg. waiting : " << totalWaitingA / (noOfFrozenOrdersA + noOfNormOrdersA + noOfVipOrdersA) << " Avg serving : "<<totalServA/ (noOfFrozenOrdersA + noOfNormOrdersA + noOfVipOrdersA) << endl;
+	outputFile << "Region B : " << endl;
+	outputFile << "orders: " << noOfFrozenOrdersB + noOfNormOrdersB + noOfVipOrdersB << " [Norm:" << noOfNormOrdersB << ", frozen:" << noOfFrozenOrdersB << ", VIP:" << noOfVipOrdersB << "]" << endl;
+	outputFile << "MotorC: " << n[1] + f[1] + v[1] << "[Norm:" << n[1] << ", frozen:" << f[1] << ", vip:" << v[1] << "]" << endl;
+	outputFile << "Avg. waiting : " << totalWaitingB / (noOfFrozenOrdersB + noOfNormOrdersB + noOfVipOrdersB) << " Avg serving : "<<totalServB/ (noOfFrozenOrdersB + noOfNormOrdersB + noOfVipOrdersB) << endl;
+	outputFile << "Region C : " << endl;
+	outputFile << "orders: " << noOfFrozenOrdersC + noOfNormOrdersC + noOfVipOrdersC << " [Norm:" << noOfNormOrdersC << ", frozen:" << noOfFrozenOrdersC << ", VIP:" << noOfVipOrdersC << "]" << endl;
+	outputFile << "MotorC: " << n[2] + f[2] + v[2] << "[Norm:" << n[2] << ", frozen:" << f[2] << ", vip:" << v[2] << "]" << endl;
+	outputFile << "Avg. waiting : " << totalWaitingC / (noOfFrozenOrdersC + noOfNormOrdersC + noOfVipOrdersC) << " Avg serving : "<<totalServC/ (noOfFrozenOrdersC + noOfNormOrdersC + noOfVipOrdersC) << endl;
+	outputFile << "Region D : " << endl;
+	outputFile << "orders: " << noOfFrozenOrdersD + noOfNormOrdersD + noOfVipOrdersD << " [Norm:" << noOfNormOrdersD << ", frozen:" << noOfFrozenOrdersD << ", VIP:" << noOfVipOrdersD << "]" << endl;
+	outputFile << "MotorC: " << n[3] + f[3] + v[3] << "[Norm:" << n[3] << ", frozen:" << f[3] << ", vip:" << v[3] << "]" << endl;
+	outputFile << "Avg. waiting : " << totalWaitingD / (noOfFrozenOrdersD + noOfNormOrdersD + noOfVipOrdersD) << " Avg serving : "<<totalServD/ (noOfFrozenOrdersD + noOfNormOrdersD + noOfVipOrdersD) << endl;
 
 	//////////////////////////////////////////////////////////////////////////////
 
@@ -316,7 +332,7 @@ void Restaurant::simulationTestRun() {
 	lastTimeStep(currentTimeStep); // To see last time step
 	pGUI->PrintMessage("Simulation Over, Click anywhere to exit!");
 	pGUI->waitForClick();
-
+	
 	//////////////////////////////////////////////////////////////////////////////
 
 }
@@ -835,9 +851,7 @@ void Restaurant::sortInfo(info* in, int size)
 			}
 		}
 	}
-	for (int i = 0; i < size; i++) {
-		//cout << in[i].FT << " " << in[i].ST << endl;
-	}
+	
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1120,6 +1134,7 @@ bool Restaurant::dequeueFromOneQueue(Queue<Order*> & queue, int timeStep) {
 		bool assigned = AssignOrder(pOrd, timeStep,m);
 		if (assigned) {
 			if (m) {
+				cout <<"order : "<<pOrd->GetID()<< " order region " << pOrd->GetRegion() << " type " << pOrd->GetType() << endl;
 				//cout << "order : " << pOrd->GetID() << " in region : " << pOrd->GetRegion() << " arrived at " << pOrd->getArrTime() << " assigned motor at " << timeStep << " " << " finished at " << m->getFT() << " serviced at " << m->getST() << endl;
 				if (pOrd->GetRegion() == A_REG) {
 					totalServA += m->getST();
@@ -1180,8 +1195,9 @@ bool Restaurant::dequeueFromOneQueue(Queue<Order*> & queue, int timeStep) {
 				x.ST = m->getST();
 				x.WT = timeStep - pOrd->getArrTime();
 				infoArr[curr] = x;
-				cout << "curr " << curr << " info X : " << infoArr[curr].FT << endl;
-				curr++;
+				
+			
+				curr+= 1;
 			}
 			queue.dequeue(pOrd);
 			delete pOrd;
@@ -1207,6 +1223,7 @@ bool Restaurant::dequeueFromOneQueue(PriorityQueue<Order*> & queue, int noOFNorm
 		bool assigned = AssignOrder(pOrd, timeStep,m);
 		if (assigned) {
 			if (m) {
+				cout << "order : " << pOrd->GetID() << " order region " << pOrd->GetRegion() << " type " << pOrd->GetType() << endl;
 			//	cout << "order : " << pOrd->GetID() << " in region : " << pOrd->GetRegion() << " arrived at " << pOrd->getArrTime() << " assigned motor at " << timeStep  << " " << " finished at " << m->getFT() << " serviced at " << m->getST() << endl;
 				if (pOrd->GetRegion() == A_REG) {
 					totalServA += m->getST();
@@ -1267,8 +1284,8 @@ bool Restaurant::dequeueFromOneQueue(PriorityQueue<Order*> & queue, int noOFNorm
 				x.ST = m->getST();
 				x.WT = timeStep - pOrd->getArrTime();
 				infoArr[curr] = x;
-				cout << "curr " << curr << " info X : " << infoArr[curr].FT << endl;
-				curr++;
+				//cout << "curr " << curr << " info X : " << infoArr[curr].FT << endl;
+				curr+= 1;
 			}
 			queue.dequeue(pOrd);
 			delete pOrd;
@@ -1290,6 +1307,7 @@ bool Restaurant::dequeueFromOneQueue(LinkedList<Order*> & queue, int timeStep) {
 		bool assigned = AssignOrder(pOrd, timeStep,m);
 		if (assigned) {
 			if (m) {
+				cout << "order : " << pOrd->GetID() << " order region " << pOrd->GetRegion() << " type " << pOrd->GetType() << endl;
 				//cout << "order : " << pOrd->GetID() << " in region : " << pOrd->GetRegion() << " arrived at " << pOrd->getArrTime() << " assigned motor at " << timeStep  << " " << " finished at " << m->getFT() << " serviced at " << m->getST() << endl;
 				if (pOrd->GetRegion() == A_REG) {
 					totalServA += m->getST();
@@ -1347,10 +1365,10 @@ bool Restaurant::dequeueFromOneQueue(LinkedList<Order*> & queue, int timeStep) {
 				x.FT = m->getFT();
 				x.ST = m->getST();
 				x.WT = timeStep - pOrd->getArrTime();
-				cout << " X : " << x.FT << endl;
+			//	cout << " X : " << x.FT << endl;
 				infoArr[curr] = x;
-				cout << "curr " << curr << " info X : " << infoArr[curr].FT << endl;
-				curr++;
+			//	cout << "curr " << curr << " info X : " << infoArr[curr].FT << endl;
+				curr+= 1;
 			}
 			queue.removeFront(pOrd);
 			delete pOrd;

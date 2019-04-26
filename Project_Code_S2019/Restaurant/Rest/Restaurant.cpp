@@ -232,8 +232,9 @@ Restaurant::~Restaurant()
 		delete motor;
 	while (occupiedD.dequeue(motor))
 		delete motor;
-
+	outputFile.close();
 	delete pGUI;
+	delete infoArr;
 }
 
 // Main test run for phase 1

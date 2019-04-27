@@ -19,6 +19,11 @@ Restaurant::Restaurant()
 
 	totalWaitingOrders = 0;
 
+	brokenA = 0;
+	brokenB = 0;
+	brokenC = 0;
+	brokenD = 0;
+
 	waitingVIPA = 0;
 	waitingVIPB = 0;
 	waitingVIPC = 0;
@@ -232,7 +237,9 @@ Restaurant::~Restaurant()
 		delete motor;
 	while (occupiedD.dequeue(motor))
 		delete motor;
+
 	outputFile.close();
+
 	delete pGUI;
 	delete infoArr;
 }
@@ -268,7 +275,7 @@ void Restaurant::simulationTestRun() {
 
 	////////////////////////////////////////////////////////////////////////////// Starting the simulation (executing events till all events are executed)
 	int currentTimeStep = 1;
-	while (!EventsQueue.isEmpty()) {
+	while (!EventsQueue.isEmpty() || totalWaitingOrders > 0) {
 		//cout << " time " << currentTimeStep << endl;
 		ExecuteEvents(currentTimeStep);				// Execute events now
 		if (mode != MODE_SLNT) {			
@@ -287,22 +294,6 @@ void Restaurant::simulationTestRun() {
 	}
 	//////////////////////////////////////////////////////////////////////////////
 
-	////////////////////////////////////////////////////////////////////////////// Events are all executed and the simulation continues until no orders are left
-
-	while (totalWaitingOrders > 0) {
-
-		if (mode != MODE_SLNT) {
-			printStatusBarInfo(currentTimeStep);	// Print all info in status bar
-			drawOrdersToScreen();					// Draw orders to screen
-		}
-		autoPromoteOrders(currentTimeStep);			//It works with normal orders only if the current Time step >= arrivalTime of the order + autoS
-		deleteOrdersEachTimeStep(currentTimeStep);	// Deleting an order from each type in each region
-		if (mode == MODE_INTR)
-			pGUI->waitForClick();
-		else if (mode == MODE_STEP)
-			Sleep(500);
-		currentTimeStep++;							// Advance to next timestep
-	}
 	
 	sortInfo(infoArr, curr);
 	outputFile << "FT | ID | AT | WT | ST" << endl;
@@ -366,12 +357,32 @@ void Restaurant::printStatusBarInfo(int currentTimeStep)
 	pGUI->ClearStatusBar();
 
 	int lineNo = 0;
+
+	char BrokenA[10];
+	itoa(brokenA, BrokenA, 10);
+	char BrokenB[10];
+	itoa(brokenB, BrokenB, 10);
+	char BrokenC[10];
+	itoa(brokenC, BrokenC, 10);
+	char BrokenD[10];
+	itoa(brokenD, BrokenD, 10);
+
 	string Time = "Time Step: ";
 
 	// current time step
 	char timeStep[10];
 	itoa(currentTimeStep, timeStep, 10);
 	Time += timeStep;
+
+	Time += ", BrokenA = ";
+	Time += BrokenA;
+	Time += ", BrokenB = ";
+	Time += BrokenB;
+	Time += ", BrokenC = ";
+	Time += BrokenC;
+	Time += ", BrokenD = ";
+	Time += BrokenD;
+
 	pGUI->PrintStatusMessages(Time, lineNo++);
 
 	string FirstLine = "                                   VIP                             Frozen                            Normal                            VIP Motors                            Frozen Motors                            Normal Motors";
@@ -569,6 +580,9 @@ void Restaurant::printStatusBarInfo(int currentTimeStep)
 
 
 void Restaurant::ReturnMotors(int timeStep) {
+
+	ReturnRepairedMotors(timeStep);
+
 	Motorcycle* motor;
 
 	while (occupiedA.peekFront(motor))
@@ -577,6 +591,136 @@ void Restaurant::ReturnMotors(int timeStep) {
 			break;
 
 		occupiedA.dequeue(motor);
+
+		if (motor->getHP() > 0) {
+
+			motor->deAssign();
+
+			if (motor->getOrdType() == TYPE_VIP) {
+				VIPMCA.enqueue(motor);
+				VIP[0]++;
+			}
+			else if (motor->getOrdType() == TYPE_FROZ) {
+				FrozenMCA.enqueue(motor);
+				Frozen[0]++;
+			}
+			else {
+				NormalMCA.enqueue(motor);
+				Normal[0]++;
+			}
+		}
+		else {
+			motor->Repair(timeStep);
+			repairingA.enqueue(motor);
+			brokenA++;
+		}
+	}
+
+	while (occupiedB.peekFront(motor))
+	{
+		if (motor->getFT() > timeStep)
+			break;
+
+		occupiedB.dequeue(motor);
+
+		if (motor->getHP() > 0) {
+
+			motor->deAssign();
+
+			if (motor->getOrdType() == TYPE_VIP) {
+				VIPMCB.enqueue(motor);
+				VIP[1]++;
+			}
+			else if (motor->getOrdType() == TYPE_FROZ) {
+				FrozenMCB.enqueue(motor);
+				Frozen[1]++;
+			}
+			else {
+				NormalMCB.enqueue(motor);
+				Normal[1]++;
+			}
+		}
+		else {
+			motor->Repair(timeStep);
+			repairingB.enqueue(motor);
+			brokenB++;
+		}
+	}
+
+	while (occupiedC.peekFront(motor))
+	{
+		if (motor->getFT() > timeStep)
+			break;
+
+		occupiedC.dequeue(motor);
+
+		if (motor->getHP() > 0) {
+
+			motor->deAssign();
+
+			if (motor->getOrdType() == TYPE_VIP) {
+				VIPMCC.enqueue(motor);
+				VIP[2]++;
+			}
+			else if (motor->getOrdType() == TYPE_FROZ) {
+				FrozenMCC.enqueue(motor);
+				Frozen[2]++;
+			}
+			else {
+				NormalMCC.enqueue(motor);
+				Normal[2]++;
+			}
+		}
+		else {
+			motor->Repair(timeStep);
+			repairingC.enqueue(motor);
+			brokenC++;
+		}
+	}
+
+	while (occupiedD.peekFront(motor))
+	{
+		if (motor->getFT() > timeStep)
+			break;
+
+		occupiedD.dequeue(motor);
+
+		if (motor->getHP() > 0) {
+
+			motor->deAssign();
+
+			if (motor->getOrdType() == TYPE_VIP) {
+				VIPMCD.enqueue(motor);
+				VIP[3]++;
+			}
+			else if (motor->getOrdType() == TYPE_FROZ) {
+				FrozenMCD.enqueue(motor);
+				Frozen[3]++;
+			}
+			else {
+				NormalMCD.enqueue(motor);
+				Normal[3]++;
+			}
+		}
+		else {
+			motor->Repair(timeStep);
+			repairingD.enqueue(motor);
+			brokenD++;
+		}
+	}
+}
+
+void Restaurant::ReturnRepairedMotors(int timeStep) {
+	Motorcycle* motor;
+
+	while (repairingA.peekFront(motor)) {
+
+		if (timeStep < motor->getRepairTime())
+			break;
+
+		repairingA.dequeue(motor);
+		brokenA--;
+
 		motor->deAssign();
 
 		if (motor->getOrdType() == TYPE_VIP) {
@@ -593,12 +737,14 @@ void Restaurant::ReturnMotors(int timeStep) {
 		}
 	}
 
-	while (occupiedB.peekFront(motor))
-	{
-		if (motor->getFT() > timeStep)
+	while (repairingB.peekFront(motor)) {
+
+		if (timeStep < motor->getRepairTime())
 			break;
 
-		occupiedB.dequeue(motor);
+		repairingB.dequeue(motor);
+		brokenB--;
+
 		motor->deAssign();
 
 		if (motor->getOrdType() == TYPE_VIP) {
@@ -615,12 +761,14 @@ void Restaurant::ReturnMotors(int timeStep) {
 		}
 	}
 
-	while (occupiedC.peekFront(motor))
-	{
-		if (motor->getFT() > timeStep)
+	while (repairingC.peekFront(motor)) {
+
+		if (timeStep < motor->getRepairTime())
 			break;
 
-		occupiedC.dequeue(motor);
+		repairingC.dequeue(motor);
+		brokenC--;
+
 		motor->deAssign();
 
 		if (motor->getOrdType() == TYPE_VIP) {
@@ -637,12 +785,14 @@ void Restaurant::ReturnMotors(int timeStep) {
 		}
 	}
 
-	while (occupiedD.peekFront(motor))
-	{
-		if (motor->getFT() > timeStep)
+	while (repairingD.peekFront(motor)) {
+
+		if (timeStep < motor->getRepairTime())
 			break;
 
-		occupiedD.dequeue(motor);
+		repairingD.dequeue(motor);
+		brokenD--;
+
 		motor->deAssign();
 
 		if (motor->getOrdType() == TYPE_VIP) {

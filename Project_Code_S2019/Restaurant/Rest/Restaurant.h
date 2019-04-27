@@ -73,6 +73,10 @@ private:
 	PriorityQueue<Motorcycle*> occupiedC;	// in use MC in Region C
 	PriorityQueue<Motorcycle*> occupiedD;	// in use MC in Region D
 
+	Queue<Motorcycle*> repairingA;			// in repair MC in region A
+	Queue<Motorcycle*> repairingB;			// in repair MC in region B
+	Queue<Motorcycle*> repairingC;			// in repair MC in region C
+	Queue<Motorcycle*> repairingD;			// in repair MC in region D
 
 	int waitingVIPA;
 	int waitingVIPB;
@@ -88,6 +92,11 @@ private:
 	int waitingNormalB;
 	int waitingNormalC;
 	int waitingNormalD;
+
+	int brokenA;
+	int brokenB;
+	int brokenC;
+	int brokenD;
 
 	// data members for motorcycle info
 	int sn;		//Normal motocycles speed
@@ -222,6 +231,7 @@ private:
 	bool FrozAssign(Order* & ord, int timeStep, Motorcycle* &m);
 	bool NormAssign(Order* & ord, int timeStep, Motorcycle* &m);
 	void ReturnMotors(int timeStep);
+	void ReturnRepairedMotors(int timeStep);
 
 
 	//For Promotion functions

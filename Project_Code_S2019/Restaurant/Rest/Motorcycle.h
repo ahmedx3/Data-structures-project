@@ -16,6 +16,8 @@ class Motorcycle
 	int HP; // health point
 	int FT;
 	double ST;
+	bool wasInTraffic;
+	int repaired;
 
 public:
 	Motorcycle();
@@ -27,6 +29,13 @@ public:
 	double getST() const;
 	void deAssign();
 	ORD_TYPE getOrdType() const;
+	bool getWasInTraffic() const;
+	int getHP() const;
+	void Repair(int timeStep);
+	int getRepairTime() const;
+
+private:
+	bool RandomBool();
 };
 
 #endif

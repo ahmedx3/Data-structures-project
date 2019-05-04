@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <time.h>
+#include <windows.h>
 
 using namespace std;
 
@@ -246,7 +247,26 @@ Restaurant::~Restaurant()
 
 // Main test run for phase 1
 void Restaurant::simulationTestRun() {
-	
+	////////////////////////////////////////////////////////////////////////////////Sound Options
+	pGUI->PrintMessage("Do you want to play music? \n Press y: Yes        n: No");
+	string s = pGUI->GetString();
+	while (s.length() != 1)
+	{
+		pGUI->PrintMessage("please enter [y:Yes        n: No] to play music");
+		s = pGUI->GetString();
+	}
+	char snd = s[0];
+	if (snd != 'y' && snd != 'n')
+	{
+		pGUI->PrintMessage("please enter [y:Yes        n: No] to play music");
+		s = pGUI->GetString();
+		snd = s[0];
+	}
+	if (snd == 'y')
+	{
+		PlaySound(TEXT("hamadayel3ab.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+	}
+
 	/////////////////////////////////////////////////////////////////////////////// Getting the input file and processing it.
 	pGUI->PrintMessage("Enter simulation file name");
 	load File(this);		// Loading the files

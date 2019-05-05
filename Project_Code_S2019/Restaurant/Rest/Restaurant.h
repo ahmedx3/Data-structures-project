@@ -26,9 +26,9 @@ private:
 
 	int totalWaitingOrders;
 
-	int Normal[4];
-	int Frozen[4];
-	int VIP[4];
+	int Normal[4];	//number of normal motorcycles for each region (changes during the simulation when a motorcycle is assigned an order or when it comes back)
+	int Frozen[4];	//number of frozen motorcycles for each region (changes during the simulation when a motorcycle is assigned an order or when it comes back)
+	int VIP[4];		//number of VIP motorcycles for each region (changes during the simulation when a motorcycle is assigned an order or when it comes back)
 	/// ==> 
 	//	DEMO-related members. Should be removed in phases 1&2
 	Queue<Order*> DEMO_Queue;	//Important: This is just for demo
@@ -102,9 +102,9 @@ private:
 	int sn;		//Normal motocycles speed
 	int sf;		//Frozen motocycles speed
 	int sv;		//vip motocycles speed
-	int* n;		// no of normal
-	int* f;		// no of frozen
-	int* v;		// no of vip
+	int* n;		// no of normal for each region[array of 4] (They are gotten from the input file and they're Constant numbers that won't be changed during the simulation)
+	int* f;		// no of frozen for each region[array of 4]	(They are gotten from the input file and they're Constant numbers that won't be changed during the simulation)
+	int* v;		// no of vip for each region[array of 4]	(They are gotten from the input file and they're Constant numbers that won't be changed during the simulation)
 	int autoS;	// time limit
 
 	ofstream outputFile;
@@ -215,15 +215,15 @@ private:
 	void drawOneQueue(PriorityQueue<Order*>& queue);
 	void drawOneQueue(LinkedList<Order*>& queue);
 	void drawOrdersToScreen();										// Draws all active orders
-	void deleteOrdersEachTimeStep(int timeStep);					// deletes orders each time step as if assigning them to bikes
-	void printStatusBarInfo(int currentTimeStep);					// prints all info in status bar
+	void deleteOrdersEachTimeStep(int timeStep,string &stringA, string &stringB, string &stringC, string &stringD);					// deletes orders each time step as if assigning them to bikes
+	void printStatusBarInfo(int currentTimeStep, string& stringA, string& stringB, string& stringC, string& stringD);					// prints all info in status bar
 	bool cancelFromCertainQueue(int id, Queue<Order*> & queue);		// Cancel order from certain queue
 	bool cancelFromCertainQueue(int id, PriorityQueue<Order*>& queue);
-	bool dequeueFromOneQueue(Queue<Order*> & queue, int timeStep);	// dequeue one order
-	bool dequeueFromOneQueue(PriorityQueue<Order*>& queue, int noOFNormalAvailable, int noOFVIPAvailable, int noOfFrozenAvailable, int timeStep);
-	bool dequeueFromOneQueue(LinkedList<Order*>& queue, int timeStep);
+	bool dequeueFromOneQueue(Queue<Order*> & queue, int timeStep, string& stringA, string& stringB, string& stringC, string& stringD);	// dequeue one order
+	bool dequeueFromOneQueue(PriorityQueue<Order*>& queue, int noOFNormalAvailable, int noOFVIPAvailable, int noOfFrozenAvailable, int timeStep, string& stringA, string& stringB, string& stringC, string& stringD);
+	bool dequeueFromOneQueue(LinkedList<Order*>& queue, int timeStep, string& stringA, string& stringB, string& stringC, string& stringD);
 	bool cancelFromCertainQueue(int id, LinkedList<Order*>& queue);
-	void lastTimeStep(int currentTimeStep);							// To see last Time step
+	void lastTimeStep(int currentTimeStep, string &stringA, string &stringB, string &stringC, string &stringD);							// To see last Time step
 
 	// Assign functions
 	bool AssignOrder(Order* & ord, int timeStep,Motorcycle* &m);

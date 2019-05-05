@@ -51,6 +51,8 @@ public:
 	void setPriority(); //only for VIP orders
 	double getPriority() const;	 //only for VIP orders
 
+	ORD_TYPE getType() const;
+
 	bool operator >(const Order& o) const;	// compares the priority of two orders
 	bool operator ==(const int id) const;	// compares the ID of an order with a given ID
 	//

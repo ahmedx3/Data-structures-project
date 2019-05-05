@@ -12,9 +12,10 @@ Motorcycle::Motorcycle()
 	repaired = -999;
 }
 
-Motorcycle::Motorcycle(int i, ORD_TYPE t, double s, REGION r, STATUS ss , int hp)
+Motorcycle::Motorcycle(int i, ORD_TYPE t, double s, REGION r, STATUS ss , int hp, int Id)
 {
-	ID = i;
+	id = Id;
+	OrdID = i;
 	type = t;
 	speed = s;
 	region = r;
@@ -38,7 +39,7 @@ Motorcycle::~Motorcycle()
 
 void Motorcycle::Assign(Order* & ord, int timeStep)
 {
-	ID = ord->GetID();
+	OrdID = ord->GetID();
 	status = SERV;
 
 	if (wasInTraffic && FT > (timeStep - REST_TIME))
@@ -69,7 +70,7 @@ double Motorcycle::getST() const
 }
 
 void Motorcycle::deAssign() {
-	ID = -1;
+	OrdID = -1;
 	status = IDLE;
 }
 
@@ -99,6 +100,21 @@ void Motorcycle::Repair(int timeStep) {
 int Motorcycle::getRepairTime() const
 {
 	return repaired;
+}
+
+void Motorcycle::setID(int Id)
+{
+	id = Id;
+}
+
+int Motorcycle::getID() const
+{
+	return id;
+}
+
+ORD_TYPE Motorcycle::getType() const
+{
+	return type;
 }
 
 bool Motorcycle::RandomBool() {

@@ -8,12 +8,13 @@
 #pragma once
 class Motorcycle	
 {
-	int ID;
-	ORD_TYPE type;	//for each order type there is a corresponding motorcycle type 
+	int id;
+	int OrdID;
+	ORD_TYPE type;		//for each order type there is a corresponding motorcycle type 
 	double speed;		//meters it can move in one clock tick (in one timestep)
-	REGION	region;	//region of the motorcycle
-	STATUS	status;	//idle or in-service
-	int HP; // health point
+	REGION	region;		//region of the motorcycle
+	STATUS	status;		//idle or in-service
+	int HP;				// health point
 	int FT;
 	double ST;
 	bool wasInTraffic;
@@ -21,7 +22,7 @@ class Motorcycle
 
 public:
 	Motorcycle();
-	Motorcycle(int i, ORD_TYPE t, double s, REGION r, STATUS ss , int hp);
+	Motorcycle(int i, ORD_TYPE t, double s, REGION r, STATUS ss , int hp, int Id);
 	bool operator>(Motorcycle& m2);
 	virtual ~Motorcycle();
 	void Assign(Order* & ord, int timeStep);
@@ -33,7 +34,9 @@ public:
 	int getHP() const;
 	void Repair(int timeStep);
 	int getRepairTime() const;
-
+	void setID(int Id);
+	int getID()const;
+	ORD_TYPE getType() const;
 private:
 	bool RandomBool();
 };

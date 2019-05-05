@@ -107,6 +107,11 @@ double Order::getPriority() const
 	return Priority;
 }
 
+ORD_TYPE Order::getType() const
+{
+	return type;
+}
+
 bool Order::operator >(const Order& o) const
 {
 	if (Priority > o.Priority)

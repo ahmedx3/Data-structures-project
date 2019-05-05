@@ -293,7 +293,7 @@ void Restaurant::simulationTestRun() {
 	setMCs();
 	//////////////////////////////////////////////////////////////////////////////
 
-	////////////////////////////////////////////////////////////////////////////// Starting the simulation (executing events till all events are executed)
+	////////////////////////////////////////////////////////////////////////////// Starting the simulation (executing events till all events are executed and all orders are served..i.e no waiting orders)
 	int currentTimeStep = 1;
 	while (!EventsQueue.isEmpty() || totalWaitingOrders > 0) {
 		//cout << " time " << currentTimeStep << endl;
@@ -1032,7 +1032,7 @@ bool Restaurant::promoteToVIP(int i, double extraMoney)
 {
 	
 	Order* ord = getOrderById(i);
-	if (ord == NULL) return false;
+	if (ord == NULL || ord->GetType() != TYPE_NRM) return false;
 
 	if (ord->GetRegion() == A_REG) {
 		ord->SetType(TYPE_VIP);

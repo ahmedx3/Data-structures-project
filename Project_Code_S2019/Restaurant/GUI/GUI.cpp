@@ -77,7 +77,7 @@ void GUI::DrawString(const int iX, const int iY, const string Text)
 
 void GUI::PrintStatusMessages(string msg, int lineNo) const {
 	pWind->SetPen(DARKRED);
-	pWind->SetFont(10, PLAIN, BY_NAME, "Arial");
+	pWind->SetFont(14, PLAIN, BY_NAME, "Arial");
 	pWind->DrawString(10, WindHeight - StatusBarHeight + (lineNo * 20) + 5, msg);
 }
 
@@ -164,8 +164,8 @@ void GUI::DrawRestArea() const
 	pWind->SetFont(200, BOLD, BY_NAME, "Arial");
 	pWind->DrawString(200, 50, "A");
 	pWind->DrawString(WindWidth - 350, 50, "B");
-	pWind->DrawString(WindWidth - 350, 300, "C");
-	pWind->DrawString(200, 300, "D");
+	pWind->DrawString(WindWidth - 350, 250, "C");
+	pWind->DrawString(200, 250, "D");
 
 }
 //////////////////////////////////////////////////////////////////////////////////////////

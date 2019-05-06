@@ -215,15 +215,15 @@ private:
 	void drawOneQueue(PriorityQueue<Order*>& queue);
 	void drawOneQueue(LinkedList<Order*>& queue);
 	void drawOrdersToScreen();										// Draws all active orders
-	void deleteOrdersEachTimeStep(int timeStep,string &stringA, string &stringB, string &stringC, string &stringD);					// deletes orders each time step as if assigning them to bikes
-	void printStatusBarInfo(int currentTimeStep, string& stringA, string& stringB, string& stringC, string& stringD);					// prints all info in status bar
+	void deleteOrdersEachTimeStep(int timeStep,string &stringA, string &stringB, string &stringC, string &stringD, int & A, int & B, int & C, int & D);						// deletes orders each time step as if assigning them to bikes
+	void printStatusBarInfo(int currentTimeStep, string& stringA, string& stringB, string& stringC, string& stringD, int & A, int & B, int & C, int & D);					// prints all info in status bar
 	bool cancelFromCertainQueue(int id, Queue<Order*> & queue);		// Cancel order from certain queue
 	bool cancelFromCertainQueue(int id, PriorityQueue<Order*>& queue);
-	bool dequeueFromOneQueue(Queue<Order*> & queue, int timeStep, string& stringA, string& stringB, string& stringC, string& stringD);	// dequeue one order
-	bool dequeueFromOneQueue(PriorityQueue<Order*>& queue, int noOFNormalAvailable, int noOFVIPAvailable, int noOfFrozenAvailable, int timeStep, string& stringA, string& stringB, string& stringC, string& stringD);
-	bool dequeueFromOneQueue(LinkedList<Order*>& queue, int timeStep, string& stringA, string& stringB, string& stringC, string& stringD);
+	bool dequeueFromOneQueue(Queue<Order*> & queue, int timeStep, string& stringA, string& stringB, string& stringC, string& stringD, int & A, int & B, int & C, int & D);	// dequeue one order
+	bool dequeueFromOneQueue(PriorityQueue<Order*>& queue, int noOFNormalAvailable, int noOFVIPAvailable, int noOfFrozenAvailable, int timeStep, string& stringA, string& stringB, string& stringC, string& stringD, int & A, int & B, int & C, int & D);
+	bool dequeueFromOneQueue(LinkedList<Order*>& queue, int timeStep, string& stringA, string& stringB, string& stringC, string& stringD, int & A, int & B, int & C, int & D);
 	bool cancelFromCertainQueue(int id, LinkedList<Order*>& queue);
-	void lastTimeStep(int currentTimeStep, string &stringA, string &stringB, string &stringC, string &stringD);							// To see last Time step
+	void lastTimeStep(int currentTimeStep, string &stringA, string &stringB, string &stringC, string &stringD, int & A, int & B, int & C, int & D);							// To see last Time step
 
 	// Assign functions
 	bool AssignOrder(Order* & ord, int timeStep,Motorcycle* &m);

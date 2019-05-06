@@ -297,7 +297,11 @@ void Restaurant::simulationTestRun() {
 	int currentTimeStep = 1;
 
 	string stringA, stringB, stringC, stringD;	//Contains the orders assignment to motorcycles info for each region
-
+	int A, B, C, D;
+	A = 0;
+	B = 0;
+	C = 0;
+	D = 0;
 	while (!EventsQueue.isEmpty() || totalWaitingOrders > 0) {
 		//cout << " time " << currentTimeStep << endl;
 
@@ -305,7 +309,7 @@ void Restaurant::simulationTestRun() {
 		ExecuteEvents(currentTimeStep);				// Execute events now
 		if (mode != MODE_SLNT) {		
 
-			printStatusBarInfo(currentTimeStep, stringA, stringB, stringC, stringD);	// Print all info in status bar		
+			printStatusBarInfo(currentTimeStep, stringA, stringB, stringC, stringD, A, B, C, D);	// Print all info in status bar		
 			drawOrdersToScreen();					// Draw orders to screen
 		}
 		autoPromoteOrders(currentTimeStep);			//It works with normal orders only if the current Time step >= arrivalTime of the order + autoS
@@ -314,7 +318,7 @@ void Restaurant::simulationTestRun() {
 		stringC = "";
 		stringD = "";
 
-		deleteOrdersEachTimeStep(currentTimeStep, stringA, stringB, stringC, stringD);	// Assigns orders  from each type to motorcycles in each region if there are available motorcycles
+		deleteOrdersEachTimeStep(currentTimeStep, stringA, stringB, stringC, stringD, A, B, C, D);	// Assigns orders  from each type to motorcycles in each region if there are available motorcycles
 		
 		
 		if (mode == MODE_INTR)
@@ -352,7 +356,7 @@ void Restaurant::simulationTestRun() {
 
 	////////////////////////////////////////////////////////////////////////////// Finishing simulation
 	
-	lastTimeStep(currentTimeStep, stringA, stringB, stringC, stringD); // To see last time step
+	lastTimeStep(currentTimeStep, stringA, stringB, stringC, stringD, A, B, C, D); // To see last time step
 	pGUI->PrintMessage("Simulation Over, Click anywhere to exit!");
 	pGUI->waitForClick();
 	
@@ -364,11 +368,11 @@ void Restaurant::simulationTestRun() {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Last Time Step too see everything
-void Restaurant::lastTimeStep(int currentTimeStep, string &stringA, string &stringB, string &stringC, string &stringD) {
+void Restaurant::lastTimeStep(int currentTimeStep, string &stringA, string &stringB, string &stringC, string &stringD, int & A, int & B, int & C, int & D) {
 
 	if (mode != MODE_SLNT) {
 		// Print all info in status bar
-		printStatusBarInfo(currentTimeStep, stringA, stringB, stringC, stringD);
+		printStatusBarInfo(currentTimeStep, stringA, stringB, stringC, stringD, A, B, C, D);
 
 		// Draw orders to screen
 		drawOrdersToScreen();
@@ -383,7 +387,7 @@ void Restaurant::lastTimeStep(int currentTimeStep, string &stringA, string &stri
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Restaurant::printStatusBarInfo(int currentTimeStep, string& stringA, string& stringB, string& stringC, string& stringD)
+void Restaurant::printStatusBarInfo(int currentTimeStep, string& stringA, string& stringB, string& stringC, string& stringD, int & A, int & B, int & C, int & D)
 {
 	pGUI->ClearStatusBar();
 
@@ -478,6 +482,10 @@ void Restaurant::printStatusBarInfo(int currentTimeStep, string& stringA, string
 	regionA += "Normal motors(";
 	regionA += NormalMCA;
 	regionA += ")  ";
+	char nAssignedOrdersA[10];
+	itoa(A, nAssignedOrdersA, 10);
+	regionA += "   Number of served orders:";
+	regionA += nAssignedOrdersA;
 	pGUI->PrintStatusMessages(regionA, lineNo++);
 	pGUI->PrintStatusMessages(stringA, lineNo++);
 
@@ -511,6 +519,10 @@ void Restaurant::printStatusBarInfo(int currentTimeStep, string& stringA, string
 	regionB += "Normal motors(";
 	regionB += NormalMCB;
 	regionB += ")  ";
+	char nAssignedOrdersB[10];
+	itoa(B, nAssignedOrdersB, 10);
+	regionB += "   Number of served orders:";
+	regionB += nAssignedOrdersB;
 	pGUI->PrintStatusMessages(regionB, lineNo++);
 	pGUI->PrintStatusMessages(stringB, lineNo++);
 
@@ -543,6 +555,10 @@ void Restaurant::printStatusBarInfo(int currentTimeStep, string& stringA, string
 	regionC += "Normal motors(";
 	regionC += NormalMCC;
 	regionC += ")  ";
+	char nAssignedOrdersC[10];
+	itoa(C, nAssignedOrdersC, 10);
+	regionC += "   Number of served orders:";
+	regionC += nAssignedOrdersC;
 	pGUI->PrintStatusMessages(regionC, lineNo++);
 	pGUI->PrintStatusMessages(stringC, lineNo++);
 
@@ -575,6 +591,10 @@ void Restaurant::printStatusBarInfo(int currentTimeStep, string& stringA, string
 	regionD += "Normal motors(";
 	regionD += NormalMCD;
 	regionD += ")  ";
+	char nAssignedOrdersD[10];
+	itoa(D, nAssignedOrdersD, 10);
+	regionD += "   Number of served orders:";
+	regionD += nAssignedOrdersD;
 	pGUI->PrintStatusMessages(regionD, lineNo++);
 	pGUI->PrintStatusMessages(stringD, lineNo++);
 
@@ -1058,41 +1078,41 @@ bool Restaurant::promoteToVIP(int i, double extraMoney)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Restaurant::deleteOrdersEachTimeStep(int timeStep,string &stringA,  string &stringB, string &stringC, string &stringD)
+void Restaurant::deleteOrdersEachTimeStep(int timeStep,string &stringA,  string &stringB, string &stringC, string &stringD, int & A, int & B, int & C, int & D)
 {
 
 	// Check if any motorcycles returned
 	ReturnMotors(timeStep);
 
 	// Remove from VIP Orders
-	while (dequeueFromOneQueue(VIPOrdersRegionA, n[0], v[0], f[0], timeStep, stringA, stringB, stringC, stringD)) {
+	while (dequeueFromOneQueue(VIPOrdersRegionA, n[0], v[0], f[0], timeStep, stringA, stringB, stringC, stringD, A, B, C, D)) {
 		waitingVIPA--;
 	}
-	while (dequeueFromOneQueue(VIPOrdersRegionB, n[1], v[1], f[1], timeStep, stringA, stringB, stringC, stringD))
+	while (dequeueFromOneQueue(VIPOrdersRegionB, n[1], v[1], f[1], timeStep, stringA, stringB, stringC, stringD, A, B, C, D))
 		waitingVIPB--;
-	while (dequeueFromOneQueue(VIPOrdersRegionC, n[2], v[2], f[2], timeStep, stringA, stringB, stringC, stringD))
+	while (dequeueFromOneQueue(VIPOrdersRegionC, n[2], v[2], f[2], timeStep, stringA, stringB, stringC, stringD, A, B, C, D))
 		waitingVIPC--;
-	while (dequeueFromOneQueue(VIPOrdersRegionD, n[3], v[3], f[3], timeStep, stringA, stringB, stringC, stringD))
+	while (dequeueFromOneQueue(VIPOrdersRegionD, n[3], v[3], f[3], timeStep, stringA, stringB, stringC, stringD, A, B, C, D))
 		waitingVIPD--;
 
 	// Remove from Frozen Orders
-	while (dequeueFromOneQueue(frozenOrdersRegionA, timeStep, stringA, stringB, stringC, stringD))
+	while (dequeueFromOneQueue(frozenOrdersRegionA, timeStep, stringA, stringB, stringC, stringD, A, B, C, D))
 		waitingFrozenA--;
-	while (dequeueFromOneQueue(frozenOrdersRegionB, timeStep, stringA, stringB, stringC, stringD))
+	while (dequeueFromOneQueue(frozenOrdersRegionB, timeStep, stringA, stringB, stringC, stringD, A, B, C, D))
 		waitingFrozenB--;
-	while (dequeueFromOneQueue(frozenOrdersRegionC, timeStep, stringA, stringB, stringC, stringD))
+	while (dequeueFromOneQueue(frozenOrdersRegionC, timeStep, stringA, stringB, stringC, stringD, A, B, C, D))
 		waitingFrozenC--;
-	while (dequeueFromOneQueue(frozenOrdersRegionD, timeStep, stringA, stringB, stringC, stringD))
+	while (dequeueFromOneQueue(frozenOrdersRegionD, timeStep, stringA, stringB, stringC, stringD, A, B, C, D))
 		waitingFrozenD--;
 
 	// Remove from Normal Orders
-	while (dequeueFromOneQueue(normalOrdersRegionA, timeStep, stringA, stringB, stringC, stringD))
+	while (dequeueFromOneQueue(normalOrdersRegionA, timeStep, stringA, stringB, stringC, stringD, A, B, C, D))
 		waitingNormalA--;
-	while (dequeueFromOneQueue(normalOrdersRegionB, timeStep, stringA, stringB, stringC, stringD))
+	while (dequeueFromOneQueue(normalOrdersRegionB, timeStep, stringA, stringB, stringC, stringD, A, B, C, D))
 		waitingNormalB--;
-	while (dequeueFromOneQueue(normalOrdersRegionC, timeStep, stringA, stringB, stringC, stringD))
+	while (dequeueFromOneQueue(normalOrdersRegionC, timeStep, stringA, stringB, stringC, stringD, A, B, C, D))
 		waitingNormalC--;
-	while (dequeueFromOneQueue(normalOrdersRegionD, timeStep, stringA, stringB, stringC, stringD))
+	while (dequeueFromOneQueue(normalOrdersRegionD, timeStep, stringA, stringB, stringC, stringD, A, B, C, D))
 		waitingNormalD--;
 }
 
@@ -1282,7 +1302,7 @@ bool Restaurant::cancelFromCertainQueue(int id, PriorityQueue<Order*> & queue) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-bool Restaurant::dequeueFromOneQueue(Queue<Order*> & queue, int timeStep, string& stringA, string& stringB, string& stringC, string& stringD) {
+bool Restaurant::dequeueFromOneQueue(Queue<Order*> & queue, int timeStep, string& stringA, string& stringB, string& stringC, string& stringD, int & A, int & B, int & C, int & D) {
 	Order* pOrd;
 	bool removed = queue.peekFront(pOrd);
 	if (removed) {
@@ -1296,7 +1316,7 @@ bool Restaurant::dequeueFromOneQueue(Queue<Order*> & queue, int timeStep, string
 
 				//cout << "order : " << pOrd->GetID() << " in region : " << pOrd->GetRegion() << " arrived at " << pOrd->getArrTime() << " assigned motor at " << timeStep << " " << " finished at " << m->getFT() << " serviced at " << m->getST() << endl;
 				if (pOrd->GetRegion() == A_REG) {
-					
+					A++; //increment the number of served orders in this region
 					/////////////////////////////////////////////////////////////////////////////////////////////// To print the assigned orders
 					stringA += " ";
 					stringA += (pOrd->getType() == TYPE_VIP) ? "V" : (pOrd->getType() == TYPE_NRM) ? "N" : "F";
@@ -1325,6 +1345,7 @@ bool Restaurant::dequeueFromOneQueue(Queue<Order*> & queue, int timeStep, string
 					}
 				}
 				else if (pOrd->GetRegion() == B_REG) {
+					B++; //increment the number of served orders in this region
 					/////////////////////////////////////////////////////////////////////////////////////////////// To print the assigned orders
 					stringB += " ";
 					stringB += (pOrd->getType() == TYPE_VIP) ? "V" : (pOrd->getType() == TYPE_NRM) ? "N" : "F";
@@ -1351,6 +1372,7 @@ bool Restaurant::dequeueFromOneQueue(Queue<Order*> & queue, int timeStep, string
 					}
 				}
 				else if (pOrd->GetRegion() == C_REG) {
+					C++; //increment the number of served orders in this region
 					/////////////////////////////////////////////////////////////////////////////////////////////// To print the assigned orders
 					stringC += " ";
 					stringC += (pOrd->getType() == TYPE_VIP) ? "V" : (pOrd->getType() == TYPE_NRM) ? "N" : "F";
@@ -1377,6 +1399,7 @@ bool Restaurant::dequeueFromOneQueue(Queue<Order*> & queue, int timeStep, string
 					}
 				}
 				else if (pOrd->GetRegion() == D_REG) {
+					D++; //increment the number of served orders in this region
 					/////////////////////////////////////////////////////////////////////////////////////////////// To print the assigned orders
 					stringD += " ";
 					stringD += (pOrd->getType() == TYPE_VIP) ? "V" : (pOrd->getType() == TYPE_NRM) ? "N" : "F";
@@ -1426,7 +1449,7 @@ bool Restaurant::dequeueFromOneQueue(Queue<Order*> & queue, int timeStep, string
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-bool Restaurant::dequeueFromOneQueue(PriorityQueue<Order*> & queue, int noOFNormalAvailable, int noOFVIPAvailable, int noOfFrozenAvailable, int timeStep, string& stringA, string& stringB, string& stringC, string& stringD) {
+bool Restaurant::dequeueFromOneQueue(PriorityQueue<Order*> & queue, int noOFNormalAvailable, int noOFVIPAvailable, int noOfFrozenAvailable, int timeStep, string& stringA, string& stringB, string& stringC, string& stringD, int & A, int & B, int & C, int & D) {
 	Order* pOrd;
 
 	bool removed = queue.peekFront(pOrd);
@@ -1441,6 +1464,7 @@ bool Restaurant::dequeueFromOneQueue(PriorityQueue<Order*> & queue, int noOFNorm
 				cout << "order : " << pOrd->GetID() << " order region " << pOrd->GetRegion() << " type " << pOrd->GetType() << endl;
 			//	cout << "order : " << pOrd->GetID() << " in region : " << pOrd->GetRegion() << " arrived at " << pOrd->getArrTime() << " assigned motor at " << timeStep  << " " << " finished at " << m->getFT() << " serviced at " << m->getST() << endl;
 				if (pOrd->GetRegion() == A_REG) {
+					A++; //increment the number of served orders in this region
 					/////////////////////////////////////////////////////////////////////////////////////////////// To print the assigned orders
 					stringA += " ";
 					stringA += (pOrd->getType() == TYPE_VIP) ? "V" : (pOrd->getType() == TYPE_NRM) ? "N" : "F";
@@ -1467,6 +1491,7 @@ bool Restaurant::dequeueFromOneQueue(PriorityQueue<Order*> & queue, int noOFNorm
 					}
 				}
 				else if (pOrd->GetRegion() == B_REG) {
+					B++; //increment the number of served orders in this region
 					/////////////////////////////////////////////////////////////////////////////////////////////// To print the assigned orders
 					stringB += " ";
 					stringB += (pOrd->getType() == TYPE_VIP) ? "V" : (pOrd->getType() == TYPE_NRM) ? "N" : "F";
@@ -1493,6 +1518,7 @@ bool Restaurant::dequeueFromOneQueue(PriorityQueue<Order*> & queue, int noOFNorm
 					}
 				}
 				else if (pOrd->GetRegion() == C_REG) {
+					C++; //increment the number of served orders in this region
 					/////////////////////////////////////////////////////////////////////////////////////////////// To print the assigned orders
 					stringC += " ";
 					stringC += (pOrd->getType() == TYPE_VIP) ? "V" : (pOrd->getType() == TYPE_NRM) ? "N" : "F";
@@ -1519,6 +1545,7 @@ bool Restaurant::dequeueFromOneQueue(PriorityQueue<Order*> & queue, int noOFNorm
 					}
 				}
 				else if (pOrd->GetRegion() == D_REG) {
+					D++; //increment the number of served orders in this region
 					/////////////////////////////////////////////////////////////////////////////////////////////// To print the assigned orders
 					stringD += " ";
 					stringD += (pOrd->getType() == TYPE_VIP) ? "V" : (pOrd->getType() == TYPE_NRM) ? "N" : "F";
@@ -1566,7 +1593,7 @@ bool Restaurant::dequeueFromOneQueue(PriorityQueue<Order*> & queue, int noOFNorm
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-bool Restaurant::dequeueFromOneQueue(LinkedList<Order*> & queue, int timeStep, string& stringA, string& stringB, string& stringC, string& stringD) {
+bool Restaurant::dequeueFromOneQueue(LinkedList<Order*> & queue, int timeStep, string& stringA, string& stringB, string& stringC, string& stringD, int & A, int & B, int & C, int & D) {
 	Order* pOrd;
 	bool removed = queue.peekFront(pOrd);
 	if (removed) {
@@ -1577,6 +1604,7 @@ bool Restaurant::dequeueFromOneQueue(LinkedList<Order*> & queue, int timeStep, s
 				cout << "order : " << pOrd->GetID() << " order region " << pOrd->GetRegion() << " type " << pOrd->GetType() << endl;
 				//cout << "order : " << pOrd->GetID() << " in region : " << pOrd->GetRegion() << " arrived at " << pOrd->getArrTime() << " assigned motor at " << timeStep  << " " << " finished at " << m->getFT() << " serviced at " << m->getST() << endl;
 				if (pOrd->GetRegion() == A_REG) {
+					A++; //increment the number of served orders in this region
 					/////////////////////////////////////////////////////////////////////////////////////////////// To print the assigned orders
 					stringA += " ";
 					stringA += (pOrd->getType() == TYPE_VIP) ? "V" : (pOrd->getType() == TYPE_NRM) ? "N" : "F";
@@ -1601,6 +1629,7 @@ bool Restaurant::dequeueFromOneQueue(LinkedList<Order*> & queue, int timeStep, s
 					}
 				}
 				else if (pOrd->GetRegion() == B_REG) {
+					B++; //increment the number of served orders in this region
 					/////////////////////////////////////////////////////////////////////////////////////////////// To print the assigned orders
 					stringB += " ";
 					stringB += (pOrd->getType() == TYPE_VIP) ? "V" : (pOrd->getType() == TYPE_NRM) ? "N" : "F";
@@ -1627,6 +1656,7 @@ bool Restaurant::dequeueFromOneQueue(LinkedList<Order*> & queue, int timeStep, s
 					}
 				}
 				else if (pOrd->GetRegion() == C_REG) {
+					C++; //increment the number of served orders in this region
 					/////////////////////////////////////////////////////////////////////////////////////////////// To print the assigned orders
 					stringC += " ";
 					stringC += (pOrd->getType() == TYPE_VIP) ? "V" : (pOrd->getType() == TYPE_NRM) ? "N" : "F";
@@ -1653,6 +1683,7 @@ bool Restaurant::dequeueFromOneQueue(LinkedList<Order*> & queue, int timeStep, s
 					}
 				}
 				else if (pOrd->GetRegion() == D_REG) {
+					D++; //increment the number of served orders in this region
 					/////////////////////////////////////////////////////////////////////////////////////////////// To print the assigned orders
 					stringD += " ";
 					stringD += (pOrd->getType() == TYPE_VIP) ? "V" : (pOrd->getType() == TYPE_NRM) ? "N" : "F";

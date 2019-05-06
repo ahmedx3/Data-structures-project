@@ -193,7 +193,8 @@ public:
 	void addToNormalQueueRegionD(Order* ord);	// Adds orders to Normal queue
 	Order* getNormalOrderRegionD();				// Returns the front normal order
 	// -----------------------------------------------------------------------------------------------
-	void cancelOrder(int id);					// Cancels an order from all normal orders
+	void cancelOrder1(int id);					// Cancels an order from all normal orders
+	void cancelOrder2(int id);
 	// -----------------------------------------------------------------------------------------------
 	void setMCs();
 	// -----------------------------------------------------------------------------------------------
@@ -222,7 +223,8 @@ private:
 	bool dequeueFromOneQueue(Queue<Order*> & queue, int timeStep, string& stringA, string& stringB, string& stringC, string& stringD, int & A, int & B, int & C, int & D);	// dequeue one order
 	bool dequeueFromOneQueue(PriorityQueue<Order*>& queue, int noOFNormalAvailable, int noOFVIPAvailable, int noOfFrozenAvailable, int timeStep, string& stringA, string& stringB, string& stringC, string& stringD, int & A, int & B, int & C, int & D);
 	bool dequeueFromOneQueue(LinkedList<Order*>& queue, int timeStep, string& stringA, string& stringB, string& stringC, string& stringD, int & A, int & B, int & C, int & D);
-	bool cancelFromCertainQueue(int id, LinkedList<Order*>& queue);
+	bool cancelFromCertainQueue1(int id, LinkedList<Order*>& queue);
+	bool cancelFromCertainQueue2(int id, LinkedList<Order*>& queue);
 	void lastTimeStep(int currentTimeStep, string &stringA, string &stringB, string &stringC, string &stringD, int & A, int & B, int & C, int & D);							// To see last Time step
 
 	// Assign functions

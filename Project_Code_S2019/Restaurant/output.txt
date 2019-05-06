@@ -1,1 +1,24 @@
 FT ID AT WT ST
+FT | ID | AT | WT | ST
+5 | 4 | 3 | 0 | 1
+11 | 6 | 3 | 2 | 3
+16 | 1 | 3 | 3 | 5
+20 | 2 | 3 | 8 | 7
+37 | 7 | 10 | 0 | 16
+45 | 3 | 3 | 0 | 21
+Region A : 
+orders: 5 [Norm:1, frozen:0, VIP:4]
+MotorC: 3[Norm:1, frozen:1, vip:1]
+Avg. waiting : 2.6 Avg serving : 7.4
+Region B : 
+orders: 0 [Norm:0, frozen:0, VIP:0]
+MotorC: 60[Norm:10, frozen:30, vip:20]
+Avg. waiting : -nan(ind) Avg serving : -nan(ind)
+Region C : 
+orders: 0 [Norm:0, frozen:0, VIP:0]
+MotorC: 9[Norm:5, frozen:3, vip:1]
+Avg. waiting : -nan(ind) Avg serving : -nan(ind)
+Region D : 
+orders: 1 [Norm:0, frozen:1, VIP:0]
+MotorC: 700[Norm:100, frozen:400, vip:200]
+Avg. waiting : 0 Avg serving : 16

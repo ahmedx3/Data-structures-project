@@ -1044,7 +1044,7 @@ bool Restaurant::promoteToVIP(int i, double extraMoney)
 		ord->setMoney(ord->getMoney() + extraMoney);
 		ord->setPriority();
 		addToVIPQueueRegionA(ord);
-		cancelOrder(ord->GetID());
+		cancelOrder2(ord->GetID());
 	}
 	else if (ord->GetRegion() == B_REG) 
 	{
@@ -1052,7 +1052,7 @@ bool Restaurant::promoteToVIP(int i, double extraMoney)
 		ord->setMoney(ord->getMoney() + extraMoney);
 		ord->setPriority();
 		addToVIPQueueRegionB(ord);
-		cancelOrder(ord->GetID());
+		cancelOrder2(ord->GetID());
 
 	}
 	else if (ord->GetRegion() == C_REG)
@@ -1061,7 +1061,7 @@ bool Restaurant::promoteToVIP(int i, double extraMoney)
 		ord->setMoney(ord->getMoney() + extraMoney);
 		ord->setPriority();
 		addToVIPQueueRegionC(ord);
-		cancelOrder(ord->GetID());
+		cancelOrder2(ord->GetID());
 
 	}
 	else
@@ -1070,7 +1070,7 @@ bool Restaurant::promoteToVIP(int i, double extraMoney)
 		ord->setMoney(ord->getMoney() + extraMoney);
 		ord->setPriority();
 		addToVIPQueueRegionD(ord);
-		cancelOrder(ord->GetID());
+		cancelOrder2(ord->GetID());
 	}
 	return true;
 }
@@ -1119,15 +1119,27 @@ void Restaurant::deleteOrdersEachTimeStep(int timeStep,string &stringA,  string 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Restaurant::cancelOrder(int id)
+void Restaurant::cancelOrder1(int id)
 {
-	if (cancelFromCertainQueue(id, normalOrdersRegionA))
+	if (cancelFromCertainQueue1(id, normalOrdersRegionA))
 		waitingNormalA--;
-	if (cancelFromCertainQueue(id, normalOrdersRegionB))
+	if (cancelFromCertainQueue1(id, normalOrdersRegionB))
 		waitingNormalB--;
-	if (cancelFromCertainQueue(id, normalOrdersRegionC))
+	if (cancelFromCertainQueue1(id, normalOrdersRegionC))
 		waitingNormalC--;
-	if (cancelFromCertainQueue(id, normalOrdersRegionD))
+	if (cancelFromCertainQueue1(id, normalOrdersRegionD))
+		waitingNormalD--;
+}
+
+void Restaurant::cancelOrder2(int id)
+{
+	if (cancelFromCertainQueue2(id, normalOrdersRegionA))
+		waitingNormalA--;
+	if (cancelFromCertainQueue2(id, normalOrdersRegionB))
+		waitingNormalB--;
+	if (cancelFromCertainQueue2(id, normalOrdersRegionC))
+		waitingNormalC--;
+	if (cancelFromCertainQueue2(id, normalOrdersRegionD))
 		waitingNormalD--;
 }
 
@@ -2020,7 +2032,7 @@ bool Restaurant::NormAssign(Order* & ord, int timeStep, Motorcycle* &m) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-bool Restaurant::cancelFromCertainQueue(int id, LinkedList<Order*> & queue) {
+bool Restaurant::cancelFromCertainQueue1(int id, LinkedList<Order*> & queue) {
 	Order* pOrd;
 	int stopPoint;
 	bool exists = queue.peekFront(pOrd);
@@ -2043,6 +2055,40 @@ bool Restaurant::cancelFromCertainQueue(int id, LinkedList<Order*> & queue) {
 			if (pOrd->GetID() == id) {
 				queue.removeFront(pOrd);
 				delete pOrd;
+				totalWaitingOrders--;
+				return true;
+			}
+			else {
+				queue.removeFront(pOrd);
+				queue.insertEnd(pOrd);
+				queue.peekFront(pOrd);
+			}
+		}
+	}
+	return false;
+}
+
+bool Restaurant::cancelFromCertainQueue2(int id, LinkedList<Order*> & queue) {
+	Order* pOrd;
+	int stopPoint;
+	bool exists = queue.peekFront(pOrd);
+	if (exists) {
+		stopPoint = pOrd->GetID();
+		if (stopPoint == id) {
+			queue.removeFront(pOrd);
+			totalWaitingOrders--;
+			return true;
+		}
+		else {
+			queue.removeFront(pOrd);
+			queue.insertEnd(pOrd);
+		}
+
+		queue.peekFront(pOrd);
+
+		while (pOrd->GetID() != stopPoint) {
+			if (pOrd->GetID() == id) {
+				queue.removeFront(pOrd);
 				totalWaitingOrders--;
 				return true;
 			}

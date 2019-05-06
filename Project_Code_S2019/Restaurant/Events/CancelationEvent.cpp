@@ -14,5 +14,5 @@ CancelationEvent::~CancelationEvent()
 
 void CancelationEvent::Execute(Restaurant * pRest)
 {
-	pRest->cancelOrder(OrderID);
+	pRest->cancelOrder1(OrderID);
 }

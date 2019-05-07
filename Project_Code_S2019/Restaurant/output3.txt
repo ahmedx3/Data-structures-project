@@ -1,27 +1,27 @@
 FT ID AT WT ST
 FT | ID | AT | WT | ST
-3 | 1 | 1 | 0 | 1
-5 | 2 | 3 | 0 | 1
-12 | 3 | 4 | 0 | 4
-21 | 5 | 19 | 0 | 1
-27 | 8 | 25 | 0 | 1
-27 | 7 | 25 | 0 | 1
-47 | 6 | 25 | 0 | 11
-48 | 4 | 12 | 0 | 18
-193 | 8 | 25 | 0 | 84
+8 | 1 | 1 | 0 | 6
+10 | 2 | 3 | 0 | 6
+17 | 3 | 4 | 0 | 9
+26 | 5 | 19 | 0 | 6
+32 | 8 | 25 | 0 | 6
+32 | 7 | 25 | 0 | 6
+52 | 6 | 25 | 0 | 16
+53 | 4 | 12 | 0 | 23
+198 | 8 | 25 | 0 | 89
 Region A : 
 orders: 4 [Norm:1, frozen:0, VIP:3]
 MotorC: 9[Norm:5, frozen:3, vip:1]
-Avg. waiting : 0 Avg serving : 21.75
+Avg. waiting : 0 Avg serving : 26.75
 Region B : 
 orders: 2 [Norm:1, frozen:0, VIP:1]
 MotorC: 991[Norm:986, frozen:3, vip:2]
-Avg. waiting : 0 Avg serving : 2.5
+Avg. waiting : 0 Avg serving : 7.5
 Region C : 
 orders: 1 [Norm:0, frozen:1, VIP:0]
 MotorC: 7[Norm:4, frozen:2, vip:1]
-Avg. waiting : 0 Avg serving : 18
+Avg. waiting : 0 Avg serving : 23
 Region D : 
 orders: 2 [Norm:1, frozen:1, VIP:0]
 MotorC: 15[Norm:9, frozen:4, vip:2]
-Avg. waiting : 0 Avg serving : 6
+Avg. waiting : 0 Avg serving : 11

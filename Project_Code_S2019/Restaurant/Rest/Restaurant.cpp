@@ -242,7 +242,7 @@ Restaurant::~Restaurant()
 	outputFile.close();
 
 	delete pGUI;
-	delete infoArr;
+	delete []infoArr;
 }
 
 // Main test run for phase 1

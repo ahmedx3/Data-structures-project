@@ -338,20 +338,43 @@ void Restaurant::simulationTestRun() {
 	outputFile << "Region A : " << endl;
 	outputFile << "orders: " << noOfFrozenOrdersA + noOfNormOrdersA + noOfVipOrdersA << " [Norm:" << noOfNormOrdersA << ", frozen:" << noOfFrozenOrdersA << ", VIP:" << noOfVipOrdersA << "]" << endl;
 	outputFile << "MotorC: " << n[0] + f[0] + v[0] << "[Norm:" << n[0] << ", frozen:" << f[0] << ", vip:" << v[0] << "]" << endl;
-	outputFile << "Avg. waiting : " << totalWaitingA / (noOfFrozenOrdersA + noOfNormOrdersA + noOfVipOrdersA) << " Avg serving : "<<totalServA/ (noOfFrozenOrdersA + noOfNormOrdersA + noOfVipOrdersA) << endl;
+	int totA = (noOfFrozenOrdersA + noOfNormOrdersA + noOfVipOrdersA);
+	if (totA != 0) {
+		outputFile << "Avg. waiting : " << totalWaitingA / (noOfFrozenOrdersA + noOfNormOrdersA + noOfVipOrdersA) << " Avg serving : " << totalServA / (noOfFrozenOrdersA + noOfNormOrdersA + noOfVipOrdersA) << endl;
+	}
+	else {
+		outputFile << "Avg. waiting : " << 0 << " Avg serving : " << 0 << endl;
+	}
 	outputFile << "Region B : " << endl;
 	outputFile << "orders: " << noOfFrozenOrdersB + noOfNormOrdersB + noOfVipOrdersB << " [Norm:" << noOfNormOrdersB << ", frozen:" << noOfFrozenOrdersB << ", VIP:" << noOfVipOrdersB << "]" << endl;
 	outputFile << "MotorC: " << n[1] + f[1] + v[1] << "[Norm:" << n[1] << ", frozen:" << f[1] << ", vip:" << v[1] << "]" << endl;
-	outputFile << "Avg. waiting : " << totalWaitingB / (noOfFrozenOrdersB + noOfNormOrdersB + noOfVipOrdersB) << " Avg serving : "<<totalServB/ (noOfFrozenOrdersB + noOfNormOrdersB + noOfVipOrdersB) << endl;
+	int totB = (noOfFrozenOrdersB + noOfNormOrdersB + noOfVipOrdersB);
+	if (totB != 0) {
+		outputFile << "Avg. waiting : " << totalWaitingB / (noOfFrozenOrdersB + noOfNormOrdersB + noOfVipOrdersB) << " Avg serving : " << totalServB / (noOfFrozenOrdersB + noOfNormOrdersB + noOfVipOrdersB) << endl;
+	}
+	else {
+		outputFile << "Avg. waiting : " << 0 << " Avg serving : " << 0 << endl;
+	}
 	outputFile << "Region C : " << endl;
 	outputFile << "orders: " << noOfFrozenOrdersC + noOfNormOrdersC + noOfVipOrdersC << " [Norm:" << noOfNormOrdersC << ", frozen:" << noOfFrozenOrdersC << ", VIP:" << noOfVipOrdersC << "]" << endl;
 	outputFile << "MotorC: " << n[2] + f[2] + v[2] << "[Norm:" << n[2] << ", frozen:" << f[2] << ", vip:" << v[2] << "]" << endl;
-	outputFile << "Avg. waiting : " << totalWaitingC / (noOfFrozenOrdersC + noOfNormOrdersC + noOfVipOrdersC) << " Avg serving : "<<totalServC/ (noOfFrozenOrdersC + noOfNormOrdersC + noOfVipOrdersC) << endl;
+	int totC = (noOfFrozenOrdersC + noOfNormOrdersC + noOfVipOrdersC);
+	if (totC != 0) {
+		outputFile << "Avg. waiting : " << totalWaitingC / (noOfFrozenOrdersC + noOfNormOrdersC + noOfVipOrdersC) << " Avg serving : " << totalServC / (noOfFrozenOrdersC + noOfNormOrdersC + noOfVipOrdersC) << endl;
+	}
+	else {
+		outputFile << "Avg. waiting : " << 0 << " Avg serving : " << 0 << endl;
+	}
 	outputFile << "Region D : " << endl;
 	outputFile << "orders: " << noOfFrozenOrdersD + noOfNormOrdersD + noOfVipOrdersD << " [Norm:" << noOfNormOrdersD << ", frozen:" << noOfFrozenOrdersD << ", VIP:" << noOfVipOrdersD << "]" << endl;
 	outputFile << "MotorC: " << n[3] + f[3] + v[3] << "[Norm:" << n[3] << ", frozen:" << f[3] << ", vip:" << v[3] << "]" << endl;
-	outputFile << "Avg. waiting : " << totalWaitingD / (noOfFrozenOrdersD + noOfNormOrdersD + noOfVipOrdersD) << " Avg serving : "<<totalServD/ (noOfFrozenOrdersD + noOfNormOrdersD + noOfVipOrdersD) << endl;
-
+	int totD = (noOfFrozenOrdersD + noOfNormOrdersD + noOfVipOrdersD);
+	if (totD != 0) {
+		outputFile << "Avg. waiting : " << totalWaitingD / (noOfFrozenOrdersD + noOfNormOrdersD + noOfVipOrdersD) << " Avg serving : " << totalServD / (noOfFrozenOrdersD + noOfNormOrdersD + noOfVipOrdersD) << endl;
+	}
+	else {
+		outputFile << "Avg. waiting : " << 0 << " Avg serving : " <<0 << endl;
+	}
 	//////////////////////////////////////////////////////////////////////////////
 
 	////////////////////////////////////////////////////////////////////////////// Finishing simulation
